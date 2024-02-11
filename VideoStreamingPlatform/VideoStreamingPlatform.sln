@@ -5,6 +5,12 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoStreamingPlatform", "VideoStreamingPlatform.csproj", "{DAB5D3A7-3283-48D9-BD4C-67137639CC86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoStreamingPlatform.Commons", "..\VideoStreamingPlatform.Commons\VideoStreamingPlatform.Commons.csproj", "{4CEAE8FC-82A6-455E-B116-10158B907320}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoStreamingPlatform.Database", "..\VideoStreamingPlatform.Database\VideoStreamingPlatform.Database.csproj", "{EDDFF34C-912C-4EBA-8CC0-50AE4C0D4938}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoStreamingPlatform.Service", "..\VideoStreamingPlatform.Service\VideoStreamingPlatform.Service.csproj", "{8FCB47B8-40B3-4375-A67F-E24D05CDEB31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +21,18 @@ Global
 		{DAB5D3A7-3283-48D9-BD4C-67137639CC86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAB5D3A7-3283-48D9-BD4C-67137639CC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAB5D3A7-3283-48D9-BD4C-67137639CC86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEAE8FC-82A6-455E-B116-10158B907320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEAE8FC-82A6-455E-B116-10158B907320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEAE8FC-82A6-455E-B116-10158B907320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEAE8FC-82A6-455E-B116-10158B907320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDDFF34C-912C-4EBA-8CC0-50AE4C0D4938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDDFF34C-912C-4EBA-8CC0-50AE4C0D4938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDDFF34C-912C-4EBA-8CC0-50AE4C0D4938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDDFF34C-912C-4EBA-8CC0-50AE4C0D4938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FCB47B8-40B3-4375-A67F-E24D05CDEB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCB47B8-40B3-4375-A67F-E24D05CDEB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCB47B8-40B3-4375-A67F-E24D05CDEB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCB47B8-40B3-4375-A67F-E24D05CDEB31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
