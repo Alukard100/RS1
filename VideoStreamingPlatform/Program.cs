@@ -1,4 +1,5 @@
-using VideoStreamingPlatform.Commons.Interfaces;
+﻿using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +11,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IBlogService,BlogService>();
 
-
-builder.Services.AddSingleton<IBlogService, BlogService>();
+/*builder.Services.AddSingleton<IAdvertisementService, AdvertisementService>();
+builder.Services.AddSingleton<IUserTypeService, UserTypeService>();
+builder.Services.AddSingleton<IPlaylistService,PlaylistService>();
+builder.Services.AddSingleton<ISynchronizationService,SynchronizationService>();
+builder.Services.AddSingleton<IMessageBodyService,MessageBodyService>();
+builder.Services.AddSingleton<IWalletService,WalletService>();*/
 
 var app = builder.Build();
 
