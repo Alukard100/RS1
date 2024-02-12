@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VideoStreamingPlatform.Commons.DTOs.Requests.Wallet;
+using VideoStreamingPlatform.Commons.DTOs.Responses;
+using VideoStreamingPlatform.Commons.DTOs.Responses.Wallet;
+using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database.Models;
+
+namespace VideoStreamingPlatform.Service
+{
+    public class WalletService : IWalletService
+    {
+        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        public CommonResponse UpdateWallet(UpdateWalletRequest request)
+        {
+            var updateObject=db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            if (updateObject!=null)
+            {
+                updateObject.Balance = request.Balance;
+                db.SaveChanges();
+                return new CommonResponse() { Id = request.UserId };
+            }
+            else
+            {
+            throw new InvalidOperationException("Taj wallet ne postoji.");
+            }
+        }
+
+        public GetWalletResponse GetWallet(GetWalletRequest request)
+        {
+            var response = new GetWalletResponse();
+            var getWallet= db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            if (getWallet!=null)
+            {
+                response.Balance = getWallet.Balance;
+            }
+            else
+            {
+                throw new InvalidOperationException("Taj wallet ne postoji.");
+            }
+
+            return response;
+        }
+    }
+}
