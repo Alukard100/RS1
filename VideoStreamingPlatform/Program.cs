@@ -17,8 +17,8 @@ builder.Services.AddSingleton<IWalletService,WalletService>();
 builder.Services.AddSingleton<IUserTypeService, UserTypeService>();
 builder.Services.AddSingleton<IMessageBodyService,MessageBodyService>();
 builder.Services.AddSingleton<IAdvertisementService, AdvertisementService>();
-/*
 builder.Services.AddSingleton<ISynchronizationService,SynchronizationService>();
+/*
 builder.Services.AddSingleton<IPlaylistService,PlaylistService>();
 */
 
