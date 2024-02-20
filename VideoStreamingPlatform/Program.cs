@@ -19,6 +19,7 @@ builder.Services.AddSingleton<IMessageBodyService,MessageBodyService>();
 builder.Services.AddSingleton<IAdvertisementService, AdvertisementService>();
 builder.Services.AddSingleton<ISynchronizationService,SynchronizationService>();
 builder.Services.AddSingleton<IPlaylistService,PlaylistService>();
+builder.Services.AddSingleton<IActivePromoCodesService,ActivePromoCodesService>();
 
 var app = builder.Build();
 
