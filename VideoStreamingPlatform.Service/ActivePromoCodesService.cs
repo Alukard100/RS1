@@ -31,6 +31,22 @@ namespace VideoStreamingPlatform.Service
             }
             return datalist;
         }
+
+        public CommonResponse DeleteUsedPromoCodes()
+        {
+            var promoCodesToRemove = _db.ActivePromoCodes.Where(x => x.IsUsed == true).ToList();
+            if (promoCodesToRemove!=null)
+            {
+            foreach (var item in promoCodesToRemove)
+            {
+                _db.ActivePromoCodes.Remove(item);
+                    _db.SaveChanges();
+            }
+            return new CommonResponse() { Message = "Iskoristeni promo kodovi su izbrisani." };
+            }
+            throw new InvalidOperationException("Nema iskoristenih promo kodova.");
+        }
+
         public CommonResponse GeneratePromoCodes(GeneratePromoCodesRequest request)
         {
             List<ActivePromoCode> listaNovihKodova = new List<ActivePromoCode>();
@@ -49,7 +65,7 @@ namespace VideoStreamingPlatform.Service
             _db.SaveChanges();
 
             return new CommonResponse() { 
-            Message="Promo codes generated sccessfuly."
+            Message= "Promo codes generated successfully."
             };
 
         }

@@ -14,6 +14,23 @@ namespace VideoStreamingPlatform.Controllers
         {
             this._service= service;
         }
+
+        [HttpDelete]
+        [Route("DeleteUsedPromoCodes")]
+        public IActionResult DeleteUsedPromoCodes()
+        {
+            try
+            {
+                var response = _service.DeleteUsedPromoCodes();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("GetListOfActiveCodes")]
         public IActionResult GetListOfActiveCodes([FromQuery] GetListOfActiveCodesRequest request)

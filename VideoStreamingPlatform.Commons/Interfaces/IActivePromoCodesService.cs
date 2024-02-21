@@ -13,5 +13,6 @@ namespace VideoStreamingPlatform.Commons.Interfaces
     {
         CommonResponse GeneratePromoCodes(GeneratePromoCodesRequest request);
         List<GetListOfActiveCodesResponse> GetListOfActiveCodes(GetListOfActiveCodesRequest request);
+        CommonResponse DeleteUsedPromoCodes();
     }
 }
