@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests.ActivePromoCodes;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
+using VideoStreamingPlatform.Commons.DTOs.Responses.ActivePromoCodes;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database.Models;
 
@@ -14,6 +16,21 @@ namespace VideoStreamingPlatform.Service
     {
         VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
 
+        public List<GetListOfActiveCodesResponse> GetListOfActiveCodes(GetListOfActiveCodesRequest request)
+        {
+            var response = _db.ActivePromoCodes.Where(x=>x.IsUsed == request.IsUsed).ToList();
+            var datalist=new List<GetListOfActiveCodesResponse>();
+            foreach (var item in response)
+            {
+                datalist.Add(new GetListOfActiveCodesResponse()
+                {
+                    IsUsed = item.IsUsed,
+                    Balance = item.Balance,
+                    CodeValue=item.CodeValue
+                }) ;
+            }
+            return datalist;
+        }
         public CommonResponse GeneratePromoCodes(GeneratePromoCodesRequest request)
         {
             List<ActivePromoCode> listaNovihKodova = new List<ActivePromoCode>();

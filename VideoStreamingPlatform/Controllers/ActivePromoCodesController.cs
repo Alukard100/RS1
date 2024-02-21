@@ -14,6 +14,21 @@ namespace VideoStreamingPlatform.Controllers
         {
             this._service= service;
         }
+        [HttpGet]
+        [Route("GetListOfActiveCodes")]
+        public IActionResult GetListOfActiveCodes([FromQuery] GetListOfActiveCodesRequest request)
+        {
+            try
+            {
+                var response = _service.GetListOfActiveCodes(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         [HttpPost]
         [Route("GeneratePromoCodes")]
