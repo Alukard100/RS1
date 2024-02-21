@@ -30,6 +30,19 @@ namespace VideoStreamingPlatform.Service
             throw new InvalidOperationException("Taj wallet ne postoji.");
             }
         }
+        public CommonResponse EnterPromoCode(EnterPromoCodeRequest request)
+        {
+            var checkPromoCode= db.ActivePromoCodes.Where(x=>x.CodeValue==request.CodeValue).FirstOrDefault();
+            var userWallet= db.Wallets.Where(x=> x.UserId==request.UserId).FirstOrDefault();
+            if (checkPromoCode != null && checkPromoCode.IsUsed==false)
+            {
+                userWallet.Balance += checkPromoCode.Balance;
+                checkPromoCode.IsUsed=true;
+                db.SaveChanges();
+                return new CommonResponse() { Message = $"Promo kod od {checkPromoCode.Balance} coina uspjesno aktiviran." };
+            }
+            else { throw new InvalidOperationException("Kod koji ste unijeli je nevazeci."); }
+        }
 
         public GetWalletResponse GetWallet(GetWalletRequest request)
         {

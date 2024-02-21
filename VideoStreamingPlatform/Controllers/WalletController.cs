@@ -33,6 +33,22 @@ namespace VideoStreamingPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("EnterPromoCode")]
+        public IActionResult EnterPromoCode([FromBody] EnterPromoCodeRequest request)
+        {
+            try
+            {
+                var response = _service.EnterPromoCode(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);   
+            }
+        }
+
         [HttpGet("GetWallet")]
         public ActionResult<GetWalletResponse> GetWallet([FromQuery]GetWalletRequest request)
         {

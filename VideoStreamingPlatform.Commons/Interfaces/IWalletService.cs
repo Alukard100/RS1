@@ -12,6 +12,7 @@ namespace VideoStreamingPlatform.Commons.Interfaces
     public interface IWalletService
     {
         CommonResponse UpdateWallet(UpdateWalletRequest request);
+        CommonResponse EnterPromoCode(EnterPromoCodeRequest request);
         GetWalletResponse GetWallet(GetWalletRequest request);
     }
 }
