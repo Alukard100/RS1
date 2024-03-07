@@ -20,6 +20,7 @@ builder.Services.AddSingleton<IAdvertisementService, AdvertisementService>();
 builder.Services.AddSingleton<ISynchronizationService,SynchronizationService>();
 builder.Services.AddSingleton<IPlaylistService,PlaylistService>();
 builder.Services.AddSingleton<IActivePromoCodesService,ActivePromoCodesService>();
+builder.Services.AddSingleton<ISupportService,SupportService>();
 
 var app = builder.Build();
 
