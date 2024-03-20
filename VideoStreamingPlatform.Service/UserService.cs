@@ -66,7 +66,7 @@ namespace VideoStreamingPlatform.Service
                 BirthDate = request.BirthDate,
                 ProfilePicture = request.ProfilePicture,
                 Country = request.Country,
-                SubscriberCount = request.SubscriberCount,
+                SubscriberCount = 0,
                 TypeId = request.TypeId
             };
             var response = db.Users.Add(newUser);

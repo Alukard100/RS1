@@ -14,7 +14,6 @@ namespace VideoStreamingPlatform.Commons.DTOs.Requests.User
         public DateTime? BirthDate { get; set; }
         public byte[]? ProfilePicture { get; set; }
         public string? Country { get; set; }
-        public int? SubscriberCount { get; set; }
         public int TypeId { get; set; }
 
     }
