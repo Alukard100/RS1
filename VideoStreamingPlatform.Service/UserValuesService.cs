@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.UserValues;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
+using VideoStreamingPlatform.Commons.DTOs.Responses.UserValues;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database.Models;
 
@@ -16,7 +18,7 @@ namespace VideoStreamingPlatform.Service
     public class UserValuesService : IUserValuesService
     {
         VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
-
+        // PASSWORD CEMO I NAMA KAO ADMINISTRATORIMA PRIKAZIVATI KAO "SKRIVEN" ZBOG ZAŠTITE PODATAKA KORISNIKA
         public CommonResponse CreateUserValues(CreateUserValuesRequest request) {
             var userExists = _db.Users.Where(x => x.UserId == request.UserId).FirstOrDefault();
             if (userExists == null) { throw new NullReferenceException("UserID provided in request does not exist."); }
@@ -46,6 +48,8 @@ namespace VideoStreamingPlatform.Service
             return new CommonResponse() { Id = response.Entity.UserValuesId ,Message = "UserValue successfully added."};
     }
 
+        //Pozivat ce se kada se izbrise user
+
         public CommonResponse DeleteUserValues(CommonDeleteRequest request)
         {
             var removeObject=_db.UserValues.Where(x=>x.UserId==request.Id).FirstOrDefault();
@@ -60,7 +64,50 @@ namespace VideoStreamingPlatform.Service
 
         }
 
+        // DA BI KORISNIK DOBIO PRIKAZ SVOJE E-MAIL ADRESE, TE PASSWORDA MORAT CE OPET NAKON LOGINA UNIJETI PASSWORD
+        // ISTA SITUACIJA CE BITI ZA EDIT/UPDATE
+        public GetUserValuesResponse GetUserValues(GetUserValuesRequest request)
+        {
+            var getUser = _db.UserValues.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            var response= new GetUserValuesResponse();
+            if (getUser != null)
+            {
+                if (VerifyPassword(request.Password, getUser.PasswordHash))
+                {
+                response.UserId = getUser.UserId;
+                response.Email = getUser.Email;
+                response.Password = request.Password;
+                }
+                else {throw new InvalidOperationException("Provided password is incorrect."); }
+            }
+            else
+            {
+                throw new NullReferenceException("UserID provided in request does not exist.");
+            }
 
+            return response;
+        }
+
+
+        //tek poslije get-a mozemo editovat vrijednosti kao user
+        public CommonResponse UpdateUserValues(UpdateUserValuesRequest request)
+        {
+            var updateUser= _db.UserValues.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            if (updateUser!=null)
+            {
+                updateUser.Email = request.Email ?? updateUser.Email;
+                updateUser.PasswordHash = !string.IsNullOrEmpty(request.Password) ? HashPassword(request.Password) : updateUser.PasswordHash;
+
+                _db.SaveChanges();
+                return new CommonResponse() { Message="Vrijednosti usera sa proslijedjenim id-om su updateovane." };
+            }
+            else
+            {
+            throw new NullReferenceException("UserID provided in request does not exist.");
+            }
+
+
+        }
 
 
         public bool IsValidEmail(string email)
@@ -84,5 +131,28 @@ namespace VideoStreamingPlatform.Service
 
             return base64Hash;
         }
+        public static bool VerifyPassword(string password, string hashedPassword)
+        {
+            // Convert base64 to bytes
+            byte[] hashBytes = Convert.FromBase64String(hashedPassword);
+
+            // Get the salt
+            byte[] salt = new byte[16];
+            Array.Copy(hashBytes, 0, salt, 0, 16);
+
+            // Compute the hash on the password the user entered
+            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
+            byte[] hash = pbkdf2.GetBytes(20);
+
+            // Compare the hashes
+            for (int i = 0; i < 20; i++)
+            {
+                if (hashBytes[i + 16] != hash[i])
+                    return false;
+            }
+
+            return true;
+        }
     }
 }
+

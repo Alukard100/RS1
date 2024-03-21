@@ -23,7 +23,7 @@ namespace VideoStreamingPlatform.Service
             {
                 updateObject.Balance = request.Balance;
                 db.SaveChanges();
-                return new CommonResponse() { Id = request.UserId };
+                return new CommonResponse() { Id = request.UserId,Message="Vas novcanik je izmijenjen." };
             }
             else
             {

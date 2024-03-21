@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.UserValues;
+using VideoStreamingPlatform.Commons.DTOs.Responses.UserValues;
 using VideoStreamingPlatform.Commons.Interfaces;
 
 namespace VideoStreamingPlatform.Controllers
@@ -17,36 +18,36 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         //Zavrsiti
-        //[HttpGet]
-        //[Route("GetUserValues")]
-        //public IActionResult GetUserValues([FromBody] GetUserValuesRequest request)
-        //{
-        //    try
-        //    {
-        //        var response = service.GetUserValues(request);
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpGet]
+        [Route("GetUserValues")]
+        public ActionResult<GetUserValuesResponse> GetUserValues([FromQuery] GetUserValuesRequest request)
+        {
+            try
+            {
+                var response = service.GetUserValues(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //zavrisiti
-        //[HttpPut]
-        //[Route("UpdateUserValues")]
-        //public IActionResult UpdateUserValues([FromBody] UpdateUserValuesRequest request)
-        //{
-        //    try
-        //    {
-        //        var response = service.UpdateUserValues(request);
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        
+        [HttpPut]
+        [Route("UpdateUserValues")]
+        public IActionResult UpdateUserValues([FromBody] UpdateUserValuesRequest request)
+        {
+            try
+            {
+                var response = service.UpdateUserValues(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // metoda ce se pozivati istovremeno kada i metoda deleteUser iz controllera UserController
         [HttpDelete]
