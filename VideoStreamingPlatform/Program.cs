@@ -24,6 +24,8 @@ builder.Services.AddSingleton<ISupportService,SupportService>();
 builder.Services.AddSingleton<IUserValuesService,UserValuesService>();
 builder.Services.AddSingleton<ICardPaymentService,CardPaymentService>();
 builder.Services.AddSingleton<IMembershipService,MembershipService>();
+builder.Services.AddSingleton<INotificationService,NotificationsService>();
+builder.Services.AddSingleton<INotificationTypeService,NotificationTypeService>();
 
 var app = builder.Build();
 
