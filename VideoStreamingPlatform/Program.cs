@@ -22,6 +22,7 @@ builder.Services.AddSingleton<IPlaylistService,PlaylistService>();
 builder.Services.AddSingleton<IActivePromoCodesService,ActivePromoCodesService>();
 builder.Services.AddSingleton<ISupportService,SupportService>();
 builder.Services.AddSingleton<IUserValuesService,UserValuesService>();
+builder.Services.AddSingleton<ICardPaymentService,CardPaymentService>();
 
 var app = builder.Build();
 
