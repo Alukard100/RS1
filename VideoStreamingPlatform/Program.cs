@@ -23,6 +23,7 @@ builder.Services.AddSingleton<IActivePromoCodesService,ActivePromoCodesService>(
 builder.Services.AddSingleton<ISupportService,SupportService>();
 builder.Services.AddSingleton<IUserValuesService,UserValuesService>();
 builder.Services.AddSingleton<ICardPaymentService,CardPaymentService>();
+builder.Services.AddSingleton<IMembershipService,MembershipService>();
 
 var app = builder.Build();
 
