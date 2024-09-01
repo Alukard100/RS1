@@ -14,7 +14,7 @@ namespace VideoStreamingPlatform.Controllers
     public class BlogController : ControllerBase
     {
         IBlogService service;
-
+         
         public BlogController(IBlogService service)
         {
             this.service = service;
