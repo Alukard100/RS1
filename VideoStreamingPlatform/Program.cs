@@ -1,4 +1,5 @@
-﻿using VideoStreamingPlatform.Commons.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Service;
 
