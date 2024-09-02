@@ -29,6 +29,7 @@ builder.Services.AddSingleton<INotificationService,NotificationsService>();
 builder.Services.AddSingleton<INotificationTypeService,NotificationTypeService>();
 builder.Services.AddSingleton<IReportService, ReportService>();
 builder.Services.AddSingleton<IReportTypeService, ReportTypeService>();
+builder.Services.AddSingleton<IGroupMemberService, GroupMemberService>();
 
 var app = builder.Build();
 
