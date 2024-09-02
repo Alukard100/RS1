@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Immutable;
-using System.Reflection;
-using VideoStreamingPlatform.Commons;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Blog;
-using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.Interfaces;
 
 namespace VideoStreamingPlatform.Controllers

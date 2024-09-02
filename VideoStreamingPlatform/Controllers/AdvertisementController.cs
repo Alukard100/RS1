@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Immutable;
-using System.Reflection;
-using VideoStreamingPlatform.Commons;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Advertisement;
-using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.Interfaces;
-using VideoStreamingPlatform.Database.Models;
 
-namespace VideoStreamingPlatform.Controllers
+namespace VideoStreamingPlatform.Controllerss
 {
     [ApiController]
     [Route("[controller]")]
