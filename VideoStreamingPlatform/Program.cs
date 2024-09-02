@@ -31,6 +31,7 @@ builder.Services.AddSingleton<IReportService, ReportService>();
 builder.Services.AddSingleton<IReportTypeService, ReportTypeService>();
 builder.Services.AddSingleton<IGroupMemberService, GroupMemberService>();
 builder.Services.AddSingleton<IPlaylistGroupService, PlaylistGroupService>();
+builder.Services.AddSingleton<IEmojiShowService, EmojiShowService>();
 
 var app = builder.Build();
 

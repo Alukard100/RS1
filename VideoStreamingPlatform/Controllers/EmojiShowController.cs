@@ -1,28 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Immutable;
+using System.Reflection;
+using VideoStreamingPlatform.Commons;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
-using VideoStreamingPlatform.Commons.DTOs.Requests.Advertisement;
+using VideoStreamingPlatform.Commons.DTOs.Requests.EmojiShow;
+using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AdvertisementController : ControllerBase
+    public class EmojiShowController : ControllerBase
     {
-        IAdvertisementService service;
+        IEmojiShowService service;
 
-        public AdvertisementController(IAdvertisementService service)
+        public EmojiShowController(IEmojiShowService service)
         {
             this.service = service;
         }
 
         [HttpPost]
-        [Route("CreateAdvertisement")]
-        public IActionResult CreateAdvertisement([FromBody] CreateAdvertisementRequest request)
+        [Route("CreateEmojiShow")]
+        public IActionResult CreateEmojiShow([FromBody] CreateEmojiShowRequest request)
         {
             try
             {
-                var response = service.CreateAdvertisement(request);
+                var response = service.CreateEmojiShow(request);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -32,12 +37,12 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         [HttpGet]
-        [Route("GetAdvertisements")]
-        public IActionResult GetAdvertisements([FromQuery] GetAdvertisementsRequest request)
+        [Route("GetEmojiShows")]
+        public IActionResult GetEmojiShows([FromQuery] GetEmojiShowsRequest request)
         {
             try
             {
-                var response = service.GetAdvertisements(request);
+                var response = service.GetEmojiShows(request);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -47,12 +52,12 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateAdvertisement")]
-        public IActionResult UpdateAdvertisement([FromBody] UpdateAdvertisementRequest request)
+        [Route("UpdateEmojiShow")]
+        public IActionResult UpdateEmojiShow([FromBody] UpdateEmojiShowRequest request)
         {
             try
             {
-                var response = service.UpdateAdvertisement(request);
+                var response = service.UpdateEmojiShow(request);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -63,12 +68,12 @@ namespace VideoStreamingPlatform.Controllers
 
 
         [HttpDelete]
-        [Route("DeleteAdvertisement")]
-        public IActionResult DeleteAdvertisement([FromBody] CommonDeleteRequest request)
+        [Route("DeleteEmojiShow")]
+        public IActionResult DeleteEmojiShow([FromBody] CommonDeleteRequest request)
         {
             try
             {
-                var response = service.DeleteAdvertisement(request);
+                var response = service.DeleteEmojiShow(request);
                 return Ok(response);
             }
             catch (Exception ex)
