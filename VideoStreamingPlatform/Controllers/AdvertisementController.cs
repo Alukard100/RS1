@@ -20,7 +20,7 @@ namespace VideoStreamingPlatform.Controllerss
         [Route("CreateAdvertisement")]
         public IActionResult CreateAdvertisement([FromBody] CreateAdvertisementRequest request)
         {
-            try
+            try 
             {
                 var response = service.CreateAdvertisement(request);
                 return Ok(response);
