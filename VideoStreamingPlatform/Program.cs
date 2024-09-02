@@ -30,6 +30,7 @@ builder.Services.AddSingleton<INotificationTypeService,NotificationTypeService>(
 builder.Services.AddSingleton<IReportService, ReportService>();
 builder.Services.AddSingleton<IReportTypeService, ReportTypeService>();
 builder.Services.AddSingleton<IGroupMemberService, GroupMemberService>();
+builder.Services.AddSingleton<IPlaylistGroupService, PlaylistGroupService>();
 
 var app = builder.Build();
 
