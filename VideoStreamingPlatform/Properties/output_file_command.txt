@@ -1,0 +1,1 @@
+sqlcmd -S localhost -d VideoStreamingPlatform -Q "EXEC sp_msforeachtable 'select * from ?'" -o "output_file.sql"
