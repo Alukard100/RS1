@@ -11,7 +11,7 @@ using VideoStreamingPlatform.Database.Models;
 namespace VideoStreamingPlatform.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")] 
     public class EmojiShowController : ControllerBase
     {
         IEmojiShowService service;
