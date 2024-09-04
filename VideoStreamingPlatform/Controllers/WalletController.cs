@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Wallet;
-using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Wallet;
 using VideoStreamingPlatform.Commons.Interfaces;
 

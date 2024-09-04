@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Membership;
 using VideoStreamingPlatform.Commons.Interfaces;
 
 namespace VideoStreamingPlatform.Controllers
 {
-        [ApiController]
+    [ApiController]
         [Route("[controller]")]
     public class MembershipController : ControllerBase
     {

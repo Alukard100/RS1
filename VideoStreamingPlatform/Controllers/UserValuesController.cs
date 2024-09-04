@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.UserValues;
 using VideoStreamingPlatform.Commons.DTOs.Responses.UserValues;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
-using VideoStreamingPlatform.Commons.DTOs.Requests.User;
 using VideoStreamingPlatform.Commons.DTOs.Requests.UserType;
 using VideoStreamingPlatform.Commons.DTOs.Responses.UserType;
 using VideoStreamingPlatform.Commons.Interfaces;
