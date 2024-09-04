@@ -95,7 +95,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.Property(e => e.AdvertisementId).HasColumnName("advertisementID");
 
-                entity.Property(e => e.AdvertisementPicture).HasColumnName("advertisementPicture");
+                entity.Property(e => e.AdvertisementPictureURL).HasColumnName("advertisementPictureURL");
 
                 entity.Property(e => e.UserId).HasColumnName("userID");
 
@@ -123,7 +123,7 @@ namespace VideoStreamingPlatform.Database.Models
                     .HasMaxLength(500)
                     .HasColumnName("content");
 
-                entity.Property(e => e.Picture).HasColumnName("picture");
+                entity.Property(e => e.PictureURL).HasColumnName("pictureURL");
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)

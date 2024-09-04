@@ -8,7 +8,7 @@ namespace VideoStreamingPlatform.Database.Models
         public int BlogId { get; set; }
         public int? UserId { get; set; }
         public string? Title { get; set; }
-        public byte[]? Picture { get; set; }
+        public string PictureURL { get; set; }
         public string? Content { get; set; }
 
         public virtual User? User { get; set; }

@@ -24,7 +24,7 @@ namespace VideoStreamingPlatform.Service
                 //BlogPicture = Helper.Helper.PictureHelper(request),
                 UserId = request.UserId,
                 Content=request.Content,
-                Picture=request.Picture,
+                PictureURL=request.Picture,
                 Title = request.Title
             };
 
@@ -64,7 +64,7 @@ namespace VideoStreamingPlatform.Service
                 {
                     UserId = item.UserId,
                     Content=item.Content,
-                    Picture=item.Picture,
+                    Picture=item.PictureURL,
                     Title=item.Title
                 });
             }
@@ -76,7 +76,7 @@ namespace VideoStreamingPlatform.Service
             var entry = db.Blogs.Where(x => x.BlogId == request.BlogId).FirstOrDefault();
             if (entry != null)
             {
-                entry.Picture= request.Picture;
+                entry.PictureURL= request.Picture;
                 entry.UserId = request.UserId;
                 entry.Content=request.Content;
                 entry.Title= request.Title;
