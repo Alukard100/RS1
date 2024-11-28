@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace VideoStreamingPlatform.Database.Models
 {
@@ -50,9 +48,17 @@ namespace VideoStreamingPlatform.Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=VideoStreamingPlatform;Trusted_Connection=True"
-                    ); //DESKTOP-LBS0U9A\\MSSQLSERVER01
+                var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("configurationSettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"configurationSettings.{environmentName}.json", optional: true)
+                    .AddEnvironmentVariables();
+
+                var configuration = builder.Build();
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 
@@ -89,7 +95,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.Property(e => e.AdvertisementId).HasColumnName("advertisementID");
 
-                entity.Property(e => e.AdvertisementPicture).HasColumnName("advertisementPicture");
+                entity.Property(e => e.AdvertisementPictureURL).HasColumnName("advertisementPictureURL");
 
                 entity.Property(e => e.UserId).HasColumnName("userID");
 
@@ -117,7 +123,7 @@ namespace VideoStreamingPlatform.Database.Models
                     .HasMaxLength(500)
                     .HasColumnName("content");
 
-                entity.Property(e => e.Picture).HasColumnName("picture");
+                entity.Property(e => e.PictureURL).HasColumnName("pictureURL");
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(50)

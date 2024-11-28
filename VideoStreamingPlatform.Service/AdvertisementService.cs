@@ -80,7 +80,7 @@ namespace VideoStreamingPlatform.Service
             var entry = db.Advertisements.Where(x => x.AdvertisementId == request.AdvertisementId).FirstOrDefault();
             if (entry != null)
             {
-                entry.AdvertisementPicture = request.AdvertisementPicture;
+                entry.AdvertisementPictureURL = request.AdvertisementPicture;
                 entry.UserId = request.UserId;
                 entry.VideoId = request.VideoId;
                 db.SaveChanges();

@@ -8,7 +8,7 @@ namespace VideoStreamingPlatform.Database.Models
         public int AdvertisementId { get; set; }
         public int UserId { get; set; }
         public int? VideoId { get; set; }
-        public byte[]? AdvertisementPicture { get; set; }
+        public string AdvertisementPictureURL { get; set; }
 
         public virtual User User { get; set; } = null!;
         public virtual Video? Video { get; set; }

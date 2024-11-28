@@ -11,7 +11,7 @@ namespace VideoStreamingPlatform.Commons.DTOs.Requests.Blog
         public int BlogId { get; set; }
         public int? UserId { get; set; }
         public string? Title { get; set; }
-        public byte[]? Picture { get; set; }
+        public string? Picture { get; set; }
         public string? Content { get; set; }
     }
 }

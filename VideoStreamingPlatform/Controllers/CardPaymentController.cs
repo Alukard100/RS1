@@ -5,7 +5,7 @@ using VideoStreamingPlatform.Commons.Interfaces;
 
 namespace VideoStreamingPlatform.Controllers
 {
-        [Route("[controller]")]
+    [Route("[controller]")]
         [ApiController]
     public class CardPaymentController : ControllerBase
     {

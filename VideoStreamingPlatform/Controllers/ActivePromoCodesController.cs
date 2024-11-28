@@ -4,7 +4,7 @@ using VideoStreamingPlatform.Commons.Interfaces;
 
 namespace VideoStreamingPlatform.Controllers
 {
-        [ApiController]
+    [ApiController]
         [Route("[controller]")]
     public class ActivePromoCodesController : ControllerBase
     {
