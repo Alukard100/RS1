@@ -21,28 +21,31 @@ namespace VideoStreamingPlatform.Service
 
         public List<GetUserResponse> GetUser(GetUserRequest request)
         {
-            var filteredUsers = db.Users.Where(user =>
-            user.UserId == request.userID ||
-            user.Name.ToLower().StartsWith(request.name.ToLower()) ||
-            user.Surname.ToLower().StartsWith(request.surname.ToLower()) ||
-            user.UserName.ToLower().StartsWith(request.userName.ToLower())
-        ).ToList();
+            bool isRequestEmpty = string.IsNullOrEmpty(request.name) &&
+                                  string.IsNullOrEmpty(request.surname) &&
+                                  string.IsNullOrEmpty(request.userName) &&
+                                  (request.userID == null || request.userID == 0);
 
-            var dataList = new List<GetUserResponse>();
+            var filteredUsers = isRequestEmpty
+                ? db.Users.ToList()
+                : db.Users.Where(user =>
+                    (request.userID == null || user.UserId == request.userID) &&
+                    (string.IsNullOrEmpty(request.name) || user.Name.ToLower().StartsWith(request.name.ToLower())) &&
+                    (string.IsNullOrEmpty(request.surname) || user.Surname.ToLower().StartsWith(request.surname.ToLower())) &&
+                    (string.IsNullOrEmpty(request.userName) || user.UserName.ToLower().StartsWith(request.userName.ToLower()))
+                ).ToList();
 
-            foreach (var i in filteredUsers)
+            var dataList = filteredUsers.Select(user => new GetUserResponse
             {
-                dataList.Add(new GetUserResponse()
-                {
-                    userID = i.UserId,
-                    name = i.Name,
-                    surname = i.Surname,
-                    userName = i.UserName
-                });
-            }
+                userID = user.UserId,
+                name = user.Name,
+                surname = user.Surname,
+                userName = user.UserName
+            }).ToList();
 
             return dataList;
         }
+
 
         //List<GetUserResponse> IUserService.GetUser(GetUserRequest request)
         //{

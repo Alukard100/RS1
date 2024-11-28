@@ -35,6 +35,7 @@ namespace VideoStreamingPlatform.Controllers
             }
             
         }
+       
         [HttpPost]
         [Route("CreateUser")]
         public IActionResult CreateUser([FromBody] CreateUserRequest request)
