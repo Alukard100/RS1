@@ -3,44 +3,32 @@ using Microsoft.EntityFrameworkCore;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Service;
-using Duende.IdentityServer;
-using VideoStreamingPlatform; // Add this for Duende IdentityServer functionality
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure services for dependency injection
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure Entity Framework and Identity
+
 builder.Services.AddDbContext<VideoStreamingPlatformContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Identity with Entity Framework
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<VideoStreamingPlatformContext>()
     .AddDefaultTokenProviders();
 
-// Configure IdentityServer
-builder.Services.AddIdentityServer(options =>
-{
-    options.EmitStaticAudienceClaim = true; // Compatibility with JWT clients
-})
-.AddInMemoryApiScopes(Config.ApiScopes)    // In-memory API Scopes
-.AddInMemoryClients(Config.Clients)        // In-memory Client Configs
-.AddDeveloperSigningCredential();          // Development-only signing credential
 
-// Configure JWT Authentication
 builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+    .AddJwtBearer(options =>
     {
-        options.Authority = "https://localhost:5001"; // IdentityServer URL
-        options.Audience = "api1";                    // API resource audience
-        options.RequireHttpsMetadata = false;         // Disable HTTPS only for development
+        options.Authority = "https://localhost:5001";  // Set your IdentityProvider URL here
+        options.Audience = "api1";                    // Your API's audience identifier
+        options.RequireHttpsMetadata = false;         // Set to true in production
     });
 
-// Register services for Dependency Injection
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IBlogService, BlogService>();
@@ -63,17 +51,10 @@ builder.Services.AddSingleton<IGroupMemberService, GroupMemberService>();
 builder.Services.AddSingleton<IPlaylistGroupService, PlaylistGroupService>();
 builder.Services.AddSingleton<IEmojiShowService, EmojiShowService>();
 
-// Build the app
+
 var app = builder.Build();
 
-// Ensure roles are created at startup
-using (var scope = app.Services.CreateScope())
-{
-    var serviceProvider = scope.ServiceProvider;
-    await EnsureRolesAsync(serviceProvider);
-}
 
-// Middleware Configuration
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -83,25 +64,30 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseHttpsRedirection();
 
-app.UseIdentityServer();   // IdentityServer middleware
-app.UseAuthentication();   // Authentication middleware
-app.UseAuthorization();    // Authorization middleware
+app.UseAuthentication();   
+app.UseAuthorization();    
 
-app.MapControllers();      // Map Controller routes
+app.MapControllers();      
+
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    await EnsureRolesAsync(services);
+//}
 
 app.Run();
 
-// Helper method to ensure roles exist
-async Task EnsureRolesAsync(IServiceProvider serviceProvider)
-{
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "admin", "user", "superuser", "guest" };
+//async Task EnsureRolesAsync(IServiceProvider serviceProvider)
+//{
+//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//    var roles = new[] { "admin", "user", "superuser", "guest" };
 
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole(role));
-        }
-    }
-}
+//    foreach (var role in roles)
+//    {
+//        if (!await roleManager.RoleExistsAsync(role))
+//        {
+//            await roleManager.CreateAsync(new IdentityRole(role));
+//        }
+//    }
+//}
