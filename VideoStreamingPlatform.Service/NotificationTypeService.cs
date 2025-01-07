@@ -12,7 +12,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class NotificationTypeService : INotificationTypeService
     {
-        VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public NotificationTypeService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
 
         public GetNotificationTypeResponse GetNotificationType(CommonDeleteRequest request)
         {

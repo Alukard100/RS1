@@ -11,18 +11,24 @@ namespace VideoStreamingPlatform.Service
 {
     public class ReportTypeService : IReportTypeService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public ReportTypeService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
 
         public CommonResponse CreateReportType(CreateReportTypeRequest request)
         {
             //provjeriti da li postoje User i Video sa proslijedjenim ID u requestu.
-            var videoExist = db.Videos.Where(x => x.VideoId == request.ReportId).FirstOrDefault();
+            var videoExist = _db.Videos.Where(x => x.VideoId == request.ReportId).FirstOrDefault();
             if (videoExist == null)
             {
                 throw new NullReferenceException("ReportId provided in request does not exist.");
             }
 
-            var userExist = db.Users.Where(x => x.UserId == request.ReportId).FirstOrDefault();
+            var userExist = _db.Users.Where(x => x.UserId == request.ReportId).FirstOrDefault();
             if (userExist == null)
             {
                 throw new NullReferenceException("ReportId provided in request does not exist.");
@@ -34,21 +40,21 @@ namespace VideoStreamingPlatform.Service
                ReportTypeId  = request.ReportId
             };
 
-            var response = db.ReportTypes.Add(newObject);
-            db.SaveChanges();
+            var response = _db.ReportTypes.Add(newObject);
+            _db.SaveChanges();
             return new CommonResponse() { Id = response.Entity.ReportTypeId };
 
         }
 
         public CommonResponse DeleteReportType(CommonDeleteRequest request)
         {
-            var removeObject = db.ReportTypes.Where(x => x.ReportTypeId == request.Id).FirstOrDefault();
+            var removeObject = _db.ReportTypes.Where(x => x.ReportTypeId == request.Id).FirstOrDefault();
 
             //provjera da li objekat sa proslijedjenim ID postoji u bazi.
             if (removeObject != null)
             {
-                db.ReportTypes.Remove(removeObject);
-                db.SaveChanges();
+                _db.ReportTypes.Remove(removeObject);
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.Id };
             }
 
@@ -58,7 +64,7 @@ namespace VideoStreamingPlatform.Service
         public List<GetReportTypeResponse> GetReportTypes(GetReportTypesRequest request)
         {
             //Include?
-            var response = db.ReportTypes
+            var response = _db.ReportTypes
                 .Where(x => x.ReportTypeId == request.VideoId)
                 .ToList();
 
@@ -76,11 +82,11 @@ namespace VideoStreamingPlatform.Service
 
         public CommonResponse UpdateReportType(UpdateReportTypeRequest request)
         {
-            var entry = db.ReportTypes.Where(x => x.ReportTypeId == request.ReportTypeId).FirstOrDefault();
+            var entry = _db.ReportTypes.Where(x => x.ReportTypeId == request.ReportTypeId).FirstOrDefault();
             if (entry != null)
             {
                 entry.ReportTypeId = request.ReportTypeId;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.ReportTypeId };
             }
             throw new NullReferenceException("Object with provided ID does not exist.");

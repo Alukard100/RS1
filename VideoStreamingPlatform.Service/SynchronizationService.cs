@@ -10,18 +10,23 @@ namespace VideoStreamingPlatform.Service
 {
     public class SynchronizationService : ISynchronizationService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public SynchronizationService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
 
         public CommonResponse CreateSynchronization(CreateSynchronizationRequest request)
         {
             //provjeriti da li postoje User i Video sa proslijedjenim ID u requestu.
-            var videoExist = db.Videos.Where(x => x.VideoId == request.VideoId).FirstOrDefault();
+            var videoExist = _db.Videos.Where(x => x.VideoId == request.VideoId).FirstOrDefault();
             if (videoExist == null)
             {
                 throw new NullReferenceException("VideoID provided in request does not exist.");
             }
 
-            var groupExist = db.GroupMembers.Where(x => x.GroupId == request.GroupId).FirstOrDefault();
+            var groupExist = _db.GroupMembers.Where(x => x.GroupId == request.GroupId).FirstOrDefault();
             if (groupExist == null)
             {
                 throw new NullReferenceException("UserID provided in request does not exist.");
@@ -36,20 +41,20 @@ namespace VideoStreamingPlatform.Service
                 VideoId = request.VideoId,
             };
 
-            var response = db.Synchronizations.Add(newObject);
-            db.SaveChanges();
+            var response = _db.Synchronizations.Add(newObject);
+            _db.SaveChanges();
             return new CommonResponse() { Id = response.Entity.GroupId, Message = $"Synchronization is created for group ID {response.Entity.GroupId}" };
 
         }
 
         public CommonResponse DeleteSynchronization(CommonDeleteRequest request)
         {
-            var removeObject = db.Synchronizations.Where(x => x.GroupId == request.Id).FirstOrDefault();
+            var removeObject = _db.Synchronizations.Where(x => x.GroupId == request.Id).FirstOrDefault();
 
             if (removeObject != null)
             {
-                db.Synchronizations.Remove(removeObject);
-                db.SaveChanges();
+                _db.Synchronizations.Remove(removeObject);
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.Id };
             }
 
@@ -59,7 +64,7 @@ namespace VideoStreamingPlatform.Service
         public List<GetSynchronizationResponse> GetSynchronizations(GetSynchronizationsRequest request)
         {
             //Include?
-            var response = db.Synchronizations
+            var response = _db.Synchronizations
                 .Where(x => x.SyncOwnerId == request.SyncOwnerId)
                 .ToList();
 
@@ -80,7 +85,7 @@ namespace VideoStreamingPlatform.Service
 
         public CommonResponse UpdateSynchronization(UpdateSynchronizationRequest request)
         {
-            var entry = db.Synchronizations.Where(x => x.SyncOwnerId == request.SyncOwnerId && x.GroupId == request.GroupId).FirstOrDefault();
+            var entry = _db.Synchronizations.Where(x => x.SyncOwnerId == request.SyncOwnerId && x.GroupId == request.GroupId).FirstOrDefault();
             if (entry != null)
             {
                 entry.VideoId = request.VideoId;
@@ -88,7 +93,7 @@ namespace VideoStreamingPlatform.Service
                 entry.GroupCode = request.GroupCode;
                 entry.GroupId = request.GroupId;
 
-                db.SaveChanges();
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.SyncOwnerId };
             }
             throw new NullReferenceException("Object with provided ID does not exist.");

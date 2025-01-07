@@ -14,7 +14,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class NotificationsService : INotificationService
     {
-        VideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public NotificationsService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
         public CommonResponse CreateNotification(CreateNotificationRequest request)
         {
             var sender= _db.Users.Where(x=>x.UserId==request.SenderUserId).FirstOrDefault();

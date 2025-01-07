@@ -10,7 +10,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class PlaylistService : IPlaylistService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public PlaylistService(VideoStreamingPlatformContext dbContext)
+        {
+            db = dbContext;
+        }
 
         public CommonResponse CreatePlaylist(CreatePlaylistRequest request)
         {

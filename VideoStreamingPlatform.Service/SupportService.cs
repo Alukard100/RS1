@@ -14,7 +14,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class SupportService : ISupportService
     {
-        VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public SupportService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
 
         public CommonResponse CreateSupport(CreateSupportRequest request)
         {

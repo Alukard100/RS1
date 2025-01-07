@@ -5,9 +5,6 @@ namespace VideoStreamingPlatform.Database.Models
 {
     public partial class VideoStreamingPlatformContext : DbContext
     {
-        public VideoStreamingPlatformContext()
-        {
-        }
 
         public VideoStreamingPlatformContext(DbContextOptions<VideoStreamingPlatformContext> options)
             : base(options)
@@ -44,24 +41,6 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual DbSet<VideoStatistic> VideoStatistics { get; set; } = null!;
         public virtual DbSet<Wallet> Wallets { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("configurationSettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile($"configurationSettings.{environmentName}.json", optional: true)
-                    .AddEnvironmentVariables();
-
-                var configuration = builder.Build();
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-                optionsBuilder.UseSqlServer(connectionString);
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ActivePromoCode>(entity =>
@@ -71,8 +50,8 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.ToTable("activePromoCodes");
 
-                entity.HasIndex(e => e.CodeValue, "UQ__activePr__5A659F398A60D9F0")
-                    .IsUnique();
+                //entity.HasIndex(e => e.CodeValue, "UQ__activePr__5A659F398A60D9F0")
+                //    .IsUnique();
 
                 entity.Property(e => e.PromoCodeId).HasColumnName("promoCodeID");
 
@@ -565,8 +544,8 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.ToTable("synchronization");
 
-                entity.HasIndex(e => e.GroupCode, "UQ__synchron__3B974380698E3D6D")
-                    .IsUnique();
+                //entity.HasIndex(e => e.GroupCode, "UQ__synchron__3B974380698E3D6D")
+                //    .IsUnique();
 
                 entity.Property(e => e.GroupId).HasColumnName("GroupID");
 

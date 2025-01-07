@@ -15,14 +15,19 @@ namespace VideoStreamingPlatform.Service
 {
     public class WalletService : IWalletService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public WalletService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
         public CommonResponse UpdateWallet(UpdateWalletRequest request)
         {
-            var updateObject=db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            var updateObject=_db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
             if (updateObject!=null)
             {
                 updateObject.Balance = request.Balance;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.UserId,Message="Vas novcanik je izmijenjen." };
             }
             else
@@ -32,13 +37,13 @@ namespace VideoStreamingPlatform.Service
         }
         public CommonResponse EnterPromoCode(EnterPromoCodeRequest request)
         {
-            var checkPromoCode= db.ActivePromoCodes.Where(x=>x.CodeValue==request.CodeValue).FirstOrDefault();
-            var userWallet= db.Wallets.Where(x=> x.UserId==request.UserId).FirstOrDefault();
+            var checkPromoCode= _db.ActivePromoCodes.Where(x=>x.CodeValue==request.CodeValue).FirstOrDefault();
+            var userWallet= _db.Wallets.Where(x=> x.UserId==request.UserId).FirstOrDefault();
             if (checkPromoCode != null && checkPromoCode.IsUsed==false)
             {
                 userWallet.Balance += checkPromoCode.Balance;
                 checkPromoCode.IsUsed=true;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return new CommonResponse() { Message = $"Promo kod od {checkPromoCode.Balance} coina uspjesno aktiviran." };
             }
             else { throw new InvalidOperationException("Kod koji ste unijeli je nevazeci."); }
@@ -47,7 +52,7 @@ namespace VideoStreamingPlatform.Service
         public GetWalletResponse GetWallet(GetWalletRequest request)
         {
             var response = new GetWalletResponse();
-            var getWallet= db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
+            var getWallet= _db.Wallets.Where(x=>x.UserId==request.UserId).FirstOrDefault();
             if (getWallet!=null)
             {
                 response.Balance = getWallet.Balance;

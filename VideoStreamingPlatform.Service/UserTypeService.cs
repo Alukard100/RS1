@@ -16,11 +16,16 @@ namespace VideoStreamingPlatform.Service
 
     public class UserTypeService : IUserTypeService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public UserTypeService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
 
         public CommonResponse CreateUserType(CreateUserTypeRequest request)
         {
-            var UserTypeExist = db.UserTypes.Where(x => x.Type == request.Type).FirstOrDefault();
+            var UserTypeExist = _db.UserTypes.Where(x => x.Type == request.Type).FirstOrDefault();
             if (UserTypeExist != null)
             {
                 throw new InvalidOperationException("Tip korisnika koji ste unijeli vec postoji.");
@@ -29,18 +34,18 @@ namespace VideoStreamingPlatform.Service
             {
                 Type = request.Type
             };
-            var response = db.UserTypes.Add(newUserType);
-            db.SaveChanges();
+            var response = _db.UserTypes.Add(newUserType);
+            _db.SaveChanges();
             return new CommonResponse { Id = response.Entity.TypeId };
         }
 
         public CommonResponse DeleteUserType(CommonDeleteRequest request)
         {
-            var removeObject = db.UserTypes.Where(type=>type.TypeId==request.Id).FirstOrDefault();
+            var removeObject = _db.UserTypes.Where(type=>type.TypeId==request.Id).FirstOrDefault();
             if (removeObject!=null)
             {
-                db.UserTypes.Remove(removeObject);
-                db.SaveChanges();
+                _db.UserTypes.Remove(removeObject);
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.Id};
             }
             throw new InvalidOperationException("Tip usera koji ste odabrali ne postoji");
@@ -48,7 +53,7 @@ namespace VideoStreamingPlatform.Service
 
         public IEnumerable<GetUserTypeResponse> GetUserType()
         {
-            var dataList = db.UserTypes.ToList();
+            var dataList = _db.UserTypes.ToList();
 
             var userTypeResponse= dataList.Select(x => new GetUserTypeResponse() { TypeId=x.TypeId,Type=x.Type});
 

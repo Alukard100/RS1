@@ -9,8 +9,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class BlogService : IBlogService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
-
+        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public BlogService(VideoStreamingPlatformContext dbContext)
+        {
+            db = dbContext;
+        }
         public CommonResponse CreateBlog(CreateBlogRequest request)
         {
             var userExist= db.Users.Where(x=>x.UserId==request.UserId).FirstOrDefault();

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using VideoStreamingPlatform.Commons.DTOs.Requests.User;
 using VideoStreamingPlatform.Commons.DTOs.Responses.User;
 using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
-using System.Linq.Expressions;
 
 
 namespace VideoStreamingPlatform.Service
@@ -17,7 +12,12 @@ namespace VideoStreamingPlatform.Service
     public class UserService : IUserService
     {
 
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public UserService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
 
         public List<GetUserResponse> GetUser(GetUserRequest request)
         {
@@ -27,8 +27,8 @@ namespace VideoStreamingPlatform.Service
                                   (request.userID == null || request.userID == 0);
 
             var filteredUsers = isRequestEmpty
-                ? db.Users.ToList()
-                : db.Users.Where(user =>
+                ? _db.Users.ToList()
+                : _db.Users.Where(user =>
                     (request.userID == null || user.UserId == request.userID) &&
                     (string.IsNullOrEmpty(request.name) || user.Name.ToLower().StartsWith(request.name.ToLower())) &&
                     (string.IsNullOrEmpty(request.surname) || user.Surname.ToLower().StartsWith(request.surname.ToLower())) &&
@@ -56,7 +56,7 @@ namespace VideoStreamingPlatform.Service
         {
             //Provjera da li postoji user sa istim usernameom, a za email cemo provjeravati u servisu UserValueService
 
-            var UserExist = db.Users.Where(user => user.UserName == request.UserName).FirstOrDefault();
+            var UserExist = _db.Users.Where(user => user.UserName == request.UserName).FirstOrDefault();
             if (UserExist != null)
             {
                 throw new InvalidOperationException("Korisnicko ime koje ste unijeli vec postoji.");
@@ -72,15 +72,15 @@ namespace VideoStreamingPlatform.Service
                 SubscriberCount = 0,
                 TypeId = request.TypeId
             };
-            var response = db.Users.Add(newUser);
-            db.SaveChanges();
+            var response = _db.Users.Add(newUser);
+            _db.SaveChanges();
             return new CommonResponse() { Id = response.Entity.UserId };
         }
 
 
         public CommonResponse DeleteUser(CommonDeleteRequest request)
         {
-            var UserObject = db.Users.Where(user => user.UserId == request.Id).FirstOrDefault();
+            var UserObject = _db.Users.Where(user => user.UserId == request.Id).FirstOrDefault();
 
 
 
@@ -90,22 +90,22 @@ namespace VideoStreamingPlatform.Service
                 throw new NullReferenceException("Korisnicki nalog ne postoji.");
             }
             //pronalazim wallet sa datim userom prije brisanja, te ga brisem
-            var removeUserWallet = db.Wallets.Where(wallet => wallet.UserId == request.Id).FirstOrDefault();
-            db.Wallets.Remove(removeUserWallet);
-            db.SaveChanges();
+            var removeUserWallet = _db.Wallets.Where(wallet => wallet.UserId == request.Id).FirstOrDefault();
+            _db.Wallets.Remove(removeUserWallet);
+            _db.SaveChanges();
 
-            db.Users.Remove(UserObject); db.SaveChanges();
+            _db.Users.Remove(UserObject); _db.SaveChanges();
             return new CommonResponse() { Id = request.Id };
         }
 
         public CommonResponse UpdateUser(UpdateUserRequest request)
         {
-            var UserObject = db.Users.Where(user => user.UserId == request.UserId).FirstOrDefault();
+            var UserObject = _db.Users.Where(user => user.UserId == request.UserId).FirstOrDefault();
             if (UserObject != null)
             {
                 UserObject.Name = request.Name ?? UserObject.Name;
                 UserObject.Surname = request.Surname ?? UserObject.Surname;
-                var KorisnickoImeProvjera = db.Users.Where(user => user.UserName == request.UserName).FirstOrDefault();
+                var KorisnickoImeProvjera = _db.Users.Where(user => user.UserName == request.UserName).FirstOrDefault();
                 if (KorisnickoImeProvjera != null)
                 {
                     throw new InvalidOperationException("Korisnicko ime koje ste unijeli vec postoji.");
@@ -114,7 +114,7 @@ namespace VideoStreamingPlatform.Service
                 UserObject.ProfilePicture = request.ProfilePicture ?? UserObject.ProfilePicture;
                 UserObject.Country = request.Country ?? UserObject.Country;
                 UserObject.TypeId = request.TypeId != 0 ? request.TypeId : UserObject.TypeId;
-                db.SaveChanges();
+                _db.SaveChanges();
                 return new CommonResponse() { Id = request.UserId };
             }
             throw new NullReferenceException("Korisnicki nalog ne postoji.");

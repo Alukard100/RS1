@@ -17,7 +17,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class UserValuesService : IUserValuesService
     {
-        VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public UserValuesService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
+
         // PASSWORD CEMO I NAMA KAO ADMINISTRATORIMA PRIKAZIVATI KAO "SKRIVEN" ZBOG ZAŠTITE PODATAKA KORISNIKA
         public CommonResponse CreateUserValues(CreateUserValuesRequest request) {
             var userExists = _db.Users.Where(x => x.UserId == request.UserId).FirstOrDefault();

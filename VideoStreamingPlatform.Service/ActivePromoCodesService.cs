@@ -14,7 +14,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class ActivePromoCodesService : IActivePromoCodesService
     {
-        VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext _db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public ActivePromoCodesService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
 
         public List<GetListOfActiveCodesResponse> GetListOfActiveCodes(GetListOfActiveCodesRequest request)
         {

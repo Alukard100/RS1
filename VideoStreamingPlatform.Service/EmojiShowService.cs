@@ -9,7 +9,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class EmojiShowService : IEmojiShowService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public EmojiShowService(VideoStreamingPlatformContext dbContext)
+        {
+            db = dbContext;
+        }
 
         public CommonResponse CreateEmojiShow(CreateEmojiShowRequest request)
         {

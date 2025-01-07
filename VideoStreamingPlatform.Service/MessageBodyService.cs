@@ -14,7 +14,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class MessageBodyService : IMessageBodyService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public MessageBodyService(VideoStreamingPlatformContext dbContext)
+        {
+            db = dbContext;
+        }
 
         public CommonResponse CreateMessageBody(CreateMessageBodyRequest request)
         {

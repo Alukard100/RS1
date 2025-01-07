@@ -10,7 +10,11 @@ namespace VideoStreamingPlatform.Service
 {
     public class AdvertisementService : IAdvertisementService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public AdvertisementService(VideoStreamingPlatformContext dbContext) {
+            db = dbContext;
+        }
 
         public CommonResponse CreateAdvertisement(CreateAdvertisementRequest request)
         {

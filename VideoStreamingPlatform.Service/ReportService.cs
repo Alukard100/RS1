@@ -9,7 +9,11 @@ namespace VideoStreamingPlatform.Service
 {
     public class ReportService : IReportService
     {
-        VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext db;
+        public ReportService(VideoStreamingPlatformContext dbContext)
+        {
+            db = dbContext;
+        }
 
         public CommonResponse CreateReport(CreateReportRequest request)
         {

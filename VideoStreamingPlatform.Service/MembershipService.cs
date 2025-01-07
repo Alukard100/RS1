@@ -15,7 +15,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class MembershipService : IMembershipService
     {
-        VideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();
+        //VideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();
+        private readonly VideoStreamingPlatformContext _db;
+        public MembershipService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
 
         public List<GetMembershipResponse> GetMembership(GetMembershipRequest request)
         {

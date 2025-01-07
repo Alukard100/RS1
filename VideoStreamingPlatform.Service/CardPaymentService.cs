@@ -13,7 +13,12 @@ namespace VideoStreamingPlatform.Service
 {
     public class CardPaymentService : ICardPaymentService
     {
-        VideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();
+        //V/*ideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();*/
+        private readonly VideoStreamingPlatformContext _db;
+        public CardPaymentService(VideoStreamingPlatformContext dbContext)
+        {
+            _db = dbContext;
+        }
 
         public CommonResponse CreateCardPayment(CreateCardPaymentRequest request)
         {
