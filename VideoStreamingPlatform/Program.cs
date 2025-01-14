@@ -30,26 +30,28 @@ builder.Services.AddAuthentication("Bearer")
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<IBlogService, BlogService>();
-builder.Services.AddSingleton<IWalletService, WalletService>();
-builder.Services.AddSingleton<IUserTypeService, UserTypeService>();
-builder.Services.AddSingleton<IMessageBodyService, MessageBodyService>();
-builder.Services.AddSingleton<IAdvertisementService, AdvertisementService>();
-builder.Services.AddSingleton<ISynchronizationService, SynchronizationService>();
-builder.Services.AddSingleton<IPlaylistService, PlaylistService>();
-builder.Services.AddSingleton<IActivePromoCodesService, ActivePromoCodesService>();
-builder.Services.AddSingleton<ISupportService, SupportService>();
-builder.Services.AddSingleton<IUserValuesService, UserValuesService>();
-builder.Services.AddSingleton<ICardPaymentService, CardPaymentService>();
-builder.Services.AddSingleton<IMembershipService, MembershipService>();
-builder.Services.AddSingleton<INotificationService, NotificationsService>();
-builder.Services.AddSingleton<INotificationTypeService, NotificationTypeService>();
-builder.Services.AddSingleton<IReportService, ReportService>();
-builder.Services.AddSingleton<IReportTypeService, ReportTypeService>();
-builder.Services.AddSingleton<IGroupMemberService, GroupMemberService>();
-builder.Services.AddSingleton<IPlaylistGroupService, PlaylistGroupService>();
-builder.Services.AddSingleton<IEmojiShowService, EmojiShowService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IBlogService, BlogService>();
+builder.Services.AddTransient<IWalletService, WalletService>();
+builder.Services.AddTransient<IUserTypeService, UserTypeService>();
+builder.Services.AddTransient<IMessageBodyService, MessageBodyService>();
+builder.Services.AddTransient<IAdvertisementService, AdvertisementService>();
+builder.Services.AddTransient<ISynchronizationService, SynchronizationService>();
+builder.Services.AddTransient<IPlaylistService, PlaylistService>();
+builder.Services.AddTransient<IActivePromoCodesService, ActivePromoCodesService>();
+builder.Services.AddTransient<ISupportService, SupportService>();
+builder.Services.AddTransient<IUserValuesService, UserValuesService>();
+builder.Services.AddTransient<ICardPaymentService, CardPaymentService>();
+builder.Services.AddTransient<IMembershipService, MembershipService>();
+builder.Services.AddTransient<INotificationService, NotificationsService>();
+builder.Services.AddTransient<INotificationTypeService, NotificationTypeService>();
+builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddTransient<IReportTypeService, ReportTypeService>();
+builder.Services.AddTransient<IGroupMemberService, GroupMemberService>();
+builder.Services.AddTransient<IPlaylistGroupService, PlaylistGroupService>();
+builder.Services.AddTransient<IEmojiShowService, EmojiShowService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+
 
 
 var app = builder.Build();

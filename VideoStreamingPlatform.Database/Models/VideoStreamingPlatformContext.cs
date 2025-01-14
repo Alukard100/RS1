@@ -149,7 +149,7 @@ namespace VideoStreamingPlatform.Database.Models
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("Category");
-
+                entity.Property(e => e.CategoryId).ValueGeneratedOnAdd();
                 entity.Property(e => e.CategoryId).HasColumnName("categoryID");
 
                 entity.Property(e => e.CategoryName)
@@ -695,6 +695,8 @@ namespace VideoStreamingPlatform.Database.Models
             modelBuilder.Entity<Video>(entity =>
             {
                 entity.ToTable("Video");
+
+                entity.Property(e => e.VideoId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.VideoId).HasColumnName("videoID");
 

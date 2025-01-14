@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Models\" />
+    <Folder Include="DTOs\Responses\Category\" />
   </ItemGroup>
 
   <ItemGroup>
