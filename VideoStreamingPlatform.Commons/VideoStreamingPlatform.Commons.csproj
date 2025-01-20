@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="DTOs\Models\" />
     <Folder Include="DTOs\Responses\Category\" />
+    <Folder Include="DTOs\Responses\Video\" />
   </ItemGroup>
 
   <ItemGroup>

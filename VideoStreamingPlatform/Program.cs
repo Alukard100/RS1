@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Service;
@@ -28,6 +29,8 @@ builder.Services.AddAuthentication("Bearer")
         options.RequireHttpsMetadata = false;         // Set to true in production
     });
 
+builder.Services.Configure<VideoSettings>(builder.Configuration.GetSection("VideoSettings"));
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -51,6 +54,7 @@ builder.Services.AddTransient<IGroupMemberService, GroupMemberService>();
 builder.Services.AddTransient<IPlaylistGroupService, PlaylistGroupService>();
 builder.Services.AddTransient<IEmojiShowService, EmojiShowService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IVideoService, VideoService>();
 
 
 
