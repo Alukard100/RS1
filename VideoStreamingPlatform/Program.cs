@@ -59,8 +59,8 @@ builder.Services.AddTransient<IPlaylistGroupService, PlaylistGroupService>();
 builder.Services.AddTransient<IEmojiShowService, EmojiShowService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IVideoService, VideoService>();
-builder.Services.AddTransient<IVideoStatisticService, VideoStatisticService>(); 
-
+builder.Services.AddTransient<IVideoStatisticService, VideoStatisticService>();
+builder.Services.AddTransient<IRatingSystemVideoService, RatingSystemVideoService>();
 
 
 var app = builder.Build();

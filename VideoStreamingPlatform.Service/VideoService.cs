@@ -18,10 +18,12 @@ namespace VideoStreamingPlatform.Service
     {
         private readonly VideoStreamingPlatformContext _db;
         private readonly IVideoStatisticService _videoStatisticService;
-        public VideoService(VideoStreamingPlatformContext dbContext, IVideoStatisticService videoStatisticService) 
+        private readonly IRatingSystemVideoService _ratingSystemVideo;
+        public VideoService(VideoStreamingPlatformContext dbContext, IVideoStatisticService videoStatisticService, IRatingSystemVideoService ratingSystemVideo) 
         {
             _db = dbContext;
             _videoStatisticService = videoStatisticService;
+            _ratingSystemVideo = ratingSystemVideo;
         }
         
         public Video CreateVideo(CreateVideoRequest request, string videoDirectory)
@@ -76,6 +78,7 @@ namespace VideoStreamingPlatform.Service
             _db.SaveChanges();
 
             _videoStatisticService.CreateStatistic(newVideo.VideoId);
+            _ratingSystemVideo.CreateRSV(newVideo.VideoId);
             
             return newVideo;
         }
@@ -88,11 +91,13 @@ namespace VideoStreamingPlatform.Service
             }
             Video tempVideo = _db.Videos
                             .Include(v => v.VideoStatistics)
+                            .Include(v => v.RatingSystemVideos)
                             .Where(v => v.VideoId == VideoId)
                             .FirstOrDefault();
             if (tempVideo != null) 
             {
-                if (_videoStatisticService.DeleteStatistic(tempVideo.VideoStatistics))
+                if (_videoStatisticService.DeleteStatistic(tempVideo.VideoStatistics) &&
+                    _ratingSystemVideo.DeleteRSV(tempVideo.RatingSystemVideos))
                 {
                     File.Delete(tempVideo.FilePath);
                     _db.Videos.Remove(tempVideo);

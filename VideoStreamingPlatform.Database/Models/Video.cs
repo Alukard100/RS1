@@ -10,7 +10,6 @@ namespace VideoStreamingPlatform.Database.Models
             Advertisements = new HashSet<Advertisement>();
             Comments = new HashSet<Comment>();
             EmojiShows = new HashSet<EmojiShow>();
-            RatingSystemVideos = new HashSet<RatingSystemVideo>();
             Reports = new HashSet<Report>();
             SessionTables = new HashSet<SessionTable>();
             Synchronizations = new HashSet<Synchronization>();
@@ -33,7 +32,7 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual ICollection<Advertisement> Advertisements { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<EmojiShow> EmojiShows { get; set; }
-        public virtual ICollection<RatingSystemVideo> RatingSystemVideos { get; set; }
+        public virtual RatingSystemVideo RatingSystemVideos { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<SessionTable> SessionTables { get; set; }
         public virtual ICollection<Synchronization> Synchronizations { get; set; }

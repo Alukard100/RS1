@@ -429,11 +429,11 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.Property(e => e.VideoId).HasColumnName("videoID");
 
                 entity.HasOne(d => d.Video)
-                    .WithMany(p => p.RatingSystemVideos)
-                    .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .WithOne(p => p.RatingSystemVideos)
+                    .HasForeignKey<RatingSystemVideo>(d => d.VideoId)
                     .HasConstraintName("FK__ratingSys__video__4AB81AF0");
             });
+
 
             modelBuilder.Entity<Report>(entity =>
             {
