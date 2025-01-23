@@ -31,6 +31,10 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.Configure<VideoSettings>(builder.Configuration.GetSection("VideoSettings"));
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue;
+});
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -55,6 +59,7 @@ builder.Services.AddTransient<IPlaylistGroupService, PlaylistGroupService>();
 builder.Services.AddTransient<IEmojiShowService, EmojiShowService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IVideoService, VideoService>();
+builder.Services.AddTransient<IVideoStatisticService, VideoStatisticService>(); 
 
 
 

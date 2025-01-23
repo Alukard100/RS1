@@ -2,6 +2,7 @@
 using MediaToolkit.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,11 @@ namespace VideoStreamingPlatform.Service
     public class VideoService : IVideoService
     {
         private readonly VideoStreamingPlatformContext _db;
-        public VideoService(VideoStreamingPlatformContext dbContext) 
+        private readonly IVideoStatisticService _videoStatisticService;
+        public VideoService(VideoStreamingPlatformContext dbContext, IVideoStatisticService videoStatisticService) 
         {
             _db = dbContext;
+            _videoStatisticService = videoStatisticService;
         }
         
         public Video CreateVideo(CreateVideoRequest request, string videoDirectory)
@@ -71,6 +74,8 @@ namespace VideoStreamingPlatform.Service
             
             _db.Videos.Add(newVideo);
             _db.SaveChanges();
+
+            _videoStatisticService.CreateStatistic(newVideo.VideoId);
             
             return newVideo;
         }
@@ -81,13 +86,19 @@ namespace VideoStreamingPlatform.Service
             {
                 return false;
             }
-            Video tempVideo = _db.Videos.Where(v => v.VideoId == VideoId).FirstOrDefault();
+            Video tempVideo = _db.Videos
+                            .Include(v => v.VideoStatistics)
+                            .Where(v => v.VideoId == VideoId)
+                            .FirstOrDefault();
             if (tempVideo != null) 
             {
-                File.Delete(tempVideo.FilePath);
-                _db.Videos.Remove(tempVideo);
-                _db.SaveChanges();
-                return true;
+                if (_videoStatisticService.DeleteStatistic(tempVideo.VideoStatistics))
+                {
+                    File.Delete(tempVideo.FilePath);
+                    _db.Videos.Remove(tempVideo);
+                    _db.SaveChanges();
+                    return true;
+                }
             }
             return false;
         }

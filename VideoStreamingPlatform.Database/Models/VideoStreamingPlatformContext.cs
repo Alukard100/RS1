@@ -750,8 +750,8 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.Property(e => e.VideoId).HasColumnName("videoID");
 
                 entity.HasOne(d => d.Video)
-                    .WithMany(p => p.VideoStatistics)
-                    .HasForeignKey(d => d.VideoId)
+                    .WithOne(p => p.VideoStatistics)
+                    .HasForeignKey<VideoStatistic>(d => d.VideoId)
                     .HasConstraintName("FK__VideoStat__video__22751F6C");
             });
 

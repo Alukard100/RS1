@@ -15,7 +15,6 @@ namespace VideoStreamingPlatform.Database.Models
             SessionTables = new HashSet<SessionTable>();
             Synchronizations = new HashSet<Synchronization>();
             ThumbnailInfos = new HashSet<ThumbnailInfo>();
-            VideoStatistics = new HashSet<VideoStatistic>();
         }
 
         public int VideoId { get; set; }
@@ -39,6 +38,6 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual ICollection<SessionTable> SessionTables { get; set; }
         public virtual ICollection<Synchronization> Synchronizations { get; set; }
         public virtual ICollection<ThumbnailInfo> ThumbnailInfos { get; set; }
-        public virtual ICollection<VideoStatistic> VideoStatistics { get; set; }
+        public virtual VideoStatistic VideoStatistics { get; set; }
     }
 }
