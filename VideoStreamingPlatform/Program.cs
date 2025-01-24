@@ -61,6 +61,7 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IVideoService, VideoService>();
 builder.Services.AddTransient<IVideoStatisticService, VideoStatisticService>();
 builder.Services.AddTransient<IRatingSystemVideoService, RatingSystemVideoService>();
+builder.Services.AddTransient<IThumbnailInfoService, ThumbnailInfoService>();
 
 
 var app = builder.Build();

@@ -579,9 +579,8 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.Property(e => e.VideoId).HasColumnName("videoID");
 
                 entity.HasOne(d => d.Video)
-                    .WithMany(p => p.ThumbnailInfos)
-                    .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .WithOne(p => p.ThumbnailInfos)
+                    .HasForeignKey<ThumbnailInfo>(d => d.VideoId)
                     .HasConstraintName("FK__thumbnail__video__440B1D61");
             });
 

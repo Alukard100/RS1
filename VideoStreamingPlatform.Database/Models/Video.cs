@@ -13,7 +13,6 @@ namespace VideoStreamingPlatform.Database.Models
             Reports = new HashSet<Report>();
             SessionTables = new HashSet<SessionTable>();
             Synchronizations = new HashSet<Synchronization>();
-            ThumbnailInfos = new HashSet<ThumbnailInfo>();
         }
 
         public int VideoId { get; set; }
@@ -22,7 +21,7 @@ namespace VideoStreamingPlatform.Database.Models
         public string? Description { get; set; }
         public string? ResolutionType { get; set; }
         public DateTime? UploadDate { get; set; }
-        public int? DurationInSecondes { get; set; }
+        public int DurationInSecondes { get; set; }
         public bool IsFree { get; set; }
         public int UserId { get; set; }
         public int? CategoryId { get; set; }
@@ -36,7 +35,7 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<SessionTable> SessionTables { get; set; }
         public virtual ICollection<Synchronization> Synchronizations { get; set; }
-        public virtual ICollection<ThumbnailInfo> ThumbnailInfos { get; set; }
+        public virtual ThumbnailInfo ThumbnailInfos { get; set; }
         public virtual VideoStatistic VideoStatistics { get; set; }
     }
 }

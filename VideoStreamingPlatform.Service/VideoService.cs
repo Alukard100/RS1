@@ -19,11 +19,16 @@ namespace VideoStreamingPlatform.Service
         private readonly VideoStreamingPlatformContext _db;
         private readonly IVideoStatisticService _videoStatisticService;
         private readonly IRatingSystemVideoService _ratingSystemVideo;
-        public VideoService(VideoStreamingPlatformContext dbContext, IVideoStatisticService videoStatisticService, IRatingSystemVideoService ratingSystemVideo) 
+        private readonly IThumbnailInfoService _thumbnailInfoService;
+        public VideoService(VideoStreamingPlatformContext dbContext,
+                            IVideoStatisticService videoStatisticService,
+                            IRatingSystemVideoService ratingSystemVideo,
+                            IThumbnailInfoService thumbnailInfoService) 
         {
             _db = dbContext;
             _videoStatisticService = videoStatisticService;
             _ratingSystemVideo = ratingSystemVideo;
+            _thumbnailInfoService = thumbnailInfoService;
         }
         
         public Video CreateVideo(CreateVideoRequest request, string videoDirectory)
@@ -79,6 +84,7 @@ namespace VideoStreamingPlatform.Service
 
             _videoStatisticService.CreateStatistic(newVideo.VideoId);
             _ratingSystemVideo.CreateRSV(newVideo.VideoId);
+            _thumbnailInfoService.CreateThumbnail(newVideo.VideoId);
             
             return newVideo;
         }
@@ -92,12 +98,14 @@ namespace VideoStreamingPlatform.Service
             Video tempVideo = _db.Videos
                             .Include(v => v.VideoStatistics)
                             .Include(v => v.RatingSystemVideos)
+                            .Include(v => v.ThumbnailInfos)
                             .Where(v => v.VideoId == VideoId)
                             .FirstOrDefault();
             if (tempVideo != null) 
             {
                 if (_videoStatisticService.DeleteStatistic(tempVideo.VideoStatistics) &&
-                    _ratingSystemVideo.DeleteRSV(tempVideo.RatingSystemVideos))
+                    _ratingSystemVideo.DeleteRSV(tempVideo.RatingSystemVideos) &&
+                    _thumbnailInfoService.DeleteThumbnail(tempVideo.ThumbnailInfos))
                 {
                     File.Delete(tempVideo.FilePath);
                     _db.Videos.Remove(tempVideo);
