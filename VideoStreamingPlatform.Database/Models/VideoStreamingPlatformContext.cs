@@ -159,7 +159,7 @@ namespace VideoStreamingPlatform.Database.Models
 
             modelBuilder.Entity<Comment>(entity =>
             {
-                entity.Property(e => e.CommentId).HasColumnName("commentID");
+                entity.Property(e => e.CommentId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Content)
                     .HasMaxLength(300)
@@ -403,9 +403,8 @@ namespace VideoStreamingPlatform.Database.Models
                     .HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.Comment)
-                    .WithMany(p => p.RatingSystemComments)
-                    .HasForeignKey(d => d.CommentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .WithOne(p => p.RatingSystemComments)
+                    .HasForeignKey<RatingSystemComment>(d => d.CommentId)
                     .HasConstraintName("FK__ratingSys__comme__4F7CD00D");
             });
 
