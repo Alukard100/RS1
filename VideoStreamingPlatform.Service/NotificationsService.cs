@@ -8,6 +8,7 @@ using VideoStreamingPlatform.Commons.DTOs.Requests.Notifications;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Notifications;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service

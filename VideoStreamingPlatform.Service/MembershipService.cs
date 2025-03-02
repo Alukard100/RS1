@@ -9,6 +9,7 @@ using VideoStreamingPlatform.Commons.DTOs.Requests.Membership;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Membership;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service

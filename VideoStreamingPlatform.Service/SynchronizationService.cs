@@ -4,6 +4,7 @@ using VideoStreamingPlatform.Commons.DTOs.Requests.Synchronization;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Synchronization;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service

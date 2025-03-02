@@ -4,8 +4,8 @@ using VideoStreamingPlatform.Commons.DTOs.Requests.User;
 using VideoStreamingPlatform.Commons.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using VideoStreamingPlatform.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using VideoStreamingPlatform.Database;
 
 namespace VideoStreamingPlatform.Controllers
 {

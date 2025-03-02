@@ -4,6 +4,7 @@ using VideoStreamingPlatform.Commons.DTOs.Requests.GroupMembers;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.GroupMembers;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service

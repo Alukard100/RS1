@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 using static MediaToolkit.Model.Metadata;
 

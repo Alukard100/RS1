@@ -2,11 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
 using VideoStreamingPlatform.Commons.Interfaces;
-using VideoStreamingPlatform.Database.Models;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => { policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader(); });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -77,6 +81,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();   
 app.UseAuthorization();    

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using VideoStreamingPlatform.Database.Models;
 
-namespace VideoStreamingPlatform.Database.Models
+namespace VideoStreamingPlatform.Database
 {
     public partial class VideoStreamingPlatformContext : DbContext
     {
@@ -45,13 +46,9 @@ namespace VideoStreamingPlatform.Database.Models
         {
             modelBuilder.Entity<ActivePromoCode>(entity =>
             {
-                entity.HasKey(e => e.PromoCodeId)
-                    .HasName("PK__activePr__090CEF4136AE212E");
+                entity.HasKey(e => e.PromoCodeId);
 
                 entity.ToTable("activePromoCodes");
-
-                //entity.HasIndex(e => e.CodeValue, "UQ__activePr__5A659F398A60D9F0")
-                //    .IsUnique();
 
                 entity.Property(e => e.PromoCodeId).HasColumnName("promoCodeID");
 
@@ -83,13 +80,11 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Advertisements)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__advertise__userI__5AEE82B9");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.Advertisements)
-                    .HasForeignKey(d => d.VideoId)
-                    .HasConstraintName("FK__advertise__video__5BE2A6F2");
+                    .HasForeignKey(d => d.VideoId);
             });
 
             modelBuilder.Entity<Blog>(entity =>
@@ -112,14 +107,12 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Blogs)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Blog__userID__00200768");
+                    .HasForeignKey(d => d.UserId);
             });
 
             modelBuilder.Entity<CardPayment>(entity =>
             {
-                entity.HasKey(e => e.PaymentId)
-                    .HasName("PK__CardPaym__9B556A5810C8409F");
+                entity.HasKey(e => e.PaymentId);
 
                 entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
 
@@ -142,8 +135,7 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CardPayments)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CardPayme__userI__123EB7A3");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -176,14 +168,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Comments__userID__46E78A0C");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Comments__videoI__47DBAE45");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<EmojiShow>(entity =>
@@ -202,8 +192,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.EmojiShows)
-                    .HasForeignKey(d => d.VideoId)
-                    .HasConstraintName("FK__EmojiShow__video__09A971A2");
+                    .HasForeignKey(d => d.VideoId);
             });
 
             modelBuilder.Entity<GroupMember>(entity =>
@@ -219,14 +208,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.GroupMembers)
                     .HasForeignKey(d => d.GroupId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GroupMemb__Group__7C4F7684");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.GroupMembers)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__GroupMemb__UserI__7D439ABD");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Membership>(entity =>
@@ -253,8 +240,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Memberships)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Membershi__userI__1F98B2C1");
+                    .HasForeignKey(d => d.UserId);
             });
 
             modelBuilder.Entity<MessageBody>(entity =>
@@ -285,14 +271,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.MsgReciever)
                     .WithMany(p => p.MessageBodyMsgRecievers)
                     .HasForeignKey(d => d.MsgRecieverId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MessageBo__msgRe__6FE99F9F");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.MsgSender)
                     .WithMany(p => p.MessageBodyMsgSenders)
                     .HasForeignKey(d => d.MsgSenderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__MessageBo__msgSe__6EF57B66");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -313,18 +297,15 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.NotificationType)
                     .WithMany(p => p.Notifications)
-                    .HasForeignKey(d => d.NotificationTypeId)
-                    .HasConstraintName("FK__Notificat__notif__06CD04F7");
+                    .HasForeignKey(d => d.NotificationTypeId);
 
                 entity.HasOne(d => d.RecipientUser)
                     .WithMany(p => p.NotificationRecipientUsers)
-                    .HasForeignKey(d => d.RecipientUserId)
-                    .HasConstraintName("FK__Notificat__recip__04E4BC85");
+                    .HasForeignKey(d => d.RecipientUserId);
 
                 entity.HasOne(d => d.SenderUser)
                     .WithMany(p => p.NotificationSenderUsers)
-                    .HasForeignKey(d => d.SenderUserId)
-                    .HasConstraintName("FK__Notificat__sende__05D8E0BE");
+                    .HasForeignKey(d => d.SenderUserId);
             });
 
             modelBuilder.Entity<NotificationType>(entity =>
@@ -356,8 +337,7 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Playlists)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__playlist__userID__5441852A");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<PlaylistGroup>(entity =>
@@ -373,14 +353,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.Playlist)
                     .WithMany()
                     .HasForeignKey(d => d.PlaylistId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__playlistG__playl__571DF1D5");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany()
                     .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__playlistG__video__5812160E");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<RatingSystemComment>(entity =>
@@ -404,14 +382,12 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Comment)
                     .WithOne(p => p.RatingSystemComments)
-                    .HasForeignKey<RatingSystemComment>(d => d.CommentId)
-                    .HasConstraintName("FK__ratingSys__comme__4F7CD00D");
+                    .HasForeignKey<RatingSystemComment>(d => d.CommentId);
             });
 
             modelBuilder.Entity<RatingSystemVideo>(entity =>
             {
-                entity.HasKey(e => e.RatingId)
-                    .HasName("PK__ratingSy__2D290D4944D883CB");
+                entity.HasKey(e => e.RatingId);
 
                 entity.ToTable("ratingSystemVideo");
 
@@ -429,8 +405,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Video)
                     .WithOne(p => p.RatingSystemVideos)
-                    .HasForeignKey<RatingSystemVideo>(d => d.VideoId)
-                    .HasConstraintName("FK__ratingSys__video__4AB81AF0");
+                    .HasForeignKey<RatingSystemVideo>(d => d.VideoId);
             });
 
 
@@ -456,20 +431,17 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.ReportType)
                     .WithMany(p => p.Reports)
-                    .HasForeignKey(d => d.ReportTypeId)
-                    .HasConstraintName("FK__report__reportTy__6C190EBB");
+                    .HasForeignKey(d => d.ReportTypeId);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reports)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__report__userID__6A30C649");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.Reports)
                     .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__report__videoID__6B24EA82");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<ReportType>(entity =>
@@ -496,14 +468,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.SessionTables)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__sessionTa__userI__5EBF139D");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.SessionTables)
                     .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__sessionTa__video__5FB337D6");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Support>(entity =>
@@ -532,19 +502,14 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Supports)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__support__userID__73BA3083");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Synchronization>(entity =>
             {
-                entity.HasKey(e => e.GroupId)
-                    .HasName("PK__synchron__149AF30A135133A6");
+                entity.HasKey(e => e.GroupId);
 
                 entity.ToTable("synchronization");
-
-                //entity.HasIndex(e => e.GroupCode, "UQ__synchron__3B974380698E3D6D")
-                //    .IsUnique();
 
                 entity.Property(e => e.GroupId).HasColumnName("GroupID");
 
@@ -557,14 +522,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.SyncOwner)
                     .WithMany(p => p.Synchronizations)
                     .HasForeignKey(d => d.SyncOwnerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__synchroni__SyncO__787EE5A0");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Video)
                     .WithMany(p => p.Synchronizations)
                     .HasForeignKey(d => d.VideoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__synchroni__Video__797309D9");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<ThumbnailInfo>(entity =>
@@ -579,8 +542,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Video)
                     .WithOne(p => p.ThumbnailInfos)
-                    .HasForeignKey<ThumbnailInfo>(d => d.VideoId)
-                    .HasConstraintName("FK__thumbnail__video__440B1D61");
+                    .HasForeignKey<ThumbnailInfo>(d => d.VideoId);
             });
 
             modelBuilder.Entity<Transaction>(entity =>
@@ -604,8 +566,7 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__transacti__userI__656C112C");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -643,14 +604,12 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.TypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__User__typeID__38996AB5");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<UserType>(entity =>
             {
-                entity.HasKey(e => e.TypeId)
-                    .HasName("PK__UserType__F04DF11A5D243CF9");
+                entity.HasKey(e => e.TypeId);
 
                 entity.ToTable("UserType");
 
@@ -663,8 +622,7 @@ namespace VideoStreamingPlatform.Database.Models
 
             modelBuilder.Entity<UserValue>(entity =>
             {
-                entity.HasKey(e => e.UserValuesId)
-                    .HasName("PK__userValu__0D022EAF8A2CC0BD");
+                entity.HasKey(e => e.UserValuesId);
 
                 entity.ToTable("userValues");
 
@@ -686,8 +644,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserValues)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__userValue__userI__3B75D760");
+                    .HasForeignKey(d => d.UserId);
             });
 
             modelBuilder.Entity<Video>(entity =>
@@ -726,20 +683,17 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Videos)
-                    .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__Video__categoryI__412EB0B6");
+                    .HasForeignKey(d => d.CategoryId);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Videos)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Video__userID__403A8C7D");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<VideoStatistic>(entity =>
             {
-                entity.HasKey(e => e.VideoStatisticsId)
-                    .HasName("PK__VideoSta__D2B1F54750B60CAD");
+                entity.HasKey(e => e.VideoStatisticsId);
 
                 entity.Property(e => e.VideoStatisticsId).HasColumnName("videoStatisticsId");
 
@@ -749,8 +703,7 @@ namespace VideoStreamingPlatform.Database.Models
 
                 entity.HasOne(d => d.Video)
                     .WithOne(p => p.VideoStatistics)
-                    .HasForeignKey<VideoStatistic>(d => d.VideoId)
-                    .HasConstraintName("FK__VideoStat__video__22751F6C");
+                    .HasForeignKey<VideoStatistic>(d => d.VideoId);
             });
 
             modelBuilder.Entity<Wallet>(entity =>
@@ -768,8 +721,7 @@ namespace VideoStreamingPlatform.Database.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__wallet__userID__628FA481");
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             OnModelCreatingPartial(modelBuilder);

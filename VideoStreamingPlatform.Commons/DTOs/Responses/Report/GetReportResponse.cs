@@ -13,6 +13,6 @@ namespace VideoStreamingPlatform.Commons.DTOs.Responses.Report
 
         public virtual Database.Models.ReportType? ReportType { get; set; }
         public virtual Database.Models.User User { get; set; } = null!;
-        public virtual Video Video { get; set; } = null!;
+        //public virtual Video Video { get; set; } = null!;
     }
 }

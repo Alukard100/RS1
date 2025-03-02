@@ -5,6 +5,7 @@ using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
+using VideoStreamingPlatform.Database;
 
 
 namespace VideoStreamingPlatform.Service

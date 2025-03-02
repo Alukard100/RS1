@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Comment;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service

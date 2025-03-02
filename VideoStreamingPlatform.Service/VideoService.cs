@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
+using VideoStreamingPlatform.Commons.DTOs.Responses.Video;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service
@@ -116,9 +118,17 @@ namespace VideoStreamingPlatform.Service
             return false;
         }
 
-        public Video GetVideo(int VideoId)
+        public VideoResponse GetVideo(int VideoId)
         {
-            var existingVideo = _db.Videos.Where(v => v.VideoId == VideoId).FirstOrDefault();
+            var existingVideo = _db.Videos
+                    .Include(v => v.Category)
+                    .Where(v => v.VideoId == VideoId)
+                    .Select(v => new VideoResponse
+                    {
+                        VideoId = v.VideoId,
+                        CategoryId = v.Category.CategoryId
+                    })
+                    .FirstOrDefault();
             if (existingVideo != null)
             {
                 return existingVideo;

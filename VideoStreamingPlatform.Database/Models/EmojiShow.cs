@@ -9,7 +9,7 @@ namespace VideoStreamingPlatform.Database.Models
         public string? EmojiName { get; set; }
         public int? VideoId { get; set; }
         public int? ClickCounter { get; set; }
-
+        public string? altName { get; set; }
         public virtual Video? Video { get; set; }
     }
 }

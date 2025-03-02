@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Responses.NotificationType;
 using VideoStreamingPlatform.Commons.Interfaces;
-using VideoStreamingPlatform.Database.Models;
+using VideoStreamingPlatform.Database;
 
 namespace VideoStreamingPlatform.Service
 {
