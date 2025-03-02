@@ -1,0 +1,10 @@
+<div>
+    <h2>Upload Video</h2>
+    <input type="file" (change)="onFileSelected($event)" accept="video/*" />
+    <input type="text" [(ngModel)]="videoData.videoName" placeholder="Video Name" />
+    <textarea [(ngModel)]="videoData.description" placeholder="Description"></textarea>
+    <label>
+      <input type="checkbox" [(ngModel)]="videoData.isFree" /> Is Free?
+    </label>
+    <button (click)="uploadVideo()">Upload</button>
+  </div>
