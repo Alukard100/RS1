@@ -122,11 +122,25 @@ namespace VideoStreamingPlatform.Service
         {
             var existingVideo = _db.Videos
                     .Include(v => v.Category)
+                    .Include(v => v.User)
+                    .Include(v => v.VideoStatistics)
+                    .Include(v => v.ThumbnailInfos)
                     .Where(v => v.VideoId == VideoId)
                     .Select(v => new VideoResponse
                     {
                         VideoId = v.VideoId,
-                        CategoryId = v.Category.CategoryId
+                        VideoName = v.VideoName,
+                        Description = v.Description,
+                        FilePath = v.FilePath,
+                        UploadDate = v.UploadDate,
+                        CategoryId = v.Category.CategoryId,
+                        CategoryNmae = v.Category.CategoryName,
+                        UserId = v.UserId,
+                        UserName = v.User.UserName,
+                        ClickCounter = v.VideoStatistics.ClickCounter,
+                        ThumbnailInfoId = v.ThumbnailInfos.ThumbnailInfoId,
+                        ThumbnailPicture = v.ThumbnailInfos.ThumbnailPicture
+
                     })
                     .FirstOrDefault();
             if (existingVideo != null)

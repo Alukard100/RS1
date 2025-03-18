@@ -17,10 +17,10 @@ namespace VideoStreamingPlatform.Database.Models
 
         public int VideoId { get; set; }
         public string VideoName { get; set; } = null!;
-        public string? FilePath { get; set; }
-        public string? Description { get; set; }
-        public string? ResolutionType { get; set; }
-        public DateTime? UploadDate { get; set; }
+        public string FilePath { get; set; }
+        public string Description { get; set; }
+        public string ResolutionType { get; set; }
+        public DateTime UploadDate { get; set; }
         public int DurationInSecondes { get; set; }
         public bool IsFree { get; set; }
         public int UserId { get; set; }
