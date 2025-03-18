@@ -8,7 +8,7 @@ namespace VideoStreamingPlatform.Database.Models
     {
         public int VideoStatisticsId { get; set; }
         public int? VideoId { get; set; }
-        public int? ClickCounter { get; set; }
+        public int ClickCounter { get; set; }
         [JsonIgnore]
         public virtual Video? Video { get; set; }
     }

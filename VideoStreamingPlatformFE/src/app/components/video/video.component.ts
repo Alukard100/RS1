@@ -18,8 +18,8 @@ export class VideoComponent {
     videoName: '',
     description: '',
     isFree: true,
-    userId: 3, // Placeholder, to be replaced with dynamic userId
-    categoryId: 0 // 0 Placeholder, implemented category select
+    userId: 2, // Placeholder, to be replaced with dynamic userId
+    categoryId: 1 // 0 Placeholder, implemented category select
   };
   
   constructor(private videoService: VideoService) {}
@@ -34,7 +34,7 @@ export class VideoComponent {
 
   uploadVideo() {
     const formData = new FormData();
-    formData.append('video', this.videoFile);
+    formData.append('file', this.videoFile);
     formData.append('videoName', this.videoData.videoName);
     formData.append('description', this.videoData.description);
     formData.append('isFree', this.videoData.isFree.toString());
@@ -47,5 +47,4 @@ export class VideoComponent {
     });
   }
   
-
 }
