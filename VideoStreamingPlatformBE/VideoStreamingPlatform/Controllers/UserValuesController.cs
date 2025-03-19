@@ -78,5 +78,20 @@ namespace VideoStreamingPlatform.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("LoginUser")]
+        public ActionResult<LoginResponse> LoginUser([FromBody] LoginRequest request)
+        {
+            try
+            {
+                var response = service.LoginUser(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

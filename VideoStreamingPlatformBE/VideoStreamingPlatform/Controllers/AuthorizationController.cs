@@ -58,18 +58,18 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         // Login and generate JWT token
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null || !(await _userManager.CheckPasswordAsync(user, request.Password)))
-                return Unauthorized("Invalid username or password.");
+        //[HttpPost("Login")]
+        //public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        //{
+        //    var user = await _userManager.FindByNameAsync(request.UserName);
+        //    if (user == null || !(await _userManager.CheckPasswordAsync(user, request.Password)))
+        //        return Unauthorized("Invalid username or password.");
 
-            var token = await _authService.GenerateJwtToken(user);
-            var role = await _authService.GetUserRole(user);
+        //    var token = await _authService.GenerateJwtToken(user);
+        //    var role = await _authService.GetUserRole(user);
 
-            return Ok(new { Token = token, UserId = user.Id, Role = role });
-        }
+        //    return Ok(new { Token = token, UserId = user.Id, Role = role });
+        //}
 
         // Refresh JWT token
         [HttpPost("RefreshToken")]
