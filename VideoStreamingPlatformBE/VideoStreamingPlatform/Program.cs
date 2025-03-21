@@ -111,6 +111,8 @@ builder.Services.AddTransient<IThumbnailInfoService, ThumbnailInfoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IRatingSystemCommentService, RatingSystemCommentService>();
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Enable Swagger in Development
@@ -120,6 +122,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
+
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseRouting();
 

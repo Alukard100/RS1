@@ -7,13 +7,15 @@ import { HttpClientModule, provideHttpClient, withFetch, withInterceptorsFromDi 
 import { CategoryComponent } from './components/category/category.component';
 import { VideoComponent } from './components/video/video.component';
 import { FormsModule } from '@angular/forms';
-import { AuthComponent } from './components/auth/auth.component'
+import { VideoViewComponent } from './components/video-view/video-view.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryComponent,
     VideoComponent,
+    VideoViewComponent,
     AuthComponent
   ],
   imports: [

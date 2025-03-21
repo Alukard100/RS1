@@ -14,6 +14,6 @@ namespace VideoStreamingPlatform.Commons.Interfaces
         public Category CreateCategory(string CategoryName);
         public Category UpdateCategory(UpdateCategoryRequest request);
         public bool DeleteCategory(int CategoryId);
-        public Category GetCategory(int CategoryId);
+        public List<Category> GetCategory(int CategoryId);
     }
 }

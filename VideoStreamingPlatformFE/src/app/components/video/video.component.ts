@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { Video } from '../../interfaces/video';
 import { VideoService } from '../../services/video/video.service';
+import { CategoryService } from '../../services/category/category.service';
+import { response } from 'express';
+import { error } from 'console';
+import { Category } from '../../interfaces/category';
 
 @Component({
   selector: 'app-video',
@@ -21,8 +25,14 @@ export class VideoComponent {
     userId: 2, // Placeholder, to be replaced with dynamic userId
     categoryId: 1 // 0 Placeholder, implemented category select
   };
+
+  categories: Category[] = [];
   
-  constructor(private videoService: VideoService) {}
+  constructor(private videoService: VideoService, private categoryService: CategoryService) {}
+
+  ngOnInit() {
+    this.getCategories();
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -33,6 +43,11 @@ export class VideoComponent {
   }
 
   uploadVideo() {
+    if  (this.videoData.categoryId === 0) {
+      alert('Please select a category before uploading!');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', this.videoFile);
     formData.append('videoName', this.videoData.videoName);
@@ -44,6 +59,16 @@ export class VideoComponent {
     this.videoService.uploadVideo(formData).subscribe({
       next: (response) => console.log('Upload Successful: ', response),
       error: (error) => console.error('Upload error: ', error)
+    });
+  }
+
+  getCategories() {
+    this.categoryService.fetchCategory(0).subscribe({
+      next: (response) => {
+        this.categories = response;
+        console.log("Fetch success: ", this.categories);
+      },
+      error: (error) => console.log('Fetch failure: ', error)
     });
   }
   

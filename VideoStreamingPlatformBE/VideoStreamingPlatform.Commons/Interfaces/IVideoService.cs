@@ -12,7 +12,7 @@ namespace VideoStreamingPlatform.Commons.Interfaces
 {
     public interface IVideoService
     {
-        public Video CreateVideo(CreateVideoRequest request, string videoDirectory);
+        public Video CreateVideo(CreateVideoRequest request, HttpContext httpContext);
         public bool DeleteVideo(int VideoId);
         public VideoResponse GetVideo(int VideoId);
         public Video UpdateVideo(UpdateVideoRequest request);

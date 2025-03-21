@@ -28,7 +28,7 @@ namespace VideoStreamingPlatform.Controllers
                 return BadRequest("Video file not provided or is empty.");
             }
             string videoDirectory = _videoSettings.VideoDirectory;
-            var video = _service.CreateVideo(request, videoDirectory);
+            var video = _service.CreateVideo(request, HttpContext);
             return Ok(video);
         }
         [HttpDelete]
