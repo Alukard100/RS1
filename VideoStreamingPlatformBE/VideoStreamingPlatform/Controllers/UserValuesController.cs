@@ -16,7 +16,6 @@ namespace VideoStreamingPlatform.Controllers
             this.service = service;
         }
 
-        //Zavrsiti
         [HttpGet]
         [Route("GetUserValues")]
         public ActionResult<GetUserValuesResponse> GetUserValues([FromQuery] GetUserValuesRequest request)
@@ -71,6 +70,21 @@ namespace VideoStreamingPlatform.Controllers
             try
             {
                 var response = service.CreateUserValues(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("LoginUser")]
+        public ActionResult<LoginResponse> LoginUser([FromBody] LoginRequest request)
+        {
+            try
+            {
+                var response = service.LoginUser(request);
                 return Ok(response);
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Category;
 using VideoStreamingPlatform.Commons.Interfaces;
@@ -16,6 +17,7 @@ namespace VideoStreamingPlatform.Controllers
         }
         [HttpPost]
         [Route("CreateCategory")]
+        [Authorize(Roles = "Admin")]
         public IActionResult create(CreateCategoryRequest request)
         {
             var category = _service.CreateCategory(request.CategoryName);
@@ -24,6 +26,7 @@ namespace VideoStreamingPlatform.Controllers
         }
         [HttpDelete]
         [Route("DeleteCategory")]
+        [Authorize(Roles = "Admin")]
         public IActionResult delete(CommonDeleteRequest request)
         {
             var category = _service.DeleteCategory(request.Id);

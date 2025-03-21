@@ -1,45 +1,87 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy => { policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyMethod().AllowAnyHeader(); });
-});
+// Load JWT secret key
+var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+var keyBytes = Encoding.ASCII.GetBytes(jwtKey);
 
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'"
+    });
 
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+        });
+});
 
+// Configure EF Core with SQL Server
 builder.Services.AddDbContext<VideoStreamingPlatformContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<VideoStreamingPlatformContext>()
     .AddDefaultTokenProviders();
 
-
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://localhost:5001";  // Set your IdentityProvider URL here
-        options.Audience = "api1";                    // Your API's audience identifier
-        options.RequireHttpsMetadata = false;         // Set to true in production
-    });
-
-builder.Services.Configure<VideoSettings>(builder.Configuration.GetSection("VideoSettings"));
-builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
-builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+// Configure JWT Authentication
+builder.Services.AddAuthentication(options =>
 {
-    options.MultipartBodyLengthLimit = long.MaxValue;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
 });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+// Register custom services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IBlogService, BlogService>();
@@ -69,45 +111,25 @@ builder.Services.AddTransient<IThumbnailInfoService, ThumbnailInfoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IRatingSystemCommentService, RatingSystemCommentService>();
 
-
 var app = builder.Build();
 
-
+// Enable Swagger in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseRouting();
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseAuthentication();   
-app.UseAuthorization();    
+app.MapControllers();
 
-app.MapControllers();      
-
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    await EnsureRolesAsync(services);
-//}
 
 app.Run();
 
-//async Task EnsureRolesAsync(IServiceProvider serviceProvider)
-//{
-//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//    var roles = new[] { "admin", "user", "superuser", "guest" };
 
-//    foreach (var role in roles)
-//    {
-//        if (!await roleManager.RoleExistsAsync(role))
-//        {
-//            await roleManager.CreateAsync(new IdentityRole(role));
-//        }
-//    }
-//}

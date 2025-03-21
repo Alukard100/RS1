@@ -16,5 +16,8 @@ namespace VideoStreamingPlatform.Commons.Interfaces
         CommonResponse DeleteUserValues(CommonDeleteRequest request);
         GetUserValuesResponse GetUserValues(GetUserValuesRequest request);
         CommonResponse  UpdateUserValues(UpdateUserValuesRequest request);
+
+        LoginResponse LoginUser(LoginRequest request);
+
     }
 }

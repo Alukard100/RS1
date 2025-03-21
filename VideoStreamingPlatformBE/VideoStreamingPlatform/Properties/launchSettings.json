@@ -5,7 +5,8 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT_SECRET_KEY": "M3k@Wp7!zXv#B9k@Wd3^Rm8QeY2$HjL1"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7066;http://localhost:5165"
@@ -15,7 +16,8 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT_SECRET_KEY": "M3k@Wp7!zXv#B9k@Wd3^Rm8QeY2$HjL1"
       }
     },
     "Docker": {
@@ -34,5 +36,5 @@
       "applicationUrl": "http://localhost:14147",
       "sslPort": 44304
     }
-  }
+  } 
 }

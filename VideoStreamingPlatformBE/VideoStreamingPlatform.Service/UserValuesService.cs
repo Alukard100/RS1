@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,26 +21,29 @@ namespace VideoStreamingPlatform.Service
     public class UserValuesService : IUserValuesService
     {
         private readonly VideoStreamingPlatformContext _db;
+        private readonly string _jwtSecretKey;
+
         public UserValuesService(VideoStreamingPlatformContext dbContext)
         {
             _db = dbContext;
+            _jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ?? throw new Exception("JWT Secret key not set.");
         }
 
-        // PASSWORD CEMO I NAMA KAO ADMINISTRATORIMA PRIKAZIVATI KAO "SKRIVEN" ZBOG ZAŠTITE PODATAKA KORISNIKA
-        public CommonResponse CreateUserValues(CreateUserValuesRequest request) {
-            var userExists = _db.Users.Where(x => x.UserId == request.UserId).FirstOrDefault();
+        public CommonResponse CreateUserValues(CreateUserValuesRequest request)
+        {
+            var userExists = _db.Users.FirstOrDefault(x => x.UserId == request.UserId);
             if (userExists == null) { throw new NullReferenceException("UserID provided in request does not exist."); }
 
-            var userValueExists= _db.UserValues.Where(x=>x.UserId == request.UserId).FirstOrDefault();
+            var userValueExists = _db.UserValues.FirstOrDefault(x => x.UserId == request.UserId);
             if (userValueExists != null) { throw new NullReferenceException("UserID provided in request already exists."); }
 
-            var emailExists= _db.UserValues.Where(x=>x.Email.Equals(request.Email)).FirstOrDefault();
+            var emailExists = _db.UserValues.FirstOrDefault(x => x.Email.Equals(request.Email));
             if (emailExists != null) { throw new NullReferenceException("Email provided in request already exists."); }
 
             if (!IsValidEmail(request.Email))
             {
                 throw new NullReferenceException("Email provided in request has bad format.");
-            }   
+            }
 
             var newObject = new UserValue()
             {
@@ -48,17 +53,14 @@ namespace VideoStreamingPlatform.Service
                 PasswordHash = HashPassword(request.Password)
             };
 
-
-        var response = _db.UserValues.Add(newObject);
-        _db.SaveChanges();
-            return new CommonResponse() { Id = response.Entity.UserValuesId ,Message = "UserValue successfully added."};
-    }
-
-        //Pozivat ce se kada se izbrise user
+            var response = _db.UserValues.Add(newObject);
+            _db.SaveChanges();
+            return new CommonResponse() { Id = response.Entity.UserValuesId, Message = "UserValue successfully added." };
+        }
 
         public CommonResponse DeleteUserValues(CommonDeleteRequest request)
         {
-            var removeObject=_db.UserValues.Where(x=>x.UserId==request.Id).FirstOrDefault();
+            var removeObject = _db.UserValues.FirstOrDefault(x => x.UserId == request.Id);
             if (removeObject != null)
             {
                 _db.UserValues.Remove(removeObject);
@@ -66,25 +68,21 @@ namespace VideoStreamingPlatform.Service
                 return new CommonResponse() { Id = request.Id, Message = "UserValue removed." };
             }
             throw new NullReferenceException("UserID provided in request does not exist.");
-
-
         }
 
-        // DA BI KORISNIK DOBIO PRIKAZ SVOJE E-MAIL ADRESE, TE PASSWORDA MORAT CE OPET NAKON LOGINA UNIJETI PASSWORD
-        // ISTA SITUACIJA CE BITI ZA EDIT/UPDATE
         public GetUserValuesResponse GetUserValues(GetUserValuesRequest request)
         {
-            var getUser = _db.UserValues.Where(x=>x.UserId==request.UserId).FirstOrDefault();
-            var response= new GetUserValuesResponse();
+            var getUser = _db.UserValues.FirstOrDefault(x => x.UserId == request.UserId);
+            var response = new GetUserValuesResponse();
             if (getUser != null)
             {
                 if (VerifyPassword(request.Password, getUser.PasswordHash))
                 {
-                response.UserId = getUser.UserId;
-                response.Email = getUser.Email;
-                response.Password = request.Password;
+                    response.UserId = getUser.UserId;
+                    response.Email = getUser.Email;
+                    response.Password = request.Password;
                 }
-                else {throw new InvalidOperationException("Provided password is incorrect."); }
+                else { throw new InvalidOperationException("Provided password is incorrect."); }
             }
             else
             {
@@ -94,33 +92,52 @@ namespace VideoStreamingPlatform.Service
             return response;
         }
 
-
-        //tek poslije get-a mozemo editovat vrijednosti kao user
         public CommonResponse UpdateUserValues(UpdateUserValuesRequest request)
         {
-            var updateUser= _db.UserValues.Where(x=>x.UserId==request.UserId).FirstOrDefault();
-            if (updateUser!=null)
+            var updateUser = _db.UserValues.FirstOrDefault(x => x.UserId == request.UserId);
+            if (updateUser != null)
             {
                 updateUser.Email = request.Email ?? updateUser.Email;
                 updateUser.PasswordHash = !string.IsNullOrEmpty(request.Password) ? HashPassword(request.Password) : updateUser.PasswordHash;
 
                 _db.SaveChanges();
-                return new CommonResponse() { Message="Vrijednosti usera sa proslijedjenim id-om su updateovane." };
+                return new CommonResponse() { Message = "User values updated." };
             }
             else
             {
-            throw new NullReferenceException("UserID provided in request does not exist.");
+                throw new NullReferenceException("UserID provided in request does not exist.");
             }
-
-
         }
 
+        public LoginResponse LoginUser(LoginRequest request)
+        {
+            var userValue = _db.UserValues.FirstOrDefault(x => x.Email == request.Email);
+            if (userValue == null)
+                throw new UnauthorizedAccessException("Email or password is incorrect.");
+            if (!VerifyPassword(request.Password, userValue.PasswordHash))
+                throw new UnauthorizedAccessException("Email or password is incorrect.");
+
+            var user = _db.Users.FirstOrDefault(x => x.UserId == userValue.UserId);
+            if (user == null)
+                throw new NullReferenceException("User not found.");
+
+            var token = GenerateJwtToken(user);
+
+            return new LoginResponse
+            {
+                Token = token,
+                UserId = user.UserId,
+                UserName = user.UserName,
+                TypeId = user.TypeId
+            };
+        }
 
         public bool IsValidEmail(string email)
-            {
-                string emailRegexPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-                return Regex.IsMatch(email, emailRegexPattern);
-            }
+        {
+            string emailRegexPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, emailRegexPattern);
+        }
+
         private string HashPassword(string password)
         {
             byte[] salt;
@@ -137,20 +154,16 @@ namespace VideoStreamingPlatform.Service
 
             return base64Hash;
         }
+
         public static bool VerifyPassword(string password, string hashedPassword)
         {
-            // Convert base64 to bytes
             byte[] hashBytes = Convert.FromBase64String(hashedPassword);
-
-            // Get the salt
             byte[] salt = new byte[16];
             Array.Copy(hashBytes, 0, salt, 0, 16);
 
-            // Compute the hash on the password the user entered
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
             byte[] hash = pbkdf2.GetBytes(20);
 
-            // Compare the hashes
             for (int i = 0; i < 20; i++)
             {
                 if (hashBytes[i + 16] != hash[i])
@@ -159,6 +172,43 @@ namespace VideoStreamingPlatform.Service
 
             return true;
         }
+
+        private string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecretKey);
+
+            if (key.Length != 32) // Ensure key is 256-bit
+                throw new InvalidOperationException("JWT Secret key must be 256 bits (32 bytes).");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, MapUserTypeToRole(user.TypeId))
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string MapUserTypeToRole(int typeId)
+        {
+            return typeId switch
+            {
+                1 => "Admin",
+                2 => "SuperAdmin",
+                3 => "User",
+                4 => "SubscribedUser",
+                _ => "User"
+            };
+        }
     }
 }
-
