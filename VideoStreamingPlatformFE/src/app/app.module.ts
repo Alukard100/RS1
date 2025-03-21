@@ -6,18 +6,21 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { CategoryComponent } from './components/category/category.component';
 import { VideoComponent } from './components/video/video.component';
-import { FormsModule } from '@angular/forms'
+import { FormsModule } from '@angular/forms';
+import { AuthComponent } from './components/auth/auth.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryComponent,
-    VideoComponent
+    VideoComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
     provideHttpClient(withFetch())
