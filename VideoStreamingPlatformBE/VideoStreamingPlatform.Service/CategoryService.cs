@@ -44,12 +44,17 @@ namespace VideoStreamingPlatform.Service
             } return false;
         }
 
-        public Category GetCategory(int categoryId)
+        public List<Category> GetCategory(int categoryId)
         {
+            if (categoryId == 0)
+            {
+                return _db.Categories.ToList();
+            }
+
             var existingCategory = _db.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
             if (existingCategory != null) 
             {
-                return existingCategory;
+                return new List<Category> { existingCategory };
             } return null;
         }
 

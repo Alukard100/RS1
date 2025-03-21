@@ -12,7 +12,7 @@ export class CategoryService {
   constructor(private apiService: APIService, private http: HttpClient) { }
   
 
-  fetchCategory(id : number = 2): Observable<any> {
+  fetchCategory(id : number = 0): Observable<any> {
     return this.http.get<any>(`${this.apiService.getApi()}/Category/GetCategory?CategoryId=${id}`);
   }
 

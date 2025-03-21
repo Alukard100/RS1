@@ -1,10 +1,23 @@
-<div>
-    <h2>Upload Video</h2>
-    <input type="file" (change)="onFileSelected($event)" accept="video/*" />
-    <input type="text" [(ngModel)]="videoData.videoName" placeholder="Video Name" />
-    <textarea [(ngModel)]="videoData.description" placeholder="Description"></textarea>
-    <label>
-      <input type="checkbox" [(ngModel)]="videoData.isFree" /> Is Free?
-    </label>
-    <button (click)="uploadVideo()">Upload</button>
-  </div>
+<div class="upload-container">
+  <h2>Upload Video</h2>
+
+  <input type="file" (change)="onFileSelected($event)" accept="video/*" class="input-file"/>
+  
+  <input type="text" [(ngModel)]="videoData.videoName" placeholder="Video Name" class="input-text"/>
+  
+  <textarea [(ngModel)]="videoData.description" placeholder="Description" class="input-textarea"></textarea>
+  
+  <label>
+    <input type="checkbox" [(ngModel)]="videoData.isFree" /> Is Free?
+  </label>
+
+  <!-- Dropdown for categories -->
+  <select [(ngModel)]="videoData.categoryId" class="dropdown">
+    <option value="0" disabled>Select a category</option>
+    <option *ngFor="let category of categories" [value]="category.categoryId">
+      {{ category.categoryName }}
+    </option>
+  </select>
+
+  <button (click)="uploadVideo()" class="upload-button">Upload</button>
+</div>

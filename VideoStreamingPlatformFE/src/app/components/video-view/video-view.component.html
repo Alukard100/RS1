@@ -1,0 +1,15 @@
+<div class="video-container">
+    <h2>{{ videoData.VideoName }}</h2>
+  
+    <video *ngIf="videoData.FilePath" controls>
+      <source [src]="videoData.FilePath" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  
+    <p><strong>Description:</strong> {{ videoData.Description }}</p>
+    <p><strong>Category:</strong> {{ videoData.CategoryName }}</p>
+    <p><strong>Uploaded by:</strong> {{ videoData.UserName }}</p>
+    <p><strong>Upload Date:</strong> {{ videoData.UploadDate | date:'medium' }}</p>
+    <p><strong>Views:</strong> {{ videoData.ClickCounter }}</p>
+  
+  </div>

@@ -3,9 +3,11 @@ using MediaToolkit.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
@@ -22,18 +24,29 @@ namespace VideoStreamingPlatform.Service
         private readonly IVideoStatisticService _videoStatisticService;
         private readonly IRatingSystemVideoService _ratingSystemVideo;
         private readonly IThumbnailInfoService _thumbnailInfoService;
+        private readonly string _videoDirectory;
+        private readonly IConfiguration _configuration;
         public VideoService(VideoStreamingPlatformContext dbContext,
                             IVideoStatisticService videoStatisticService,
                             IRatingSystemVideoService ratingSystemVideo,
-                            IThumbnailInfoService thumbnailInfoService) 
+                            IThumbnailInfoService thumbnailInfoService,
+                            IConfiguration configuration)
         {
             _db = dbContext;
             _videoStatisticService = videoStatisticService;
             _ratingSystemVideo = ratingSystemVideo;
             _thumbnailInfoService = thumbnailInfoService;
+            _configuration = configuration;
+        
+            _videoDirectory = Path.Combine(Directory.GetCurrentDirectory(), _configuration["VideoSettings:VideoDirectory"]);
+
+            if (!Directory.Exists(_videoDirectory))
+            {
+                Directory.CreateDirectory(_videoDirectory);
+            }
         }
         
-        public Video CreateVideo(CreateVideoRequest request, string videoDirectory)
+        public Video CreateVideo(CreateVideoRequest request, HttpContext httpContext)
         {
             if (request.file == null || request.file.Length == 0)
             {
@@ -46,12 +59,9 @@ namespace VideoStreamingPlatform.Service
                 return null;
             }
 
-            if (!Directory.Exists(videoDirectory))
-            {
-                Directory.CreateDirectory(videoDirectory);
-            }
+            
             var uniqueFileNmae = $"{Guid.NewGuid()}_{Path.GetFileName(request.file.FileName)}";
-            var filePath = Path.Combine(videoDirectory, uniqueFileNmae);
+            var filePath = Path.Combine(_videoDirectory, uniqueFileNmae);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 request.file.CopyTo(stream);
@@ -67,13 +77,14 @@ namespace VideoStreamingPlatform.Service
                 durationInSeconds = (int)inputFile.Metadata.Duration.TotalSeconds;
                 resolution = inputFile.Metadata.VideoData.FrameSize.ToString();
             }
+            var videoUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/videos/{uniqueFileNmae}";
 
             var newVideo = new Video()
             {
                 UserId = request.UserId,
                 CategoryId = request.CategoryId,
                 VideoName = request.VideoName,
-                FilePath = filePath,
+                FilePath = videoUrl,
                 Description = request.Description,
                 ResolutionType = resolution,
                 DurationInSecondes = durationInSeconds,
@@ -109,7 +120,14 @@ namespace VideoStreamingPlatform.Service
                     _ratingSystemVideo.DeleteRSV(tempVideo.RatingSystemVideos) &&
                     _thumbnailInfoService.DeleteThumbnail(tempVideo.ThumbnailInfos))
                 {
-                    File.Delete(tempVideo.FilePath);
+                    var fileName = Path.GetFileName(new Uri(tempVideo.FilePath).LocalPath);
+                    var physicalPath = Path.Combine(_videoDirectory, fileName);
+
+                    if (File.Exists(physicalPath))
+                    {
+                        File.Delete(physicalPath);
+                    }
+
                     _db.Videos.Remove(tempVideo);
                     _db.SaveChanges();
                     return true;

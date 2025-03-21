@@ -16,7 +16,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddDbContext<VideoStreamingPlatformContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -69,6 +68,7 @@ builder.Services.AddTransient<IThumbnailInfoService, ThumbnailInfoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IRatingSystemCommentService, RatingSystemCommentService>();
 
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -78,6 +78,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseHttpsRedirection();

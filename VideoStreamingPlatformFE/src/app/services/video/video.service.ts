@@ -13,4 +13,8 @@ export class VideoService {
   uploadVideo(videoData: FormData): Observable<any>{
     return this.http.post<any>(`${this.apiService.getApi()}/Video/CreateVideo`, videoData)
   }
+
+  fetchVideo(VideoID: number): Observable<any>{
+    return this.http.get<any>(`${this.apiService.getApi()}/Video/GetVideo?id=` + VideoID)
+  }
 }
