@@ -9,6 +9,7 @@ const routes: Routes = [
   // { path: 'Category', component: CategoryComponent }
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'video', component: VideoComponent },
 
   { path: 'login', component: AuthComponent },
 ];

@@ -49,7 +49,11 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-  private hasToken():boolean {
-    return !!localStorage.getItem('token');
+  hasToken(): boolean {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return !!localStorage.getItem('token');
+    }
+    return false;
   }
+
 }

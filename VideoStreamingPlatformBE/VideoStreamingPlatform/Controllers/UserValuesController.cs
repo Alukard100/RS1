@@ -16,7 +16,6 @@ namespace VideoStreamingPlatform.Controllers
             this.service = service;
         }
 
-        //Zavrsiti
         [HttpGet]
         [Route("GetUserValues")]
         public ActionResult<GetUserValuesResponse> GetUserValues([FromQuery] GetUserValuesRequest request)
