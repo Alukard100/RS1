@@ -2,6 +2,7 @@
 using MediaToolkit.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -166,6 +167,30 @@ namespace VideoStreamingPlatform.Service
                 return existingVideo;
             }
             return null;
+        }
+
+        public Stream StreamVideo(int VideoId)
+        {
+            var video = _db.Videos.FirstOrDefault(v =>v.VideoId == VideoId);
+            if (video == null || string.IsNullOrEmpty(video.FilePath))
+            {
+                return null;
+            }
+
+            var filePath = video.FilePath;
+
+
+            using (var httpClient = new HttpClient()) 
+            {
+                var response = httpClient.GetAsync(video.FilePath).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                var stream = response.Content.ReadAsStream();
+                return stream;
+
+            }
         }
 
         public Video UpdateVideo(UpdateVideoRequest request)

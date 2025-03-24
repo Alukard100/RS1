@@ -9,6 +9,7 @@ import { VideoComponent } from './components/video/video.component';
 import { FormsModule } from '@angular/forms';
 import { VideoViewComponent } from './components/video-view/video-view.component';
 import { AuthComponent } from './components/auth/auth.component';
+import { NavComponent } from './components/nav/nav.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { AuthComponent } from './components/auth/auth.component';
     CategoryComponent,
     VideoComponent,
     VideoViewComponent,
-    AuthComponent
+    AuthComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule,

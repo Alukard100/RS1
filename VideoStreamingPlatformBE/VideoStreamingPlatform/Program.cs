@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Service;
@@ -70,6 +71,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
 
 builder.Services.AddCors(options =>
 {

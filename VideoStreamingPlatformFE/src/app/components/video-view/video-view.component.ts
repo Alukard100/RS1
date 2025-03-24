@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { VideoService } from '../../services/video/video.service';
 import { ActivatedRoute } from '@angular/router';
 import { VideoResponse } from '../../interfaces/video-response';
+import { response } from 'express';
+import { error } from 'console';
+import { blob } from 'stream/consumers';
 
 @Component({
   selector: 'app-video-view',
@@ -22,18 +25,35 @@ export class VideoViewComponent implements OnInit{
     UserName: '',
     ClickCounter: 0
   }
+  videoUrl: any;
 
-  constructor(private videoService: VideoService, private route: ActivatedRoute) {}
+  constructor(private videoService: VideoService, private route: ActivatedRoute) {
+    this.getAll();
+  }
 
   ngOnInit() {
+    this.getAll();
+  }
+
+  getAll() {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
         this.videoData.VideoId = +id;
         this.getVideo(this.videoData.VideoId);
-
+        this.getVideoFile(this.videoData.VideoId);
       }
-    })
+    });
+  }
+
+  getVideoFile(videoId: number) {
+    this.videoService.getVideoFile(videoId).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        this.videoUrl = objectUrl;
+      },
+      error: (error) => console.error('Error fetching video: ', error)
+    });
   }
 
   getVideo(VideoID: number) {
