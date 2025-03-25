@@ -53,6 +53,18 @@ namespace VideoStreamingPlatform.Controllers
             var video = _service.GetVideo(id);
             return Ok(video);
         }
+
+        [HttpGet("stream/{videoId}")]
+        public IActionResult StreamVideo(int videoId)
+        {
+            var stream = _service.StreamVideo(videoId);
+            if (stream == null)
+            {
+                return NotFound();
+            }
+            return File(stream, "video/mp4", enableRangeProcessing: true);
+        }
+
         [HttpPatch]
         [Route("UpdateVideo")]
         public IActionResult UpdateVideo(UpdateVideoRequest request)

@@ -1,10 +1,13 @@
 <div class="video-container">
     <h2>{{ videoData.VideoName }}</h2>
   
-    <video *ngIf="videoData.FilePath" controls>
-      <source [src]="videoData.FilePath" type="video/mp4">
+    <video *ngIf="videoUrl" controls muted>
+      <source [src]="videoUrl" type="video/mp4">
       Your browser does not support the video tag.
     </video>
+    <button (click)="getAll()">Get Data</button>
+    <button (click)="getVideoFile(videoData.VideoId)">Load Video</button>
+
   
     <p><strong>Description:</strong> {{ videoData.Description }}</p>
     <p><strong>Category:</strong> {{ videoData.CategoryName }}</p>

@@ -1,0 +1,43 @@
+<nav class="navbar" [class.scrolled]="isScrolled">
+    <div class="nav-left">
+      <a routerLink="/" class="logo">Video Streaming Service</a>
+      <div class="nav-links">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/trending" routerLinkActive="active">Trending</a>
+        <a routerLink="/subscriptions" routerLinkActive="active">Subscriptions</a>
+        <a routerLink="/library" routerLinkActive="active">Library</a>
+      </div>
+    </div>
+  
+    <div class="nav-right">
+      <div class="search-box">
+        <input type="text" placeholder="Search">
+        <button class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      
+      <button class="upload-btn">
+        <i class="fas fa-video"></i>
+      </button>
+      
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" routerLinkActive="active" class="login-btn">
+          <i class="fas fa-user"></i>
+          <span>Sign In</span>
+        </a>
+      </ng-container>
+  
+      <ng-container *ngIf="isLoggedIn">
+        <div class="user-menu">
+          <button class="settings-btn" [routerLink]="['/settings']">
+            <i class="fas fa-cog"></i>
+          </button>
+          <div class="avatar">
+            <img src="assets/default-avatar.png" alt="User avatar">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </nav> 
