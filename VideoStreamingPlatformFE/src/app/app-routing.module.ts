@@ -6,8 +6,9 @@ import { VideoViewComponent } from './components/video-view/video-view.component
 import { AuthComponent } from './components/auth/auth.component';
 
 const routes: Routes = [
-  { path: 'CreateVideo', component: VideoComponent }, //sets /video to show Video Component 
+  { path: 'CreateVideo', component: VideoComponent }, //sets /video to show Video Component
   { path: 'video/:id', component: VideoViewComponent},
+
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthComponent },
 ];
