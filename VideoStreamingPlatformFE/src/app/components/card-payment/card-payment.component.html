@@ -1,0 +1,22 @@
+<div>
+  <h2>Card Payment</h2>
+
+  <form (ngSubmit)="submitPayment()">
+    <label>Amount:</label>
+    <input type="number" [(ngModel)]="paymentRequest.amount" name="amount" placeholder="Enter amount" required>
+
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="paymentRequest.email" name="email" placeholder="Enter email" required>
+
+    <label>Phone Number:</label>
+    <input type="text" [(ngModel)]="paymentRequest.phoneNumber" name="phoneNumber" placeholder="Enter phone number" required>
+
+    <!-- Stripe Card Element -->
+    <label>Credit Card Details:</label>
+    <div id="card-element"></div>
+
+    <button type="submit" [disabled]="!paymentRequest.amount || !paymentRequest.email || !paymentRequest.phoneNumber">Pay Now</button>
+  </form>
+
+  <p>{{ responseMessage }}</p>
+</div>

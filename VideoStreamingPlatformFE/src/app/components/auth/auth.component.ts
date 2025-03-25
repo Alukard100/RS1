@@ -6,8 +6,8 @@ import { LoginRequest } from '../../interfaces/Auth/login-request.interface';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
-  styleUrl: './auth.component.css',
-  standalone:false
+  styleUrls: ['./auth.component.css'],
+  standalone: false
 })
 export class AuthComponent {
   email: string = '';
@@ -22,12 +22,13 @@ export class AuthComponent {
     this.authService.login(request).subscribe({
       next: (response) => {
         this.authService.setSession(response);
-        //After successful login we will navigate to home
-        this.router.navigate(['/home']);
+        console.log('Logged in as:', this.authService.getUserName());
+        this.router.navigate(['/card-payment']);
       },
-      error: (error) => {
-        this.errorMessage = 'Invalid credentials. Try again.';
+      error: (err) => {
+        console.error('Login failed:', err);  // This will help you catch any issues
       }
     });
+
   }
 }

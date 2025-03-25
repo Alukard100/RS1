@@ -1,3 +1,6 @@
+/* Add Font Awesome icons */
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -12,30 +15,30 @@
     z-index: 1000;
     transition: background-color 0.3s;
   }
-  
+
   .navbar.scrolled {
     background: rgba(0, 0, 0, 0.95);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  
+
   .nav-left {
     display: flex;
     align-items: center;
     gap: 2rem;
   }
-  
+
   .logo {
     color: #e50914;
     font-size: 1.8rem;
     font-weight: bold;
     text-decoration: none;
   }
-  
+
   .nav-links {
     display: flex;
     gap: 1.5rem;
   }
-  
+
   .nav-links a {
     color: #fff;
     text-decoration: none;
@@ -44,22 +47,22 @@
     border-radius: 4px;
     transition: background-color 0.2s;
   }
-  
+
   .nav-links a:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .nav-links a.active {
     font-weight: 500;
     background-color: rgba(255, 255, 255, 0.2);
   }
-  
+
   .nav-right {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-  
+
   .search-box {
     display: flex;
     align-items: center;
@@ -67,7 +70,7 @@
     border-radius: 20px;
     padding: 0.3rem 1rem;
   }
-  
+
   .search-box input {
     background: transparent;
     border: none;
@@ -76,11 +79,11 @@
     width: 200px;
     outline: none;
   }
-  
+
   .search-box input::placeholder {
     color: rgba(255, 255, 255, 0.7);
   }
-  
+
   .search-btn, .upload-btn {
     background: transparent;
     border: none;
@@ -88,7 +91,7 @@
     cursor: pointer;
     padding: 0.5rem;
   }
-  
+
   .login-btn {
     display: flex;
     align-items: center;
@@ -100,36 +103,33 @@
     border-radius: 4px;
     transition: all 0.2s;
   }
-  
+
   .login-btn:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-  
-  /* Add Font Awesome icons */
-  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-  
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .navbar {
       padding: 0 1rem;
     }
-    
+
     .nav-links {
       display: none;
     }
-    
+
     .search-box input {
       width: 150px;
     }
-  } 
-  
+  }
+
   /* Add these to your existing styles */
   .user-menu {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-  
+
   .settings-btn {
     background: transparent;
     border: none;
@@ -138,11 +138,11 @@
     padding: 0.5rem;
     transition: transform 0.2s;
   }
-  
+
   .settings-btn:hover {
     transform: rotate(30deg);
   }
-  
+
   .avatar {
     display: flex;
     align-items: center;
@@ -152,30 +152,30 @@
     border-radius: 50%;
     transition: background-color 0.2s;
   }
-  
+
   .avatar:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .avatar img {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
   }
-  
+
   .avatar i {
     color: white;
     font-size: 0.8rem;
   }
-  
+
   /* Update responsive styles */
   @media (max-width: 768px) {
     .settings-btn span {
       display: none;
     }
-    
+
     .avatar i {
       display: none;
     }
-  } 
+  }
