@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using Stripe;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,11 +16,13 @@ namespace VideoStreamingPlatform.Service
 {
     public class CardPaymentService : ICardPaymentService
     {
-        //V/*ideoStreamingPlatformContext _db= new VideoStreamingPlatformContext();*/
         private readonly VideoStreamingPlatformContext _db;
-        public CardPaymentService(VideoStreamingPlatformContext dbContext)
+        private readonly IConfiguration _config;
+        public CardPaymentService(VideoStreamingPlatformContext dbContext, IConfiguration config)
         {
             _db = dbContext;
+            _config = config;
+            StripeConfiguration.ApiKey = _config["Stripe:SecretKey"];
         }
 
         public CommonResponse CreateCardPayment(CreateCardPaymentRequest request)
@@ -28,8 +32,35 @@ namespace VideoStreamingPlatform.Service
             {
                 throw new NullReferenceException("UserId provided in request does not exist.");
             }
+
+            var options = new ChargeCreateOptions
+            {
+                Amount = (long)(request.Amount * 100), // Convert dollars to cents
+                Currency = "bam",
+                Description = $"Wallet recharge for user {request.UserId}",
+                Source = request.StripeToken, // Token from frontend (card input)
+                Metadata = new Dictionary<string, string>
+    {
+        { "UserId", request.UserId.ToString() },
+        { "WalletRecharge", "true" },
+        { "Platform", "VideoStreamingPlatform" },
+        { "Email", request.Email },
+        { "PhoneNumber", request.PhoneNumber }
+    }
+            };
+
+            var service = new ChargeService();
+            Charge charge = service.Create(options);
+
+            if (charge.Status!="succeeded")
+            {
+                throw new Exception("Payment failed, please try again.");
+            }
+
+
+            //Višak? nema potrebe spašavati u db ako imamo mogućnost prosljeđivanja više podataka u naš stripe servis
             //Paypal servisom cu provjeriti da li je kartica vazeca i ako je response OK mijenjam stanje walleta datom useru
-            var cardPayment = new CardPayment()
+            /*var cardPayment = new CardPayment()
             {
                 UserId = request.UserId,
                 Amount = request.Amount,
@@ -37,17 +68,27 @@ namespace VideoStreamingPlatform.Service
                 CardNumber = request.CardNumber,
                 ExpirationDate = request.ExpirationDate,
                 TransactionDate = DateTime.Now                
-            };
+            };*/
 
-            var userWallet = _db.Wallets.Where(x=>x.UserId == request.UserId).FirstOrDefault();
+            var userWallet = _db.Wallets.FirstOrDefault(x=>x.UserId == request.UserId);
+            if (userWallet == null)
+            {
+                userWallet = new Wallet { UserId = request.UserId, Balance = request.Amount };
+                _db.Wallets.Add(userWallet);
+            }
+            else
+            {
             userWallet.Balance += request.Amount;
+            }
 
-            var response= _db.CardPayments.Add(cardPayment);
 
+            
             _db.SaveChanges();
 
-            return new CommonResponse() { Id = response.Entity.PaymentId, Message = $"Card payment is created for user ID> {response.Entity.UserId}" };
-
+            return new CommonResponse
+            {
+                Message = $"Wallet balance updated by {request.Amount}BAM, for user {request.UserId}"
+            };
         }
 
         public List<GetCardPaymentResponse>GetCardPayment(GetCardPaymentRequest request)
