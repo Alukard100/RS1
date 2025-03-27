@@ -9,24 +9,8 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
-  isScrolled = false;
-  isLoggedIn = false;
-  private scrollHandler: (() => void) | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor() {}
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.scrollHandler = () => {
-        this.isScrolled = window.scrollY > 0;
-      };
-      window.addEventListener('scroll', this.scrollHandler);
-    }
-  }
 
-  ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId) && this.scrollHandler) {
-      window.removeEventListener('scroll', this.scrollHandler)
-    }
-  }
 }

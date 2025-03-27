@@ -29,6 +29,7 @@ namespace VideoStreamingPlatform.Controllers
             }
             string videoDirectory = _videoSettings.VideoDirectory;
             var video = _service.CreateVideo(request, HttpContext);
+
             return Ok(video);
         }
         [HttpDelete]
@@ -46,11 +47,15 @@ namespace VideoStreamingPlatform.Controllers
         [Route("GetVideo")]
         public IActionResult GetVideo(int id)
         {
-            if (id == null ||id <= 0)
+            if (id == null)
             {
                 return BadRequest("Video doesn't exist");
             }
             var video = _service.GetVideo(id);
+            if (video == null)
+            {
+                return BadRequest("Video doesn't exist");
+            }
             return Ok(video);
         }
 

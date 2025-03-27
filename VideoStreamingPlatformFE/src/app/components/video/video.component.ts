@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { Video } from '../../interfaces/video';
 import { VideoService } from '../../services/video/video.service';
 import { CategoryService } from '../../services/category/category.service';
-import { response } from 'express';
-import { error } from 'console';
 import { Category } from '../../interfaces/category';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-video',
@@ -15,7 +15,11 @@ import { Category } from '../../interfaces/category';
 })
 export class VideoComponent {
   videoFile!: File;
-  
+  fileName = 'No file uploaded yet.';
+  uploadProgress = 0;
+  isUploading = false;
+  uploadSub!: Subscription | null;
+
   videoData: Video = {
     
     video: new File([], ''),
@@ -23,7 +27,7 @@ export class VideoComponent {
     description: '',
     isFree: true,
     userId: 2, // Placeholder, to be replaced with dynamic userId
-    categoryId: 1 // 0 Placeholder, implemented category select
+    categoryId: 0
   };
 
   categories: Category[] = [];
@@ -38,6 +42,7 @@ export class VideoComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.videoFile = input.files[0];
+      this.fileName = this.videoFile.name;
       this.videoData.video = this.videoFile;
     }
   }
@@ -45,6 +50,16 @@ export class VideoComponent {
   uploadVideo() {
     if  (this.videoData.categoryId === 0) {
       alert('Please select a category before uploading!');
+      return;
+    }
+
+    if (!this.videoData.videoName.trim()) {
+      alert('Please enter a valid name');
+      return;
+    }
+
+    if (!this.videoFile) {
+      alert('Please sleect a video file first!');
       return;
     }
 
@@ -56,10 +71,48 @@ export class VideoComponent {
     formData.append('userId', this.videoData.userId.toString());
     formData.append('categoryId', this.videoData.categoryId.toString());
 
-    this.videoService.uploadVideo(formData).subscribe({
-      next: (response) => console.log('Upload Successful: ', response),
-      error: (error) => console.error('Upload error: ', error)
+    this.isUploading = true;
+    this.uploadProgress = 0;
+
+    this.uploadSub = this.videoService.uploadVideo(formData).subscribe({
+      next: (event: HttpEvent<any>) => {
+        	console.log('Upload Event:', event.type);
+
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = event.total
+            ? Math.round(100 * (event.loaded / event.total))
+            : Math.round(100 * (event.loaded / this.videoFile.size));
+          console.log('UP Loaded: ', event.loaded);
+          console.log('UP Total: ', event.total);
+          console.log('UP File size: ', this.videoFile.size);
+          console.log(`UP File is ${this.uploadProgress}% uploaded.`);
+        } else if (event.type === HttpEventType.DownloadProgress) {
+          this.uploadProgress = event.total
+            ? Math.round(100 * (event.loaded / event.total))
+            : Math.round(100 * (event.loaded / this.videoFile.size));
+          console.log(`DP File is ${this.uploadProgress}% uploaded.`);
+        } else if (event.type === HttpEventType.Response) {
+          console.log('Upload Successful:', event.body);
+          this.isUploading = false;
+          this.uploadSub = null;
+        }
+      },
+      error: (error) => {
+        console.error('Upload error: ', error);
+        this.isUploading = false;
+        this.uploadSub = null;
+      }
     });
+  }
+
+  cancelUpload() {
+    if (this.uploadSub) {
+      this.uploadSub.unsubscribe();
+      this.uploadSub = null;
+      this.isUploading = false;
+      this.uploadProgress = 0;
+      console.log('Upload canceled');
+    }
   }
 
   getCategories() {

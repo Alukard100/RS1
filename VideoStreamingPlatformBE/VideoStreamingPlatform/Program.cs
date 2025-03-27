@@ -72,6 +72,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = long.MaxValue; // Set to max possible value
+});
 
 builder.Services.AddCors(options =>
 {

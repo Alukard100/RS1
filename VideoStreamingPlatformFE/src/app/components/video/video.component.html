@@ -1,23 +1,41 @@
-<div class="upload-container">
-  <h2>Upload Video</h2>
+<!-- Display none file upload -->
+<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
 
-  <input type="file" (change)="onFileSelected($event)" accept="video/*" class="input-file"/>
-  
-  <input type="text" [(ngModel)]="videoData.videoName" placeholder="Video Name" class="input-text"/>
-  
-  <textarea [(ngModel)]="videoData.description" placeholder="Description" class="input-textarea"></textarea>
-  
-  <label>
-    <input type="checkbox" [(ngModel)]="videoData.isFree" /> Is Free?
-  </label>
+<!-- Video Name -->
+<mat-form-field appearance="fill">
+  <mat-label>Name of the video</mat-label>
+  <input matInput [(ngModel)]="videoData.videoName" required type="text">
+</mat-form-field>
 
-  <!-- Dropdown for categories -->
-  <select [(ngModel)]="videoData.categoryId" class="dropdown">
-    <option value="0" disabled>Select a category</option>
-    <option *ngFor="let category of categories" [value]="category.categoryId">
-      {{ category.categoryName }}
-    </option>
-  </select>
-
-  <button (click)="uploadVideo()" class="upload-button">Upload</button>
+<!-- Displayed File Upload -->
+<div class="file-upload">
+  <span *ngIf="fileName">{{ fileName }}</span>
+  <button mat-mini-fab color="primary" class="upload-button" (click)="fileUpload.click()">
+    <mat-icon>attach_file</mat-icon>
+  </button>
 </div>
+<!-- Progress bar -->
+<div class="progress">
+  <mat-progress-bar *ngIf="isUploading" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+  <button mat-mini-fab color="warn" *ngIf="isUploading" (click)="cancelUpload()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+</div>
+
+<!-- Description -->
+<mat-form-field appearance="fill">
+  <mat-label>Description of your video</mat-label>
+  <input matInput [(ngModel)]="videoData.description" type="text">
+</mat-form-field>
+
+<!-- Dropdown for categories -->
+<mat-form-field appearance="fill">
+  <mat-label>Cateogry</mat-label>
+  <mat-select [(ngModel)]="videoData.categoryId" required>
+    <mat-option *ngFor="let category of categories" [value]="category.categoryId">
+      {{ category.categoryName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<button mat-raised-button color="accent" (click)="uploadVideo()">Upload</button>

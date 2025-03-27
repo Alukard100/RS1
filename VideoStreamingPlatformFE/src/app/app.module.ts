@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { VideoViewComponent } from './components/video-view/video-view.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { NavComponent } from './components/nav/nav.component';
+import { MaterialModule } from './material/material.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { NavComponent } from './components/nav/nav.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule
   ],
   providers: [
     provideHttpClient(withFetch())
