@@ -1,11 +1,20 @@
 <!-- Display none file upload -->
-<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+<input type="file" #file class="file-input" (change)="onFileSelected($event)" #fileUpload>
 
 <!-- Video Name -->
 <mat-form-field appearance="fill">
   <mat-label>Name of the video</mat-label>
   <input matInput [(ngModel)]="videoData.videoName" required type="text">
 </mat-form-field>
+
+<div class="dropzone">
+  <mat-icon>upload</mat-icon>
+  <div>Drag and drop your file here</div>
+  <div>or</div>
+  <button mat-mini-fab color="primary" class="upload-button" (click)="fileUpload.click()">
+    <mat-icon>attach_file</mat-icon>
+  </button>
+</div>
 
 <!-- Displayed File Upload -->
 <div class="file-upload">

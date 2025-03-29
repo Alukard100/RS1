@@ -1,5 +1,14 @@
 
-
 .file-input {
    display: none;
+ }
+
+ .dropzone {
+  width: 450px;
+  height: 200px;
+  padding: 2rem;
+  text-align: center;
+  border: dashed 1px #979797;
+  position: relative;
+  margin: 0 auto;
  }
