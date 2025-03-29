@@ -10,6 +10,7 @@ import { VideoViewComponent } from './components/video-view/video-view.component
 import { AuthComponent } from './components/auth/auth.component';
 import { NavComponent } from './components/nav/nav.component';
 import {CardPaymentComponent} from './components/card-payment/card-payment.component';
+import { SupportComponent } from './components/support/support.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
     VideoViewComponent,
     AuthComponent,
     NavComponent,
-    CardPaymentComponent
+    CardPaymentComponent,
+    SupportComponent
   ],
   imports: [
     BrowserModule,

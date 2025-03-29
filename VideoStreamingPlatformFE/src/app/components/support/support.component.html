@@ -1,0 +1,17 @@
+<div class="support-container">
+  <h2>Support</h2>
+
+  <div class="message-list">
+    <div *ngFor="let msg of supportMessages" class="message">
+      <p>{{ msg.Body }}</p>
+      <small>Sent: {{ msg.TimeSent | date:'short' }}</small>
+      <span *ngIf="msg.Seen" class="seen-indicator">✔ Seen</span>
+      <button (click)="deleteMessage(msg.SupportId)">Delete</button>
+    </div>
+  </div>
+
+  <div class="message-input">
+    <input [(ngModel)]="newMessage" placeholder="Type your message..." />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>

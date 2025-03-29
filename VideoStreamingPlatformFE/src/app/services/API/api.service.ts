@@ -37,6 +37,12 @@ export class APIService {
     return this.http.get<T>(url);
   }
 
+  deleteFromEndpoint<T>(endpoint: string, body?: any): Observable<T> {
+    const url = `${this.apiUrl}/${endpoint}`;
+    return this.http.request<T>('DELETE', url, { body });
+  }
+
+
   // Getter for API base URL
   getApi(): string {
     return this.apiUrl;
