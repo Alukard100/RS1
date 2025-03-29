@@ -1,22 +1,77 @@
-<div>
+<div class="card-payment-container">
   <h2>Card Payment</h2>
 
-  <form (ngSubmit)="submitPayment()">
-    <label>Amount:</label>
-    <input type="number" [(ngModel)]="paymentRequest.amount" name="amount" placeholder="Enter amount" required>
+  <form (ngSubmit)="submitPayment()" #paymentForm="ngForm">
+    <div class="form-group">
+      <label for="amount">Amount:</label>
+      <input
+        type="number"
+        id="amount"
+        [(ngModel)]="paymentRequest.amount"
+        name="amount"
+        placeholder="Enter amount"
+        required
+        min="1"
+        class="form-control"
+      />
+    </div>
 
-    <label>Email:</label>
-    <input type="email" [(ngModel)]="paymentRequest.email" name="email" placeholder="Enter email" required>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="paymentRequest.email"
+        name="email"
+        placeholder="Enter email"
+        required
+        class="form-control"
+      />
+    </div>
 
-    <label>Phone Number:</label>
-    <input type="text" [(ngModel)]="paymentRequest.phoneNumber" name="phoneNumber" placeholder="Enter phone number" required>
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number:</label>
+      <input
+        type="text"
+        id="phoneNumber"
+        [(ngModel)]="paymentRequest.phoneNumber"
+        name="phoneNumber"
+        placeholder="Enter phone number"
+        required
+        class="form-control"
+      />
+    </div>
 
     <!-- Stripe Card Element -->
-    <label>Credit Card Details:</label>
-    <div id="card-element"></div>
+    <div class="form-group">
+      <label for="card-element">Credit Card Details:</label>
+      <div id="card-element"></div>
+    </div>
 
-    <button type="submit" [disabled]="!paymentRequest.amount || !paymentRequest.email || !paymentRequest.phoneNumber">Pay Now</button>
+    <button
+      type="submit"
+      [disabled]="!paymentRequest.amount || !paymentRequest.email || !paymentRequest.phoneNumber || !paymentForm.valid"
+      class="btn btn-primary"
+    >
+      Pay Now
+    </button>
   </form>
 
-  <p>{{ responseMessage }}</p>
+  <hr />
+
+  <h3>Activate Promo Code</h3>
+  <div class="form-group">
+    <input
+      type="text"
+      [(ngModel)]="promoCode"
+      name="promoCode"
+      placeholder="Enter Promo Code"
+      class="form-control"
+    />
+  </div>
+  <button (click)="activatePromoCode()" class="btn btn-secondary">Apply</button>
+
+  <div *ngIf="responseMessage" class="response-message" [ngClass]="{'success-message': responseMessageType === 'success', 'error-message': responseMessageType === 'error'}">
+    <p>{{ responseMessage }}</p>
+  </div>
 </div>

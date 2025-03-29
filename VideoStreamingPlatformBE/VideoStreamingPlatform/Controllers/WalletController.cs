@@ -33,8 +33,9 @@ namespace VideoStreamingPlatform.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("EnterPromoCode")]
+        [Authorize(Roles = "Admin,User")]
         public IActionResult EnterPromoCode([FromBody] EnterPromoCodeRequest request)
         {
             try
@@ -49,7 +50,6 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         [HttpGet("GetWallet")]
-        [Authorize]
         public ActionResult<GetWalletResponse> GetWallet([FromQuery]GetWalletRequest request)
         {
             try

@@ -14,4 +14,12 @@ export class CardPaymentService {
   createCardPayment(paymentData: any): Observable<any> {
     return this.apiService.postToEndpoint(this.endpoint, paymentData);
   }
+  enterPromoCode(request: { userId: number; codeValue: string }): Observable<any> {
+    return this.apiService.postToEndpoint('Wallet/EnterPromoCode', request);
+  }
+
+  getWallet(walletData: any): Observable<any> {
+    return this.apiService.getFromEndpoint('Wallet/GetWallet');
+  }
+
 }

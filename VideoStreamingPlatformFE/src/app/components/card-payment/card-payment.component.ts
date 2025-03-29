@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CardPaymentService } from '../../services/Payment/card-payment.service';
 import { Router } from '@angular/router';
 import { Stripe, StripeCardElement, loadStripe } from '@stripe/stripe-js';
-import { AuthService } from '../../services/Auth/auth.service'; // Import AuthService
+import { AuthService } from '../../services/Auth/auth.service';
 
 @Component({
   selector: 'app-card-payment',
@@ -15,23 +15,25 @@ export class CardPaymentComponent implements OnInit, OnDestroy {
     amount: null,
     email: '',
     phoneNumber: '',
-    stripeToken: '', // This will store the token after Stripe Elements generates it
-    userId: 0, // Add userId here
+    stripeToken: '',
+    userId: 0,
   };
 
+  promoCode: string = '';
   stripe: Stripe | null = null;
   card: StripeCardElement | null = null;
   responseMessage: string = '';
+  responseMessageType: 'success' | 'error' = 'success'; // For response message styling
 
   constructor(
     private cardPaymentService: CardPaymentService,
-    private authService: AuthService, // Inject AuthService
+    private authService: AuthService,
     private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
     // Load Stripe.js
-    this.stripe = await loadStripe('pk_test_51PMQchKZoDCpubn2bI9WLY1IXjMt4KUV16IvFKRFXAMmXQGdV1XS7DjzdxFNr4lYD8ZDPMcHMfWGfuVEYdxvWSod002MraW1y6'); // Use your Stripe publishable key
+    this.stripe = await loadStripe('pk_test_51PMQchKZoDCpubn2bI9WLY1IXjMt4KUV16IvFKRFXAMmXQGdV1XS7DjzdxFNr4lYD8ZDPMcHMfWGfuVEYdxvWSod002MraW1y6');
 
     if (this.stripe) {
       const elements = this.stripe.elements();
@@ -49,6 +51,8 @@ export class CardPaymentComponent implements OnInit, OnDestroy {
 
   async submitPayment() {
     if (!this.stripe || !this.card) {
+      this.responseMessage = 'Stripe is not properly loaded.';
+      this.responseMessageType = 'error';
       return;
     }
 
@@ -56,31 +60,69 @@ export class CardPaymentComponent implements OnInit, OnDestroy {
 
     if (error) {
       this.responseMessage = `Error: ${error.message}`;
+      this.responseMessageType = 'error';
       return;
     }
 
     // Get userId from AuthService
     const userId = this.authService.getUserId();
 
-    // Check if the userId exists before proceeding
     if (userId === 0) {
       this.responseMessage = 'User ID is invalid or missing';
+      this.responseMessageType = 'error';
       return;
     }
 
     // Add userId to the payment request
     this.paymentRequest.stripeToken = token.id;
-    this.paymentRequest.userId = userId; // Add userId here
+    this.paymentRequest.userId = userId;
 
-    // Send the payment data (including the token and userId) to your backend
     this.cardPaymentService.createCardPayment(this.paymentRequest).subscribe(
       (response) => {
         this.responseMessage = 'Payment Successful!';
+        this.responseMessageType = 'success';
         this.router.navigate(['/payment-success']);
       },
       (error) => {
-        console.error(error); // Log the error for debugging
+        console.error(error);
         this.responseMessage = `Payment Failed: ${error.message}`;
+        this.responseMessageType = 'error';
+      }
+    );
+  }
+
+  activatePromoCode() {
+    const userId = this.authService.getUserId();
+
+    if (!userId || userId <= 0) {
+      this.responseMessage = 'User ID is missing or invalid.';
+      this.responseMessageType = 'error';
+      return;
+    }
+
+    if (!this.promoCode || this.promoCode.trim() === '') {
+      this.responseMessage = 'Please enter a promo code.';
+      this.responseMessageType = 'error';
+      return;
+    }
+
+    const request = {
+      userId: userId,
+      codeValue: this.promoCode.trim(), // Trim extra spaces
+    };
+
+    console.log('Sending request:', request);
+
+    this.cardPaymentService.enterPromoCode(request).subscribe(
+      (response) => {
+        console.log('Promo Code Response:', response);
+        this.responseMessage = response.message;
+        this.responseMessageType = 'success';
+      },
+      (error) => {
+        console.error('Promo Code Error:', error);
+        this.responseMessage = `Promo Code Activation Failed: ${error.error}`;
+        this.responseMessageType = 'error';
       }
     );
   }
