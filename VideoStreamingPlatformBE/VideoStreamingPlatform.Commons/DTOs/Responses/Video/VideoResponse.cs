@@ -11,7 +11,6 @@ namespace VideoStreamingPlatform.Commons.DTOs.Responses.Video
         public int VideoId { get; set; }
         public string VideoName { get; set; }
         public string Description { get; set; }
-        public string FilePath { get; set; }
         public DateTime UploadDate { get; set; }
         public int CategoryId { get; set; }
         public string CategoryNmae { get; set; }

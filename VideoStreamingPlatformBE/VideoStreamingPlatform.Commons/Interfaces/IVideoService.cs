@@ -14,7 +14,7 @@ namespace VideoStreamingPlatform.Commons.Interfaces
     {
         public Video CreateVideo(CreateVideoRequest request, HttpContext httpContext);
         public bool DeleteVideo(int VideoId);
-        public VideoResponse GetVideo(int VideoId);
+        public List<VideoResponse> GetVideo(int VideoId);
         public Stream StreamVideo(int VideoId);
         public Video UpdateVideo(UpdateVideoRequest request);
     }

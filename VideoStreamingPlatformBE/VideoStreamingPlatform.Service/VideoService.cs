@@ -63,8 +63,10 @@ namespace VideoStreamingPlatform.Service
             
             var uniqueFileNmae = $"{Guid.NewGuid()}_{Path.GetFileName(request.file.FileName)}";
             var filePath = Path.Combine(_videoDirectory, uniqueFileNmae);
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
+
                 request.file.CopyTo(stream);
             }
 
@@ -137,20 +139,18 @@ namespace VideoStreamingPlatform.Service
             return false;
         }
 
-        public VideoResponse GetVideo(int VideoId)
+        public List<VideoResponse> GetVideo(int VideoId)
         {
-            var existingVideo = _db.Videos
+            var query = _db.Videos
                     .Include(v => v.Category)
                     .Include(v => v.User)
                     .Include(v => v.VideoStatistics)
                     .Include(v => v.ThumbnailInfos)
-                    .Where(v => v.VideoId == VideoId)
                     .Select(v => new VideoResponse
                     {
                         VideoId = v.VideoId,
                         VideoName = v.VideoName,
                         Description = v.Description,
-                        FilePath = v.FilePath,
                         UploadDate = v.UploadDate,
                         CategoryId = v.Category.CategoryId,
                         CategoryNmae = v.Category.CategoryName,
@@ -159,14 +159,15 @@ namespace VideoStreamingPlatform.Service
                         ClickCounter = v.VideoStatistics.ClickCounter,
                         ThumbnailInfoId = v.ThumbnailInfos.ThumbnailInfoId,
                         ThumbnailPicture = v.ThumbnailInfos.ThumbnailPicture
+                    });
 
-                    })
-                    .FirstOrDefault();
-            if (existingVideo != null)
+            if (VideoId == 0)
             {
-                return existingVideo;
+                return query.ToList();
             }
-            return null;
+
+            var existingVideo = query.FirstOrDefault(v => v.VideoId == VideoId);
+            return existingVideo != null ? new List<VideoResponse> { existingVideo } : null;
         }
 
         public Stream StreamVideo(int VideoId)
