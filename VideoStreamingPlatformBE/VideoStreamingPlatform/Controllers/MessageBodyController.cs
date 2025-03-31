@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.MessageBody;
 using VideoStreamingPlatform.Commons.Interfaces;
+using VideoStreamingPlatform.Hubs;
+using System.Threading.Tasks;
 
 namespace VideoStreamingPlatform.Controllers
 {
@@ -9,20 +12,26 @@ namespace VideoStreamingPlatform.Controllers
     [Route("[controller]")]
     public class MessageBodyController : ControllerBase
     {
-        IMessageBodyService _service;
+        private readonly IMessageBodyService _service;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public MessageBodyController(IMessageBodyService service)
+        public MessageBodyController(IMessageBodyService service, IHubContext<ChatHub> hubContext)
         {
             _service = service;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
         [Route("CreateMessageBody")]
-        public IActionResult CreateMessageBody([FromBody]CreateMessageBodyRequest request)
+        public async Task<IActionResult> CreateMessageBody([FromBody] CreateMessageBodyRequest request)
         {
             try
             {
-            var response = _service.CreateMessageBody(request);
+                var response = await _service.CreateMessageBody(request);
+
+                await _hubContext.Clients.User(request.MsgRecieverId.ToString())
+                    .SendAsync("ReceiveMessage", request.MsgSenderId, request.Body);
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -33,26 +42,11 @@ namespace VideoStreamingPlatform.Controllers
 
         [HttpDelete]
         [Route("DeleteMessageBody")]
-        public IActionResult DeleteMessageBody([FromBody]CommonDeleteRequest request)
+        public async Task<IActionResult> DeleteMessageBody([FromBody] CommonDeleteRequest request)
         {
             try
             {
-                var response = _service.DeleteMessageBody(request);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-               return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut]
-        [Route("UpdateMessageBody")]
-        public IActionResult UpdateMessageBody([FromBody]UpdateMessageBodyRequest request)
-        {
-            try
-            {
-                var response = _service.UpdateMessageBody(request);
+                var response = await _service.DeleteMessageBody(request);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -61,21 +55,33 @@ namespace VideoStreamingPlatform.Controllers
             }
         }
 
-        // DODATI GET ZA PORUKE ZA USERE KOJI SE NALAZE ILI U RECIEVERU ILI U SENDERU
-
-        [HttpGet]
-        [Route("GetMessageBody")]
-        public IActionResult GetMessageBody([FromQuery] GetMessageBodyRequest request)
+        [HttpPut]
+        [Route("UpdateMessageBody")]
+        public async Task<IActionResult> UpdateMessageBody([FromBody] UpdateMessageBodyRequest request)
         {
             try
             {
-                var response = _service.GetMessageBody(request);
+                var response = await _service.UpdateMessageBody(request);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                return BadRequest(ex.Message);
+            }
+        }
 
-                throw;
+        [HttpGet]
+        [Route("GetMessageBody")]
+        public async Task<IActionResult> GetMessageBody([FromQuery] GetMessageBodyRequest request)
+        {
+            try
+            {
+                var response = await _service.GetMessageBody(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -31,40 +31,48 @@ namespace VideoStreamingPlatform.Service
                 TimeSent = DateTime.Now,
                 UserId = request.UserId
             };
-            var response=_db.Supports.Add(noviSupport);
+            var response = _db.Supports.Add(noviSupport);
             _db.SaveChanges();
-            return new CommonResponse() { Id=response.Entity.SupportId };
+            return new CommonResponse() { Id = response.Entity.SupportId };
         }
-    public CommonResponse DeleteSupport(CommonDeleteRequest request)
-    {
-        var supportZaBrisanje = _db.Supports.Where(x=>x.SupportId==request.Id).FirstOrDefault();
-        if (supportZaBrisanje != null)
+        public CommonResponse DeleteSupport(CommonDeleteRequest request)
+        {
+            var supportZaBrisanje = _db.Supports.Where(x => x.SupportId == request.Id).FirstOrDefault();
+            if (supportZaBrisanje != null)
             {
                 _db.Supports.Remove(supportZaBrisanje);
-                _db.SaveChanges(); 
-                return new CommonResponse() { Message="Support deleted.", Id = request.Id };
+                _db.SaveChanges();
+                return new CommonResponse() { Message = "Support deleted.", Id = request.Id };
             }
             throw new NullReferenceException("Object with provided ID does not exist.");
-    }
-    public List<GetSupportResponse> GetSupport(GetSupportRequest request)
-    {
-            var response=_db.Supports.Where(x=>x.UserId==request.UserId).ToList();
+        }
+        public List<GetSupportResponse> GetSupport(GetSupportRequest request)
+        {
+            IQueryable<Support> query = _db.Supports;
 
-            List<GetSupportResponse>returnLIst=new List<GetSupportResponse>();
+            if (request.UserId.HasValue) // If UserId is provided, filter the support requests for that user
+            {
+                query = query.Where(x => x.UserId == request.UserId.Value);
+            }
+
+            var response = query.ToList();
+
+            List<GetSupportResponse> returnList = new List<GetSupportResponse>();
 
             foreach (var item in response)
             {
-                returnLIst.Add(new GetSupportResponse
+                returnList.Add(new GetSupportResponse
                 {
-                    UserId=item.UserId,
-                    Body=item.Body,
-                    TimeSent=item.TimeSent,
-                    Seen=item.Seen
-                });                
+                    UserId = item.UserId,
+                    Body = item.Body,
+                    TimeSent = item.TimeSent,
+                    Seen = item.Seen
+                });
             }
-            return returnLIst;
-    }
-    }
+
+            return returnList;
+        }
 
 
+    }
 }

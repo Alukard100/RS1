@@ -8,6 +8,6 @@ namespace VideoStreamingPlatform.Commons.DTOs.Requests.Support
 {
     public class GetSupportRequest
     {
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
     }
 }

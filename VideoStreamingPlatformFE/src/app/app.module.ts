@@ -11,6 +11,9 @@ import { AuthComponent } from './components/auth/auth.component';
 import { NavComponent } from './components/nav/nav.component';
 import { MaterialModule } from './material/material.module';
 import {CardPaymentComponent} from './components/card-payment/card-payment.component';
+import { SupportComponent } from './components/support/support.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
     VideoViewComponent,
     AuthComponent,
     NavComponent,
-    CardPaymentComponent
+    CardPaymentComponent,
+    SupportComponent,
+    ChatComponent,
+    ChatListComponent
   ],
   imports: [
     BrowserModule,

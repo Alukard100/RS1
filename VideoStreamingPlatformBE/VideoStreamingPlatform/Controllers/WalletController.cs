@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Wallet;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Wallet;
 using VideoStreamingPlatform.Commons.Interfaces;
@@ -15,8 +16,7 @@ namespace VideoStreamingPlatform.Controllers
         {
             _service = service;
         }
-        // Koristen trigger CreateWalletOnUserInsert u bazi podataka, koji se okida na stvaranje novog usera kojem dodjeljuje balance=0
-        // te uzima njegov id, tako da cu praviti samo GET i PUT metodu
+        
 
         [HttpPut]
         [Route("UpdateWallet")]
@@ -33,8 +33,9 @@ namespace VideoStreamingPlatform.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("EnterPromoCode")]
+        [Authorize(Roles = "Admin,User")]
         public IActionResult EnterPromoCode([FromBody] EnterPromoCodeRequest request)
         {
             try

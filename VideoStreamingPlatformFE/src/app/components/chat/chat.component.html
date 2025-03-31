@@ -1,0 +1,14 @@
+<!-- chat.component.html -->
+<div *ngFor="let user of users" (click)="selectUser(user.id)">
+  <p>{{ user.name }}</p>
+</div>
+
+<div *ngIf="selectedUserId">
+  <h3>Chat with {{ selectedUserId }}</h3>
+  <div *ngFor="let message of messages">
+    <p>{{ message.body }} - {{ message.timeSent }}</p>
+  </div>
+
+  <textarea [(ngModel)]="messageBody" placeholder="Type a message"></textarea>
+  <button (click)="sendMessage()">Send</button>
+</div>

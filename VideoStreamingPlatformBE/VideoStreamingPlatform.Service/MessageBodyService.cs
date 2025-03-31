@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.MessageBody;
@@ -10,90 +9,87 @@ using VideoStreamingPlatform.Commons.DTOs.Responses.MessageBody;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database;
 using VideoStreamingPlatform.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace VideoStreamingPlatform.Service
 {
     public class MessageBodyService : IMessageBodyService
     {
-        //VideoStreamingPlatformContext db = new VideoStreamingPlatformContext();
         private readonly VideoStreamingPlatformContext db;
+
         public MessageBodyService(VideoStreamingPlatformContext dbContext)
         {
             db = dbContext;
         }
 
-        public CommonResponse CreateMessageBody(CreateMessageBodyRequest request)
+        public async Task<CommonResponse> CreateMessageBody(CreateMessageBodyRequest request)
         {
-            var SenderExist = db.Users.Where(x => x.UserId == request.MsgSenderId).FirstOrDefault();
-            if (SenderExist==null) { throw new InvalidOperationException("Posiljalac ne postoji."); }
-            var RecieverExist = db.Users.Where(x => x.UserId == request.MsgRecieverId).FirstOrDefault();
-            if (RecieverExist==null) { throw new InvalidOperationException("Primalac ne postoji."); }
-            
+            var senderExists = await db.Users.FirstOrDefaultAsync(x => x.UserId == request.MsgSenderId);
+            var receiverExists = await db.Users.FirstOrDefaultAsync(x => x.UserId == request.MsgRecieverId);
 
-            var newObject = new MessageBody()
+            if (senderExists == null) throw new InvalidOperationException("Pošiljalac ne postoji.");
+            if (receiverExists == null) throw new InvalidOperationException("Primalac ne postoji.");
+
+            var newMessage = new MessageBody
             {
                 MsgSenderId = request.MsgSenderId,
                 MsgRecieverId = request.MsgRecieverId,
                 Body = request.Body,
-                Seen=request.Seen,
-                TimeSent=request.TimeSent,                
+                Seen = false,
+                TimeSent = DateTime.UtcNow
             };
-            var response=db.MessageBodies.Add(newObject);
-            db.SaveChanges();
 
-            return new CommonResponse() { Id = response.Entity.MessagebodyId };
+            await db.MessageBodies.AddAsync(newMessage);
+            await db.SaveChangesAsync();
+
+            return new CommonResponse { Id = newMessage.MessagebodyId };
         }
 
-        public CommonResponse DeleteMessageBody(CommonDeleteRequest request)
+        public async Task<CommonResponse> DeleteMessageBody(CommonDeleteRequest request)
         {
-            var removeObject= db.MessageBodies.Where(x=>x.MessagebodyId==request.Id).FirstOrDefault();
-            if (removeObject==null) { throw new InvalidOperationException("Poruka ne postoji."); }
-            db.MessageBodies.Remove(removeObject);
-            db.SaveChanges();
-            return new CommonResponse() { Id = request.Id };
+            var message = await db.MessageBodies.FindAsync(request.Id);
+            if (message == null) throw new InvalidOperationException("Poruka ne postoji.");
+
+            db.MessageBodies.Remove(message);
+            await db.SaveChangesAsync();
+
+            return new CommonResponse { Id = request.Id };
         }
-        public CommonResponse UpdateMessageBody(UpdateMessageBodyRequest request)
+
+        public async Task<CommonResponse> UpdateMessageBody(UpdateMessageBodyRequest request)
         {
-            var updateObject=db.MessageBodies.Where(x=>x.MessagebodyId==request.MessagebodyId).FirstOrDefault();
-            if (updateObject==null)
-            {
-             throw new InvalidOperationException("Poruka ne postoji."); 
-            }
-            updateObject.Body= request.Body;
-            db.SaveChanges();
-            return new CommonResponse() { Id = request.MessagebodyId };
+            var message = await db.MessageBodies.FindAsync(request.MessagebodyId);
+            if (message == null) throw new InvalidOperationException("Poruka ne postoji.");
+
+            message.Body = request.Body;
+            await db.SaveChangesAsync();
+
+            return new CommonResponse { Id = request.MessagebodyId };
         }
 
-        public List<GetMessageBodyResponse> GetMessageBody(GetMessageBodyRequest request)
+        public async Task<List<GetMessageBodyResponse>> GetMessageBody(GetMessageBodyRequest request)
         {
-            var Ucesnik1 = db.Users.Where(x => x.UserId == request.MsgRecieverId || x.UserId == request.MsgSenderId).FirstOrDefault();
-            var Ucesnik2 = db.Users.Where(x => (x.UserId == request.MsgRecieverId || x.UserId == request.MsgSenderId) && x.UserId!=Ucesnik1.UserId).FirstOrDefault();
-            if(Ucesnik1!=null && Ucesnik2 != null) {           
+            var user1 = await db.Users.FirstOrDefaultAsync(x => x.UserId == request.MsgRecieverId || x.UserId == request.MsgSenderId);
+            var user2 = await db.Users.FirstOrDefaultAsync(x => (x.UserId == request.MsgRecieverId || x.UserId == request.MsgSenderId) && x.UserId != user1.UserId);
 
-            var response = db.MessageBodies.Where(x=>(request.MsgSenderId == Ucesnik1.UserId && request.MsgRecieverId == Ucesnik2.UserId) ||
-                (request.MsgSenderId== Ucesnik2.UserId && request.MsgRecieverId== Ucesnik1.UserId)).ToList();
+            if (user1 == null || user2 == null)
+                throw new InvalidOperationException("Jedan od proslijeđenih korisnika ne postoji!");
 
-            var dataList= new List<GetMessageBodyResponse>();
+            var messages = await db.MessageBodies
+                .Where(x =>
+                    (x.MsgSenderId == user1.UserId && x.MsgRecieverId == user2.UserId) ||
+                    (x.MsgSenderId == user2.UserId && x.MsgRecieverId == user1.UserId))
+                .ToListAsync();
 
-            foreach (var item in response)
+            return messages.Select(m => new GetMessageBodyResponse
             {
-                dataList.Add(new GetMessageBodyResponse()
-                {
-                    MessagebodyId = item.MessagebodyId,
-                    MsgRecieverId = item.MsgRecieverId,
-                    MsgSenderId = item.MsgSenderId,
-                    Body = item.Body,
-                    Seen = item.Seen,
-                    TimeSent = item.TimeSent
-                });
-            }
-            return dataList;
-            }
-            else
-            {
-                throw new InvalidOperationException("Jedan od proslijedjenih korisnika ne postoji!");
-            }
+                MessagebodyId = m.MessagebodyId,
+                MsgRecieverId = m.MsgRecieverId,
+                MsgSenderId = m.MsgSenderId,
+                Body = m.Body,
+                Seen = m.Seen,
+                TimeSent = m.TimeSent
+            }).ToList();
         }
-
     }
 }
