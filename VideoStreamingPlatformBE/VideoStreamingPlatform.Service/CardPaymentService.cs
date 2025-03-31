@@ -35,10 +35,10 @@ namespace VideoStreamingPlatform.Service
 
             var options = new ChargeCreateOptions
             {
-                Amount = (long)(request.Amount * 100), // Convert dollars to cents
+                Amount = (long)(request.Amount * 100),
                 Currency = "bam",
                 Description = $"Wallet recharge for user {request.UserId}",
-                Source = request.StripeToken, // Token from frontend (card input)
+                Source = request.StripeToken,
                 Metadata = new Dictionary<string, string>
     {
         { "UserId", request.UserId.ToString() },

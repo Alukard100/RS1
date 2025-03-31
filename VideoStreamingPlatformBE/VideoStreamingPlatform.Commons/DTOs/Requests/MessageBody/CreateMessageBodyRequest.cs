@@ -11,7 +11,5 @@ namespace VideoStreamingPlatform.Commons.DTOs.Requests.MessageBody
         public int MsgSenderId { get; set; }
         public int MsgRecieverId { get; set; }
         public string Body { get; set; } = null!;
-        public DateTime TimeSent { get; set; }
-        public bool Seen { get; set; }
     }
 }

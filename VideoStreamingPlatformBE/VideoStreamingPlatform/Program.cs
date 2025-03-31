@@ -7,6 +7,7 @@ using System.Text;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database;
+using VideoStreamingPlatform.Hubs;
 using VideoStreamingPlatform.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ var keyBytes = Encoding.ASCII.GetBytes(jwtKey);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -135,6 +137,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 
 
 app.Run();

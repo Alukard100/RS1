@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.MessageBody;
@@ -12,10 +9,9 @@ namespace VideoStreamingPlatform.Commons.Interfaces
 {
     public interface IMessageBodyService
     {
-        CommonResponse CreateMessageBody(CreateMessageBodyRequest request);
-        CommonResponse DeleteMessageBody(CommonDeleteRequest request);
-        CommonResponse UpdateMessageBody(UpdateMessageBodyRequest request);
-        List<GetMessageBodyResponse> GetMessageBody(GetMessageBodyRequest request);
-        
+        Task<CommonResponse> CreateMessageBody(CreateMessageBodyRequest request);
+        Task<CommonResponse> DeleteMessageBody(CommonDeleteRequest request);
+        Task<CommonResponse> UpdateMessageBody(UpdateMessageBodyRequest request);
+        Task<List<GetMessageBodyResponse>> GetMessageBody(GetMessageBodyRequest request);
     }
 }

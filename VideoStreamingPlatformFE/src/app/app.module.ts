@@ -11,6 +11,8 @@ import { AuthComponent } from './components/auth/auth.component';
 import { NavComponent } from './components/nav/nav.component';
 import {CardPaymentComponent} from './components/card-payment/card-payment.component';
 import { SupportComponent } from './components/support/support.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { SupportComponent } from './components/support/support.component';
     AuthComponent,
     NavComponent,
     CardPaymentComponent,
-    SupportComponent
+    SupportComponent,
+    ChatComponent,
+    ChatListComponent
   ],
   imports: [
     BrowserModule,

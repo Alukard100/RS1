@@ -38,6 +38,7 @@ export class APIService {
     return this.http.request<T>('DELETE', url, { body, headers: this.getHeaders() });
   }
 
+
   // Generic method for PUT requests
   putToEndpoint<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.apiUrl}/${endpoint}`;
