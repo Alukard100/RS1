@@ -10,6 +10,7 @@ using VideoStreamingPlatform.Commons.DTOs.Responses;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Wallet;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Database;
+using VideoStreamingPlatform.Database.Models;
 
 namespace VideoStreamingPlatform.Service
 {
@@ -37,8 +38,14 @@ namespace VideoStreamingPlatform.Service
         }
         public CommonResponse EnterPromoCode(EnterPromoCodeRequest request)
         {
+
             var checkPromoCode= _db.ActivePromoCodes.Where(x=>x.CodeValue==request.CodeValue).FirstOrDefault();
             var userWallet= _db.Wallets.Where(x=> x.UserId==request.UserId).FirstOrDefault();
+            if (userWallet == null)
+            {
+                userWallet = new Wallet { UserId = request.UserId, Balance = 0 };
+                _db.Wallets.Add(userWallet);
+            }
             if (checkPromoCode != null && checkPromoCode.IsUsed==false)
             {
                 userWallet.Balance += checkPromoCode.Balance;
