@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.DTOs.Requests.UserValues;
 using VideoStreamingPlatform.Commons.DTOs.Responses.UserValues;
@@ -80,17 +81,34 @@ namespace VideoStreamingPlatform.Controllers
 
         [HttpPost]
         [Route("LoginUser")]
-        public ActionResult<LoginResponse> LoginUser([FromBody] LoginRequest request)
+        public IActionResult LoginUser([FromBody] LoginRequest request)
         {
-            try
+            var response = service.LoginUser(request);
+            if (response != null)
             {
-                var response = service.LoginUser(request);
+                var sendCodeResponse = service.SendVerificationCode(new SendMailRequest { Email = request.Email });
+                if (sendCodeResponse.Success==false)
+                {
+                    return BadRequest("Failed to send verification code.");
+                }
+                return Ok(new { Message = "Verification code sent to email." });
+            }
+
+            return Unauthorized("Invalid credentials.");
+        }
+
+        [HttpPost]
+        [Route("VerifyCode")]
+        public IActionResult VerifyCode([FromBody] VerifyCodeRequest request)
+        {
+            var response = service.VerifyCode(request);
+            if (response != null)
+            {
                 return Ok(response);
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Unauthorized("Invalid verification code.");
         }
+
     }
 }

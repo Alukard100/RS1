@@ -8,10 +8,21 @@ public class LoginRequest
 
 public class LoginResponse
 {
-    public string Token { get; set; }
-    public int UserId { get; set; }
-    public string UserName { get; set; }
-    public int TypeId{ get; set; }
+    public string? Token { get; set; }
+    public int? UserId { get; set; }
+    public string? UserName { get; set; }
+    public int? TypeId{ get; set; }
 }
 
+public class VerifyCodeRequest
+{
+    public int UserId { get; set; }
+    public string Code{ get; set; }
+}
+
+public class SendMailRequest
+{
+    public int UserId { get; set; }
+    public string Email { get; set; }
+}
 

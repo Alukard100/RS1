@@ -1,8 +1,10 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,11 +24,14 @@ namespace VideoStreamingPlatform.Service
     {
         private readonly VideoStreamingPlatformContext _db;
         private readonly string _jwtSecretKey;
+        private readonly IEmailService _emailService;
+        private readonly Dictionary<int, string> _verificationCodes = new Dictionary<int, string>();
 
-        public UserValuesService(VideoStreamingPlatformContext dbContext)
+        public UserValuesService(VideoStreamingPlatformContext dbContext, IEmailService emailService)
         {
             _db = dbContext;
             _jwtSecretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ?? throw new Exception("JWT Secret key not set.");
+            _emailService = emailService;
         }
 
         public CommonResponse CreateUserValues(CreateUserValuesRequest request)
@@ -58,6 +63,7 @@ namespace VideoStreamingPlatform.Service
             return new CommonResponse() { Id = response.Entity.UserValuesId, Message = "UserValue successfully added." };
         }
 
+        
         public CommonResponse DeleteUserValues(CommonDeleteRequest request)
         {
             var removeObject = _db.UserValues.FirstOrDefault(x => x.UserId == request.Id);
@@ -92,6 +98,8 @@ namespace VideoStreamingPlatform.Service
             return response;
         }
 
+        
+
         public CommonResponse UpdateUserValues(UpdateUserValuesRequest request)
         {
             var updateUser = _db.UserValues.FirstOrDefault(x => x.UserId == request.UserId);
@@ -109,7 +117,7 @@ namespace VideoStreamingPlatform.Service
             }
         }
 
-        public LoginResponse LoginUser(LoginRequest request)
+        public CommonResponse LoginUser(LoginRequest request)
         {
             var userValue = _db.UserValues.FirstOrDefault(x => x.Email == request.Email);
             if (userValue == null)
@@ -121,15 +129,70 @@ namespace VideoStreamingPlatform.Service
             if (user == null)
                 throw new NullReferenceException("User not found.");
 
-            var token = GenerateJwtToken(user);
+            //var token = GenerateJwtToken(user);
 
-            return new LoginResponse
+            return new CommonResponse();
+        }
+
+        public LoginResponse VerifyCode(VerifyCodeRequest request)
+        {
+            if (_verificationCodes.ContainsKey(request.UserId))
             {
-                Token = token,
-                UserId = user.UserId,
-                UserName = user.UserName,
-                TypeId = user.TypeId
-            };
+                if (_verificationCodes[request.UserId] == request.Code)
+                {
+                    _verificationCodes.Remove(request.UserId);
+
+                    var userValue = _db.UserValues.FirstOrDefault(x => x.UserId == request.UserId);
+                    if (userValue == null)
+                    {
+                        throw new NullReferenceException("User not found.");
+                    }
+
+                    var user = _db.Users.FirstOrDefault(x => x.UserId == userValue.UserId);
+                    if (user == null)
+                    {
+                        throw new NullReferenceException("User not found.");
+                    }
+
+                    var token = GenerateJwtToken(user);
+
+                    return new LoginResponse
+                    {
+                        Token = token,
+                        UserId = user.UserId,
+                        UserName = user.UserName,
+                        TypeId = user.TypeId
+                    };
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("Invalid verification code.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("Verification code has expired or not found.");
+            }
+        }
+
+        public CommonResponse SendVerificationCode(SendMailRequest request)
+        {
+            var verificationCode = GenerateVerificationCode();
+
+            _verificationCodes[request.UserId]=verificationCode;
+
+            var subject = "Your Verification Login Code :: VideoStreamingPlatform";
+            var body = $"Your verification code is: {verificationCode} ";
+            try
+            {
+                _emailService.SendEmail(request.Email,subject,body);
+                return new CommonResponse() {Success=true, Message = $"Verification code sent to email."};
+            }
+            catch (Exception ex)
+            {
+
+                return new CommonResponse() {Success=false ,Message = $"Error sending email {ex.Message}"};
+            }
         }
 
         public bool IsValidEmail(string email)
@@ -198,7 +261,11 @@ namespace VideoStreamingPlatform.Service
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
+        private string GenerateVerificationCode()
+        {
+            var rng = new Random();
+            return rng.Next(100000, 999999).ToString();
+        }
         private string MapUserTypeToRole(int typeId)
         {
             return typeId switch
