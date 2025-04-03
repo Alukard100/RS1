@@ -11,3 +11,17 @@
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
   </form>
 </div>
+
+<!-- Modal for verification code -->
+<div *ngIf="showVerificationModal" class="modal">
+  <div class="modal-content">
+    <h3>Enter the Verification Code</h3>
+    <form (ngSubmit)="onVerifyCode()">
+      <label for="verificationCode">Verification Code:</label>
+      <input type="text" [(ngModel)]="verificationCode" name="verificationCode" required />
+      <button type="submit">Verify Code</button>
+      <button type="button" (click)="closeModal()">Cancel</button>
+    </form>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
+</div>

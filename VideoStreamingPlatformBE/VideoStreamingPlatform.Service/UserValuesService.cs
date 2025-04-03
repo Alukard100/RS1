@@ -182,7 +182,21 @@ namespace VideoStreamingPlatform.Service
             _verificationCodes[request.UserId]=verificationCode;
 
             var subject = "Your Verification Login Code :: VideoStreamingPlatform";
-            var body = $"Your verification code is: {verificationCode} ";
+            var body = @"
+    <html>
+    <body>
+        <h2 style='color: #4CAF50;'>Your Verification Code</h2>
+        <p style='font-family: Arial, sans-serif; font-size: 16px;'>
+            Your verification code is: <span style='font-weight: bold; font-size: 18px; color: #FF5733;'>"
+            + verificationCode + @"
+            </span>
+        </p>
+        <p style='font-family: Arial, sans-serif; font-size: 14px; color: #888;'>
+            This code will expire in 10 minutes.
+        </p>
+    </body>
+    </html>";
+
             try
             {
                 _emailService.SendEmail(request.Email,subject,body);
