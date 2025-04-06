@@ -9,7 +9,8 @@ namespace VideoStreamingPlatform.Commons.DTOs.Requests.Video
 {
     public class CreateVideoRequest
     {
-        public IFormFile file {  get; set; }
+        public string filePath {  get; set; }
+        public string RealFilePath { get; set; }
         public string VideoName { get; set; }
         public string Description { get; set; }
         public bool IsFree { get; set; }

@@ -1,4 +1,5 @@
-﻿using MediaToolkit;
+﻿using Azure.Core;
+using MediaToolkit;
 using MediaToolkit.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -46,31 +47,45 @@ namespace VideoStreamingPlatform.Service
                 Directory.CreateDirectory(_videoDirectory);
             }
         }
-        
-        public Video CreateVideo(CreateVideoRequest request, HttpContext httpContext)
+
+        public async Task<(string videoUrl, string filePath)> UploadVideoFile(IFormFile file, HttpContext httpContext)
         {
-            if (request.file == null || request.file.Length == 0)
+            if (file == null || file.Length == 0)
             {
-                return null;
+                return (null, null);
             }
             var allowedExtensions = new[] { ".mp4", ".mov", ".avi" };
-            var extension = Path.GetExtension(request.file.FileName).ToLower();
-            if (!Array.Exists(allowedExtensions, ext => ext == extension))
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            if (!allowedExtensions.Contains(extension))
             {
-                return null;
+                return (null, null);
             }
 
-            
-            var uniqueFileNmae = $"{Guid.NewGuid()}_{Path.GetFileName(request.file.FileName)}";
+            var uniqueFileNmae = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
             var filePath = Path.Combine(_videoDirectory, uniqueFileNmae);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
 
-                request.file.CopyTo(stream);
+                await file.CopyToAsync(stream);
             }
 
-            var inputFile = new MediaFile { Filename = filePath };
+            httpContext.Items["RealFilePath"] = filePath;
+
+            var videoUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/videos/{uniqueFileNmae}";
+
+            return (videoUrl, filePath);
+        }
+
+        public Video CreateVideo(CreateVideoRequest request)
+        {
+       
+            if (string.IsNullOrWhiteSpace(request.RealFilePath))
+            {
+                return null;
+            }
+            
+            var inputFile = new MediaFile { Filename = request.RealFilePath};
             int durationInSeconds = 0;
             string resolution = "Unknown";
 
@@ -80,14 +95,13 @@ namespace VideoStreamingPlatform.Service
                 durationInSeconds = (int)inputFile.Metadata.Duration.TotalSeconds;
                 resolution = inputFile.Metadata.VideoData.FrameSize.ToString();
             }
-            var videoUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/videos/{uniqueFileNmae}";
 
             var newVideo = new Video()
             {
                 UserId = request.UserId,
                 CategoryId = request.CategoryId,
                 VideoName = request.VideoName,
-                FilePath = videoUrl,
+                FilePath = request.filePath,
                 Description = request.Description,
                 ResolutionType = resolution,
                 DurationInSecondes = durationInSeconds,

@@ -12,7 +12,8 @@ namespace VideoStreamingPlatform.Commons.Interfaces
 {
     public interface IVideoService
     {
-        public Video CreateVideo(CreateVideoRequest request, HttpContext httpContext);
+        public Video CreateVideo(CreateVideoRequest request);
+        public Task<(string videoUrl, string filePath)> UploadVideoFile(IFormFile file, HttpContext httpContext);
         public bool DeleteVideo(int VideoId);
         public List<VideoResponse> GetVideo(int VideoId);
         public Stream StreamVideo(int VideoId);

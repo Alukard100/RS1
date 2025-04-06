@@ -1,5 +1,6 @@
 export interface Video {
-    video : File;
+    filePath: string;
+    RealFilePath: string;
     videoName : string;
     description : string;
     isFree : boolean;

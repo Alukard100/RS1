@@ -19,16 +19,37 @@ namespace VideoStreamingPlatform.Controllers
         }
 
         [HttpPost]
+        [Route("UploadVideoFile")]
+        public async Task<IActionResult> UploadVideoFile()
+        {
+            var formCollection = await Request.ReadFormAsync();
+            var file = formCollection.Files.FirstOrDefault();
+
+            if (file == null) {
+                return BadRequest("No file provided");
+            }
+
+            var (videoUrl, filePath) = await _service.UploadVideoFile(file, HttpContext);
+
+            if (string.IsNullOrEmpty(videoUrl))
+            {
+                return BadRequest("Video file is incorrect or failed to upload.");
+            }
+
+            return Ok(new { videoUrl, filePath });
+        }
+
+        [HttpPost]
         [Route("CreateVideo")]
         public IActionResult CreateVideo([FromForm] CreateVideoRequest request)
         {
 
-            if (request.file == null || request.file.Length == 0)
+            if (request == null)
             {
                 return BadRequest("Video file not provided or is empty.");
             }
             string videoDirectory = _videoSettings.VideoDirectory;
-            var video = _service.CreateVideo(request, HttpContext);
+            var video = _service.CreateVideo(request);
 
             return Ok(video);
         }
