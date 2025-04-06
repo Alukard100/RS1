@@ -1,6 +1,12 @@
 export interface LoginResponse {
-  Token: string;
-  UserId: number;
-  UserName: string;
-  TypeId: number;
+  userId: number;
+  userName: string;
+  typeId: number;
+}
+
+export interface VerifiedCodeResponse {
+  token: string;
+  userId: number;
+  userName: string;
+  typeId: number;
 }

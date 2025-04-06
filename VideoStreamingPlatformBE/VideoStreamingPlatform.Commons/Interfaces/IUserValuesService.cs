@@ -10,8 +10,8 @@ public interface IUserValuesService
     GetUserValuesResponse GetUserValues(GetUserValuesRequest request);
     CommonResponse UpdateUserValues(UpdateUserValuesRequest request);
 
-    CommonResponse LoginUser(LoginRequest request);
+    LoginResponse LoginUser(LoginRequest request);
 
     CommonResponse SendVerificationCode(SendMailRequest request);
-    LoginResponse VerifyCode(VerifyCodeRequest request);
+    VerifiedCodeResponse VerifyCode(VerifyCodeRequest request);
 }

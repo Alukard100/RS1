@@ -91,7 +91,7 @@ namespace VideoStreamingPlatform.Controllers
                 {
                     return BadRequest("Failed to send verification code.");
                 }
-                return Ok(new { Message = "Verification code sent to email." });
+                return Ok(response);
             }
 
             return Unauthorized("Invalid credentials.");

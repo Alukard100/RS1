@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Net.Mail;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
 using VideoStreamingPlatform.Commons.Interfaces;
@@ -7,21 +8,30 @@ namespace VideoStreamingPlatform.Service
 {
     public class EmailService : IEmailService
     {
+        private readonly IConfiguration _config;
+        public EmailService(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public void SendEmail(string to, string subject, string body)
         {
-            var smtpClient = new SmtpClient("smtp.gmail.com")
+            var smtpClient = new SmtpClient(_config["EmailSettings:SmtpServer"])
             {
-                Port = 587,
-                Credentials = new NetworkCredential("your-email@gmail.com", "your-password"),
+                Port = int.Parse(_config["EmailSettings:Port"]),
+                Credentials = new NetworkCredential(
+                    _config["EmailSettings:SenderEmail"],
+                    _config["EmailSettings:SenderPassword"]
+                ),
                 EnableSsl = true,
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("your-email@gmail.com"),
+                From = new MailAddress(_config["EmailSettings:SenderEmail"]),
                 Subject = subject,
                 Body = body,
-                IsBodyHtml = false,
+                IsBodyHtml = true,
             };
 
             mailMessage.To.Add(to);

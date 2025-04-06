@@ -8,10 +8,17 @@ public class LoginRequest
 
 public class LoginResponse
 {
-    public string? Token { get; set; }
     public int? UserId { get; set; }
     public string? UserName { get; set; }
     public int? TypeId{ get; set; }
+}
+
+public class VerifiedCodeResponse
+{
+    public string Token { get; set; }
+    public int UserId { get; set; }
+    public string UserName { get; set; }
+    public int TypeId { get; set; }
 }
 
 public class VerifyCodeRequest

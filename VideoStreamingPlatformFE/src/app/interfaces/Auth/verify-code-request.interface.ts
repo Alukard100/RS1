@@ -1,4 +1,4 @@
 export interface VerifyCodeRequest {
-  userId: number;
-  code: string;
+  UserId: number;
+  Code: string;
 }

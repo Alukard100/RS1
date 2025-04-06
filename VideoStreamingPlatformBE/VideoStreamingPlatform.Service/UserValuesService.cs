@@ -25,7 +25,8 @@ namespace VideoStreamingPlatform.Service
         private readonly VideoStreamingPlatformContext _db;
         private readonly string _jwtSecretKey;
         private readonly IEmailService _emailService;
-        private readonly Dictionary<int, string> _verificationCodes = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> _verificationCodes = new();
+
 
         public UserValuesService(VideoStreamingPlatformContext dbContext, IEmailService emailService)
         {
@@ -97,8 +98,7 @@ namespace VideoStreamingPlatform.Service
 
             return response;
         }
-
-        
+                
 
         public CommonResponse UpdateUserValues(UpdateUserValuesRequest request)
         {
@@ -117,7 +117,7 @@ namespace VideoStreamingPlatform.Service
             }
         }
 
-        public CommonResponse LoginUser(LoginRequest request)
+        public LoginResponse LoginUser(LoginRequest request)
         {
             var userValue = _db.UserValues.FirstOrDefault(x => x.Email == request.Email);
             if (userValue == null)
@@ -129,14 +129,17 @@ namespace VideoStreamingPlatform.Service
             if (user == null)
                 throw new NullReferenceException("User not found.");
 
-            //var token = GenerateJwtToken(user);
-
-            return new CommonResponse();
+            return new LoginResponse
+            {
+                UserId = user.UserId,
+                UserName=user.UserName,
+                TypeId=user.TypeId
+            };
         }
 
-        public LoginResponse VerifyCode(VerifyCodeRequest request)
+        public VerifiedCodeResponse VerifyCode(VerifyCodeRequest request)
         {
-            if (_verificationCodes.ContainsKey(request.UserId))
+            if (_verificationCodes.TryGetValue(request.UserId, out var storedCode))
             {
                 if (_verificationCodes[request.UserId] == request.Code)
                 {
@@ -156,7 +159,7 @@ namespace VideoStreamingPlatform.Service
 
                     var token = GenerateJwtToken(user);
 
-                    return new LoginResponse
+                    return new VerifiedCodeResponse
                     {
                         Token = token,
                         UserId = user.UserId,
@@ -177,7 +180,15 @@ namespace VideoStreamingPlatform.Service
 
         public CommonResponse SendVerificationCode(SendMailRequest request)
         {
+            var userToVerify = _db.UserValues.FirstOrDefault(x => x.Email.Equals(request.Email));
+            if (userToVerify == null)
+            {
+                throw new NullReferenceException("User with the provided email not found.");
+            }
+
             var verificationCode = GenerateVerificationCode();
+            Console.WriteLine($"Storing code {verificationCode} for UserId {userToVerify.UserId.Value}");
+            _verificationCodes[userToVerify.UserId.Value] = verificationCode;
 
             _verificationCodes[request.UserId]=verificationCode;
 

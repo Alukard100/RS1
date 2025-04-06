@@ -15,7 +15,7 @@
     password: string = '';
     verificationCode: string = '';
     errorMessage: string = '';
-    showVerificationModal: boolean = false;  // Flag to show/hide modal
+    showVerificationModal: boolean = false;
 
     constructor(private authService: AuthService, private router: Router) {}
 
@@ -24,42 +24,51 @@
 
       this.authService.login(request).subscribe({
         next: (response) => {
-          this.authService.setSession(response);
+          console.log('Login response:', response);
+
+          // Use the correct casing based on the JSON keys
+          localStorage.setItem('typeId', response.typeId?.toString() ?? '');
+          localStorage.setItem('userId', response.userId?.toString() ?? '');
+          localStorage.setItem('userName', response.userName ?? '');
+
           console.log('Logged in as:', this.authService.getUserName());
 
-          // Show the verification modal after successful login
           this.showVerificationModal = true;
         },
         error: (err) => {
           console.error('Login failed:', err);
           this.errorMessage = 'Login failed, please try again.';
+          localStorage.clear();
         }
       });
     }
 
+
     onVerifyCode() {
-      const userId = this.authService.getUserId();
-      const request: VerifyCodeRequest = { userId, code: this.verificationCode };
+      const UserId = this.authService.getUserId();
+      const request: VerifyCodeRequest = { UserId, Code: this.verificationCode };
 
       this.authService.verifyCode(request).subscribe({
         next: (response) => {
-          if (response && response.Token) {
-            // Set the session and navigate to another page
+          console.log('Verification response:', response);
+
+          if (response && response.token) {
             this.authService.setSession(response);
             this.router.navigate(['/card-payment']);
           } else {
             this.errorMessage = 'Invalid verification code.';
+            localStorage.clear();
           }
         },
         error: (err) => {
           console.error('Verification failed:', err);
           this.errorMessage = 'Verification failed, please try again.';
+
+          localStorage.clear();
         }
       });
-
-      // Close the modal after submitting
-      this.showVerificationModal = false;
     }
+
 
     closeModal() {
       this.showVerificationModal = false;

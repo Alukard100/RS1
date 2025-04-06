@@ -118,6 +118,8 @@ builder.Services.AddTransient<IRatingSystemVideoService, RatingSystemVideoServic
 builder.Services.AddTransient<IThumbnailInfoService, ThumbnailInfoService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IRatingSystemCommentService, RatingSystemCommentService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 
 builder.Services.AddHttpClient();
 
