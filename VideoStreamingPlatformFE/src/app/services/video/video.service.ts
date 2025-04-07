@@ -12,7 +12,7 @@ export class VideoService {
   
   uploadVideoFile(videoData: FormData): Observable<any>{
     return this.http.post(`${this.apiService.getApi()}/Video/UploadVideoFile`, videoData, {
-      //headers: new HttpHeaders(),
+      headers: new HttpHeaders(),
       reportProgress: true,
       observe: 'events'
     })
@@ -20,7 +20,7 @@ export class VideoService {
 
   uploadVideo(videoData: FormData): Observable<HttpEvent<any>>{
     return this.http.post<any>(`${this.apiService.getApi()}/Video/CreateVideo`, videoData, {
-      //headers: new HttpHeaders(),
+      headers: new HttpHeaders(),
       reportProgress: true,
       observe: 'events'
     })
