@@ -1,4 +1,15 @@
 
+.upload-card {
+  width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.container {
+  width: 550px;
+}
+
 .file-input {
    display: none;
  }
@@ -11,4 +22,84 @@
   border: dashed 1px #979797;
   position: relative;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background-color: #fafafa;
+  transition: all 0.3s ease-in-out;
+
  }
+
+ .progress {
+  width: 516px;
+  margin: 10px auto 0 auto;
+ }
+ .progress div {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+ }
+
+ .vName {
+  display: flex;
+  width: 90%;
+  margin: 0 auto;
+ }
+
+.vDescription {
+  width: 516px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.vCategoryConfirm {
+  width: 516px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.uploadIcon {
+  width: 34px;
+  height: 34px;
+  font-size: 34px;
+  background-color: #3f51b5;
+  border-radius: 50px;
+  padding: 5px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+ }
+
+.dropzone.dragging {
+  background-color: #e3f2fd;
+  border-color: #3f51b5;
+  box-shadow: 0 0 20px rgba(63, 81, 181, 0.5);
+  animation: pulse-border 1.2s infinite ease-in-out;
+}
+
+.dropzone.dragging .uploadIcon {
+  transform: scale(1.5);
+  transition: transform 0.3s ease-in-out;
+}
+
+.dropzone.dragging div {
+  color: #3f51b5;
+  transition: all 0.3s ease-in-out;
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0px rgba(63, 81, 181, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(63, 81, 181, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(63, 81, 181, 0.3);
+  }
+}

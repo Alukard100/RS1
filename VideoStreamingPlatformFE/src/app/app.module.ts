@@ -14,6 +14,8 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
 import { SupportComponent } from './components/support/support.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { HomeComponent } from './components/home/home.component';
+import { VideoCardComponent } from './components/video-card/video-card.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import {MatSidenav, MatSidenavContainer} from "@angular/material/sidenav";
@@ -36,6 +38,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     SupportComponent,
     ChatComponent,
     ChatListComponent,
+    HomeComponent,
+    VideoCardComponent,
     ConfirmDialogComponent
   ],
   imports: [

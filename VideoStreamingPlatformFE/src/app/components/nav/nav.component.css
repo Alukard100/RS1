@@ -8,3 +8,15 @@
 span {
   padding-right: 1rem;
 }
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.nav-links {
+
+  display: flex;
+  align-items: center;
+
+}

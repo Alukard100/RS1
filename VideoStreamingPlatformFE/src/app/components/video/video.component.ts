@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Video } from '../../interfaces/video';
 import { VideoService } from '../../services/video/video.service';
 import { CategoryService } from '../../services/category/category.service';
 import { Category } from '../../interfaces/category';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { create } from 'node:domain';
 
 @Component({
   selector: 'app-video',
@@ -13,18 +14,23 @@ import { Subscription } from 'rxjs';
   templateUrl: './video.component.html',
   styleUrl: './video.component.css'
 })
-export class VideoComponent {
+export class VideoComponent implements OnInit {
   videoFile!: File;
-  fileName = 'No file uploaded yet.';
+  fileName = 'Chose your file here';
   uploadProgress = 0;
   isUploading = false;
   uploadSub!: Subscription | null;
+  @Output() public onUploadFinished = new EventEmitter();
+  isDragging = false;
+
+  
 
   videoData: Video = {
     
-    video: new File([], ''),
+    filePath: '',
+    RealFilePath: '',
     videoName: '',
-    description: '',
+    description: ' ',
     isFree: true,
     userId: 2, // Placeholder, to be replaced with dynamic userId
     categoryId: 0
@@ -41,13 +47,57 @@ export class VideoComponent {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.videoFile = input.files[0];
-      this.fileName = this.videoFile.name;
-      this.videoData.video = this.videoFile;
+      const file = input.files[0];
+
+      if (this.validateVideoFile(file)) {
+        this.videoFile = input.files[0];
+        this.fileName = this.videoFile.name;
+      } else {
+        alert('Only video files (.mp4, .mov, .avi) are allowed.');
+      }
+      
     }
   }
 
-  uploadVideo() {
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+
+    const droppedFiles = event.dataTransfer?.files;
+    if (droppedFiles && droppedFiles.length > 0) {
+      const file = droppedFiles[0];
+
+      if (this.validateVideoFile(file)) {
+        this.videoFile = file;
+        this.fileName = file.name;
+      } else {
+        alert('Only video files (.mp4, .mov, .avi) are allowed.');
+      }
+    }
+  }
+
+  validateVideoFile(file: File): boolean {
+    const allowedExtensions = ['.mp4', '.mov', '.avi'];
+    const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+    return allowedExtensions.includes(extension);
+  }
+
+  createVideo() {
+    if (!this.videoFile) {
+      alert('Please select a video file first!');
+      return;
+    }
+
     if  (this.videoData.categoryId === 0) {
       alert('Please select a category before uploading!');
       return;
@@ -58,49 +108,65 @@ export class VideoComponent {
       return;
     }
 
-    if (!this.videoFile) {
-      alert('Please sleect a video file first!');
-      return;
-    }
-
     const formData = new FormData();
     formData.append('file', this.videoFile);
-    formData.append('videoName', this.videoData.videoName);
-    formData.append('description', this.videoData.description);
-    formData.append('isFree', this.videoData.isFree.toString());
-    formData.append('userId', this.videoData.userId.toString());
-    formData.append('categoryId', this.videoData.categoryId.toString());
 
     this.isUploading = true;
     this.uploadProgress = 0;
 
-    this.uploadSub = this.videoService.uploadVideo(formData).subscribe({
-      next: (event: HttpEvent<any>) => {
-        	console.log('Upload Event:', event.type);
-
+    //Uplad the video file
+    this.uploadSub = this.videoService.uploadVideoFile(formData).subscribe({
+      next: (event) => {
         if (event.type === HttpEventType.UploadProgress) {
           this.uploadProgress = event.total
             ? Math.round(100 * (event.loaded / event.total))
             : Math.round(100 * (event.loaded / this.videoFile.size));
-          console.log('UP Loaded: ', event.loaded);
-          console.log('UP Total: ', event.total);
-          console.log('UP File size: ', this.videoFile.size);
-          console.log(`UP File is ${this.uploadProgress}% uploaded.`);
-        } else if (event.type === HttpEventType.DownloadProgress) {
-          this.uploadProgress = event.total
-            ? Math.round(100 * (event.loaded / event.total))
-            : Math.round(100 * (event.loaded / this.videoFile.size));
-          console.log(`DP File is ${this.uploadProgress}% uploaded.`);
         } else if (event.type === HttpEventType.Response) {
-          console.log('Upload Successful:', event.body);
-          this.isUploading = false;
-          this.uploadSub = null;
+          //get my file path
+          this.videoData.filePath = event.body.videoUrl;
+          this.videoData.RealFilePath = event.body.filePath;
+
+          if (!this.videoData.filePath || this.videoData.filePath === '0') {
+            alert('File upload failed or returned an invalid response.');
+            this.isUploading = false;
+            return;
+          }
+
+          const videoDataForm = new FormData();
+          videoDataForm.append('filePath', this.videoData.filePath);
+          videoDataForm.append('RealFilePath', this.videoData.RealFilePath);
+          videoDataForm.append('videoName', this.videoData.videoName);
+          videoDataForm.append('description', this.videoData.description);
+          videoDataForm.append('isFree', this.videoData.isFree.toString());
+          videoDataForm.append('userId', this.videoData.userId.toString());
+          videoDataForm.append('categoryId', this.videoData.categoryId.toString());
+
+          this.uploadSub = this.videoService.uploadVideo(videoDataForm).subscribe({
+            next: (createEvent) => {
+              if (createEvent.type === HttpEventType.UploadProgress) {
+                this.uploadProgress = createEvent.total
+                  ? Math.round(100 * (createEvent.loaded / createEvent.total))
+                  : Math.round(100 * (createEvent.loaded / this.videoFile.size));
+              } else if (createEvent.type === HttpEventType.Response) {
+                console.log('Video creation succeessful: ', createEvent.body);
+                this.onUploadFinished.emit(createEvent.body);
+
+                setTimeout(() => {
+                  this.isUploading = false;
+                  this.uploadProgress = 0;
+                }, 2000);
+              }
+            },
+            error: (err) => {
+              console.error('Video creation error: ', err);
+              this.isUploading = false;
+            }
+          });
         }
       },
       error: (error) => {
-        console.error('Upload error: ', error);
+        console.error('File upload error', error);
         this.isUploading = false;
-        this.uploadSub = null;
       }
     });
   }

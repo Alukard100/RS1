@@ -9,6 +9,7 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
 import {SupportComponent} from './components/support/support.component';
 import {ChatComponent} from './components/chat/chat.component';
 import {ChatListComponent} from './components/chat-list/chat-list.component';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
   { path: 'CreateVideo', component: VideoComponent }, //sets /video to show Video Component
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'chat-list', component: ChatListComponent },
   { path: 'chat', component: ChatComponent },
   { path: 'chat/:userId', component: ChatComponent },
+  { path: 'home', component: HomeComponent },
 ];
 
 @NgModule({

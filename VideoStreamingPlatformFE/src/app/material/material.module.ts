@@ -7,6 +7,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select';
+import {MatCardModule} from '@angular/material/card';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 const material = [
   MatToolbarModule,
@@ -16,7 +18,9 @@ const material = [
   MatIconModule,
   MatProgressBarModule,
   MatCheckboxModule,
-  MatSelectModule
+  MatSelectModule,
+  MatCardModule,
+  MatGridListModule
 ]
 
 @NgModule({

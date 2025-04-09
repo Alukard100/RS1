@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APIService } from '../API/api.service';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,8 +10,17 @@ export class VideoService {
 
   constructor(private apiService: APIService, private http: HttpClient) { }
   
+  uploadVideoFile(videoData: FormData): Observable<any>{
+    return this.http.post(`${this.apiService.getApi()}/Video/UploadVideoFile`, videoData, {
+      headers: new HttpHeaders(),
+      reportProgress: true,
+      observe: 'events'
+    })
+  }
+
   uploadVideo(videoData: FormData): Observable<HttpEvent<any>>{
     return this.http.post<any>(`${this.apiService.getApi()}/Video/CreateVideo`, videoData, {
+      headers: new HttpHeaders(),
       reportProgress: true,
       observe: 'events'
     })
@@ -19,6 +28,10 @@ export class VideoService {
 
   fetchVideo(VideoID: number): Observable<any>{
     return this.http.get<any>(`${this.apiService.getApi()}/Video/GetVideo?id=` + VideoID)
+  }
+
+  fetchVideos(id : number = 0): Observable<any> {
+    return this.http.get<any>(`${this.apiService.getApi()}/Video/GetVideo?id=${id}`);
   }
 
   getVideoFile(VideoID: number): Observable<Blob> {

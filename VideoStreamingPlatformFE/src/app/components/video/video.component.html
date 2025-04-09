@@ -1,50 +1,73 @@
 <!-- Display none file upload -->
 <input type="file" #file class="file-input" (change)="onFileSelected($event)" #fileUpload>
 
-<!-- Video Name -->
-<mat-form-field appearance="fill">
-  <mat-label>Name of the video</mat-label>
-  <input matInput [(ngModel)]="videoData.videoName" required type="text">
-</mat-form-field>
+<mat-card class="upload-card mat-elevation-z4">
+  <div class="container">
 
-<div class="dropzone">
-  <mat-icon>upload</mat-icon>
-  <div>Drag and drop your file here</div>
-  <div>or</div>
-  <button mat-mini-fab color="primary" class="upload-button" (click)="fileUpload.click()">
-    <mat-icon>attach_file</mat-icon>
-  </button>
-</div>
+    <!-- Video Name -->
+    <mat-form-field appearance="fill" class="vName">
+      <mat-label>Name of the video</mat-label>
+      <input matInput [(ngModel)]="videoData.videoName" required type="text">
+    </mat-form-field>
+  
+    <!-- Displayed File Upload -->
+    <div class="dropzone"
+        (click)="fileUpload.click()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        [class.dragging]="isDragging">
+      
+      <mat-icon class="uploadIcon" (click)="fileUpload.click()">upload</mat-icon>
+      <div>Drag and drop your file here</div>
+      <div>or</div>
+      <div style="display: flex; align-items: center;">
+        <span style="margin: 5px; cursor: pointer;" (click)="fileUpload.click()">{{ fileName }}</span>
+        <button mat-mini-fab color="primary" class="upload-button" (click)="fileUpload.click()">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Description -->
+    <mat-form-field appearance="fill" class="vDescription">
+      <mat-label>Description of your video</mat-label>
+      <textarea matInput [(ngModel)]="videoData.description" type="text"></textarea>
+    </mat-form-field>
+  
+  
+    <div class="vCategoryConfirm">
+      <!-- Dropdown for categories -->
+      <mat-form-field appearance="fill">
+        <mat-label>Cateogry</mat-label>
+        <mat-select [(ngModel)]="videoData.categoryId" required>
+          <mat-option *ngFor="let category of categories" [value]="category.categoryId">
+            {{ category.categoryName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <button mat-raised-button color="accent" (click)="createVideo()">Upload</button>
+    </div> 
+  
+    <!-- Progress bar -->
+    <div class="progress" *ngIf="isUploading">
+      <mat-progress-bar *ngIf="isUploading" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+      <div>
+        <span> {{ uploadProgress }}%</span>
+        <button mat-mini-fab color="warn" *ngIf="isUploading" (click)="cancelUpload()">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+  </div>
+</mat-card>
 
-<!-- Displayed File Upload -->
-<div class="file-upload">
-  <span *ngIf="fileName">{{ fileName }}</span>
-  <button mat-mini-fab color="primary" class="upload-button" (click)="fileUpload.click()">
-    <mat-icon>attach_file</mat-icon>
-  </button>
-</div>
-<!-- Progress bar -->
-<div class="progress">
-  <mat-progress-bar *ngIf="isUploading" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
-  <button mat-mini-fab color="warn" *ngIf="isUploading" (click)="cancelUpload()">
-    <mat-icon>cancel</mat-icon>
-  </button>
-</div>
 
-<!-- Description -->
-<mat-form-field appearance="fill">
-  <mat-label>Description of your video</mat-label>
-  <input matInput [(ngModel)]="videoData.description" type="text">
-</mat-form-field>
 
-<!-- Dropdown for categories -->
-<mat-form-field appearance="fill">
-  <mat-label>Cateogry</mat-label>
-  <mat-select [(ngModel)]="videoData.categoryId" required>
-    <mat-option *ngFor="let category of categories" [value]="category.categoryId">
-      {{ category.categoryName }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
 
-<button mat-raised-button color="accent" (click)="uploadVideo()">Upload</button>
+
+
+
+

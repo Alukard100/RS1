@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -74,9 +75,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = long.MaxValue);
-builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+
+builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = long.MaxValue; // Set to max possible value
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = int.MaxValue; // Set to max possible value
+    options.MemoryBufferThreshold = int.MaxValue;
+
 });
 
 builder.Services.AddCors(options =>
