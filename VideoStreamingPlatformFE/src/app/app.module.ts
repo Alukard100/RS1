@@ -16,14 +16,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { VideoCardComponent } from './components/video-card/video-card.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import {MatSidenav, MatSidenavContainer} from "@angular/material/sidenav";
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
@@ -48,15 +41,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     FormsModule,
     HttpClientModule,
     MaterialModule,
-    MatDialogModule,
-    MatSidenavContainer,
-    MatSidenav,
     BrowserAnimationsModule, // VERY important for Angular Material to work properly
-    MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatListModule,
-    MatButtonModule,
   ],
   providers: [
     provideHttpClient(withFetch())
