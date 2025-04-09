@@ -30,6 +30,10 @@ export class VideoService {
     return this.http.get<any>(`${this.apiService.getApi()}/Video/GetVideo?id=` + VideoID)
   }
 
+  fetchVideos(id : number = 0): Observable<any> {
+    return this.http.get<any>(`${this.apiService.getApi()}/Video/GetVideo?id=${id}`);
+  }
+
   getVideoFile(VideoID: number): Observable<Blob> {
     return this.http.get(`${this.apiService.getApi()}/Video/stream/${VideoID}`, { responseType: 'blob' })
   }

@@ -1,0 +1,16 @@
+<mat-card class="video-card" (click)="goTo(video.VideoId)">
+    
+  <div class="thumbnail-container">
+    <img mat-card-image [src]="video.ThumbnailPicture" alt="Video thumbnail" />
+    <div class="duration">{{ video.DurationInSeconds * 1000 | date : 'mm:ss'}}</div> 
+  </div>
+
+  <mat-card-content>
+    <h3 class="video-title mat-title">{{ video.VideoName }}</h3>
+    <div class="mat-body">
+      <div>{{ video.UserName }}</div>
+      <div>{{ video.CategoryName }} • {{ video.UploadDate | date }}</div>
+    </div>
+  </mat-card-content>
+
+</mat-card>

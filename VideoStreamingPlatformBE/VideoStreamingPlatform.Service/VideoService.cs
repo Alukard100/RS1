@@ -167,12 +167,14 @@ namespace VideoStreamingPlatform.Service
                         Description = v.Description,
                         UploadDate = v.UploadDate,
                         CategoryId = v.Category.CategoryId,
-                        CategoryNmae = v.Category.CategoryName,
+                        CategoryName = v.Category.CategoryName,
                         UserId = v.UserId,
                         UserName = v.User.UserName,
                         ClickCounter = v.VideoStatistics.ClickCounter,
                         ThumbnailInfoId = v.ThumbnailInfos.ThumbnailInfoId,
-                        ThumbnailPicture = v.ThumbnailInfos.ThumbnailPicture
+                        ThumbnailPicture = v.ThumbnailInfos.ThumbnailPicture,
+                        DurationInSeconds = v.DurationInSecondes
+
                     });
 
             if (VideoId == 0)

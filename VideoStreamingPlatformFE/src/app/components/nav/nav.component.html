@@ -1,12 +1,17 @@
 <mat-toolbar color="primary" class="navbar">
   <div>Logo</div>
-  <div>
-    <span>Home</span>
-    <span>Trending</span>
-    <span>Subscription</span>
-    <span>Library</span>
-    <span>
-      <a mat-raised-button href="" color="accent">Sign in</a>
-    </span>
+  <div class="nav-links">
+
+    <a mat-button href="./home">Home</a>
+    <a mat-button href="">Trending</a>
+    <a mat-button href="">Subscription</a>
+    <a mat-button href="">Library</a>
+
+    <button mat-icon-button style="color: white;" class="upload-button" [routerLink]="['/CreateVideo']">
+      <mat-icon>add_box</mat-icon>
+    </button>
+    
+    <a mat-raised-button href="" color="accent">Sign in</a>
+ 
   </div>
 </mat-toolbar>
