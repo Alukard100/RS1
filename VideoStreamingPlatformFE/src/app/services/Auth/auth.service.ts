@@ -37,12 +37,26 @@ export class AuthService {
       localStorage.setItem('userId', response.userId.toString());
       localStorage.setItem('userName', response.userName);
       localStorage.setItem('typeId', response.typeId.toString());
+
+      this.loggedIn.next(true);
     }
+  }
+
+  //for chatting
+  getCurrentUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
   }
 
 
   logout(): void {
-    localStorage.clear();
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('typeId');
+    }
+
     this.loggedIn.next(false);
     this.router.navigate(['/login']);
   }

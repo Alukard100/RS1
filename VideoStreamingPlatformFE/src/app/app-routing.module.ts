@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'card-payment', component: CardPaymentComponent },
   { path: 'support', component: SupportComponent },
   { path: 'chat-list', component: ChatListComponent },
+  { path: 'chat', component: ChatComponent },
   { path: 'chat/:userId', component: ChatComponent },
 ];
 

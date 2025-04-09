@@ -16,7 +16,6 @@ export class SignalRService {
 
   constructor(private http: HttpClient) {}
 
-  // Initialize SignalR connection
   startConnection(userId: number): void {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.apiUrl}/chatHub`, {
@@ -24,14 +23,11 @@ export class SignalRService {
       })
       .build();
 
-    // Start the connection
     this.hubConnection.start().then(() => {
       console.log('SignalR connection established');
 
-      // Once connected, join a group specific to the user
       this.hubConnection?.invoke('JoinGroup', userId.toString());
 
-      // Listen for new messages
       this.hubConnection?.on('ReceiveMessage', (message) => {
         const currentMessages = this.messagesSubject.getValue();
         currentMessages.push(message);
@@ -41,26 +37,23 @@ export class SignalRService {
     }).catch(err => console.error('Error while starting connection: ' + err));
   }
 
-  // Send message to the group (user)
   sendMessage(senderId: number, receiverId: number, messageBody: string): void {
     if (this.hubConnection) {
       this.hubConnection.invoke('SendMessage', senderId, receiverId, messageBody).catch(err => console.error(err));
     }
   }
 
-  // Disconnect the SignalR connection
   stopConnection(): void {
     if (this.hubConnection) {
       this.hubConnection.stop().catch(err => console.error(err));
     }
   }
 
-  // Get all users (replace with actual API endpoint)
+  // MORAM DODATI FETCH USERA NA BACKENDU NISAM URADIO
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/api/users`);  // Adjust the endpoint as needed
   }
 
-  // Get messages between two users (replace with actual API endpoint)
   getMessageBody(senderId: number, receiverId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/api/messages?senderId=${senderId}&receiverId=${receiverId}`);
   }

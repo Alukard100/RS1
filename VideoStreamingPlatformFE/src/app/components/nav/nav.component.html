@@ -5,8 +5,14 @@
     <span>Trending</span>
     <span>Subscription</span>
     <span>Library</span>
-    <span>
-      <a mat-raised-button href="" color="accent">Sign in</a>
+
+    <span *ngIf="isLoggedIn; else signInBlock">
+      Welcome, {{ userName }}!
+      <button mat-raised-button color="warn" (click)="logout()">Logout</button>
     </span>
+
+    <ng-template #signInBlock>
+      <a mat-raised-button routerLink="/login" color="accent">Sign in</a>
+    </ng-template>
   </div>
 </mat-toolbar>

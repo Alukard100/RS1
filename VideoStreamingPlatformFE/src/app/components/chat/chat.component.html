@@ -1,14 +1,30 @@
-<!-- chat.component.html -->
-<div *ngFor="let user of users" (click)="selectUser(user.id)">
-  <p>{{ user.name }}</p>
-</div>
-
-<div *ngIf="selectedUserId">
-  <h3>Chat with {{ selectedUserId }}</h3>
-  <div *ngFor="let message of messages">
-    <p>{{ message.body }} - {{ message.timeSent }}</p>
+<div class="chat-container">
+  <div class="user-list">
+    <h3>Users</h3>
+    <ul>
+      <li *ngFor="let user of users" (click)="selectUser(user.userId)">
+        {{ user.username }}
+      </li>
+    </ul>
   </div>
 
-  <textarea [(ngModel)]="messageBody" placeholder="Type a message"></textarea>
-  <button (click)="sendMessage()">Send</button>
+  <div class="chat-box" *ngIf="selectedUserId !== null">
+    <h3>Chat with User #{{ selectedUserId }}</h3>
+
+    <div class="messages">
+      <div *ngFor="let msg of messages" [class.outgoing]="msg.msgSenderId === loggedInUserId">
+        <strong>{{ msg.msgSenderId === loggedInUserId ? 'You' : 'Them' }}:</strong> {{ msg.body }}
+      </div>
+    </div>
+
+    <div class="input">
+      <input
+        type="text"
+        [(ngModel)]="messageBody"
+        (keyup.enter)="sendMessage()"
+        placeholder="Type a message..."
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
 </div>

@@ -1,2 +1,16 @@
 <app-nav></app-nav>
+<mat-sidenav-container class="app-container">
+  <!-- Side navigation bar (chat list) will only show if the user is logged in -->
+  <mat-sidenav mode="side" opened *ngIf="isLoggedIn">
+    <app-chat-list></app-chat-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Main content of the page -->
+    <router-outlet></router-outlet>
+
+    <!-- Chat component will only show if the user is logged in -->
+    <app-chat *ngIf="isLoggedIn"></app-chat>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 <router-outlet />

@@ -30,7 +30,7 @@ namespace VideoStreamingPlatform.Controllers
                 var response = await _service.CreateMessageBody(request);
 
                 await _hubContext.Clients.User(request.MsgRecieverId.ToString())
-                    .SendAsync("ReceiveMessage", request.MsgSenderId, request.Body);
+    .SendAsync("ReceiveMessage", new { senderId = request.MsgSenderId, body = request.Body, timeSent = DateTime.UtcNow });
 
                 return Ok(response);
             }
