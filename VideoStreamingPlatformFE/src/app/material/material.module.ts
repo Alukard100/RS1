@@ -31,7 +31,7 @@ const material = [
   MatSidenavContainer,
   MatSidenav,
   MatSidenavModule,
-
+  MatListModule
 
 ]
 
