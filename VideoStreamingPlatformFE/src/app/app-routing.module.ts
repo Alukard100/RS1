@@ -9,6 +9,7 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
 import {SupportComponent} from './components/support/support.component';
 import {ChatComponent} from './components/chat/chat.component';
 import {ChatListComponent} from './components/chat-list/chat-list.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
   { path: 'CreateVideo', component: VideoComponent }, //sets /video to show Video Component
@@ -16,6 +17,7 @@ const routes: Routes = [
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: AuthComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'card-payment', component: CardPaymentComponent },
   { path: 'support', component: SupportComponent },

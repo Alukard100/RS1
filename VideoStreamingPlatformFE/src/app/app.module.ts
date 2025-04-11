@@ -14,6 +14,7 @@ import {CardPaymentComponent} from './components/card-payment/card-payment.compo
 import { SupportComponent } from './components/support/support.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -26,14 +27,15 @@ import { ChatListComponent } from './components/chat-list/chat-list.component';
     CardPaymentComponent,
     SupportComponent,
     ChatComponent,
-    ChatListComponent
+    ChatListComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
+    RegisterComponent
   ],
   providers: [
     provideHttpClient(withFetch())

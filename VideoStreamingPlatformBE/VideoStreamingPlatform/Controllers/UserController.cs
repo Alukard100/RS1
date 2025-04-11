@@ -4,6 +4,7 @@ using VideoStreamingPlatform.Database.Models;
 using VideoStreamingPlatform.Commons.Interfaces;
 using VideoStreamingPlatform.Commons.DTOs.Requests.User;
 using VideoStreamingPlatform.Commons.DTOs.Requests;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VideoStreamingPlatform.Controllers
 {
@@ -25,7 +26,7 @@ namespace VideoStreamingPlatform.Controllers
         {
             try
             {
-            var response = _userService.GetUser(request);
+                var response = _userService.GetUser(request);
                 return Ok(response);
 
             }
@@ -33,15 +34,19 @@ namespace VideoStreamingPlatform.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
-       
+
         [HttpPost]
         [Route("CreateUser")]
-        public IActionResult CreateUser([FromBody] CreateUserRequest request)
+        public IActionResult CreateUser([FromBody] CreateUserRequest? request = null)
         {
             try
             {
+                if (request.TypeId == null)
+                {
+                    request.TypeId = 3;//postaviti u konfig hardcode.
+                }
                 var response = _userService.CreateUser(request);
                 return Ok(response);
             }
@@ -49,17 +54,16 @@ namespace VideoStreamingPlatform.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpDelete]
         [Route("DeleteUser")]
-        public IActionResult DeleteUser([FromBody]CommonDeleteRequest request)
+        public IActionResult DeleteUser([FromBody] CommonDeleteRequest request)
         {
             try
             {
                 var response = _userService.DeleteUser(request);
-                return Ok (response);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -83,8 +87,6 @@ namespace VideoStreamingPlatform.Controllers
 
         }
 
-
-
         //[HttpGet]
         //[Route("GetUsers")]
 
@@ -94,7 +96,6 @@ namespace VideoStreamingPlatform.Controllers
         //    response.Add(new AdType() { Id = 1, Name = "admin" });
         //    response.Add(new AdType() { Id = 2, Name = "super-admin" });
         //    response.Add(new AdType() { Id = 3, Name = "guest" });
-
         //    return response;
         //}
 
