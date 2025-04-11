@@ -1,10 +1,11 @@
-  <div class="nav-links">
+<mat-toolbar color="primary" class="navbar">
+<div class="nav-links">
 
     <a mat-button href="./home">Home</a>
     <a mat-button href="">Trending</a>
     <a mat-button href="">Subscription</a>
     <a mat-button href="">Library</a>
-	
+
     <button mat-icon-button style="color: white;" class="upload-button" [routerLink]="['/CreateVideo']">
       <mat-icon>add_box</mat-icon>
     </button>
@@ -16,17 +17,17 @@
 
 
 
-    
+
     <span *ngIf="isLoggedIn; else signInBlock">
       Welcome, {{ userName }}!
       <button mat-raised-button color="warn" (click)="logout()">Logout</button>
     </span>
-    
+
 
 
     <ng-template #signInBlock>
     	<a mat-raised-button href="" color="accent">Sign in</a>
  	</ng-template>
- 
+
   </div>
 </mat-toolbar>

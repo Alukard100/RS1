@@ -10,8 +10,7 @@ import { Router } from '@angular/router';
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule]
+  standalone: false
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;

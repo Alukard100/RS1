@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { CategoryComponent } from './components/category/category.component';
 import { VideoComponent } from './components/video/video.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VideoViewComponent } from './components/video-view/video-view.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { NavComponent } from './components/nav/nav.component';
@@ -19,6 +19,7 @@ import { VideoCardComponent } from './components/video-card/video-card.component
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RegisterComponent } from './components/register/register.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { RegisterComponent } from './components/register/register.component';
     ChatListComponent,
     HomeComponent,
     VideoCardComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +46,8 @@ import { RegisterComponent } from './components/register/register.component';
     MaterialModule,
     BrowserAnimationsModule, // VERY important for Angular Material to work properly
     MaterialModule,
-    RegisterComponent
+    ReactiveFormsModule, CommonModule
+
   ],
   providers: [
     provideHttpClient(withFetch())
