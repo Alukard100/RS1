@@ -1,0 +1,56 @@
+<form [formGroup]="registerForm" (ngSubmit)="register()" class="register-form">
+  <h2>Create Account</h2>
+
+  <div class="form-group">
+    <label>First Name</label>
+    <input type="text" formControlName="name" required />
+  </div>
+
+  <div class="form-group">
+    <label>Surname</label>
+    <input type="text" formControlName="surname" required />
+  </div>
+
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" formControlName="userName" required />
+  </div>
+
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" formControlName="email" required />
+  </div>
+
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" formControlName="password" required />
+  </div>
+
+  <div class="form-group">
+    <label>Birth Date</label>
+    <input type="date" formControlName="birthDate" />
+  </div>
+
+  <div class="form-group">
+    <label>Country</label>
+    <select formControlName="country">
+      <option value="">Select a country</option>
+      <option *ngFor="let country of countries" [value]="country">
+        {{country}}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Profile Picture</label>
+    <div class="file-input-container">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" id="profilePicture" />
+      <label for="profilePicture" class="file-label">Choose File</label>
+    </div>
+    <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview" alt="Profile picture preview">
+  </div>
+
+  <button type="submit" [disabled]="isSubmitting">
+    {{ isSubmitting ? 'Registering...' : 'Register' }}
+  </button>
+</form>

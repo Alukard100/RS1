@@ -18,6 +18,7 @@ import { HomeComponent } from './components/home/home.component';
 import { VideoCardComponent } from './components/video-card/video-card.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     HttpClientModule,
     MaterialModule,
     BrowserAnimationsModule, // VERY important for Angular Material to work properly
+    MaterialModule,
+    RegisterComponent
   ],
   providers: [
     provideHttpClient(withFetch())

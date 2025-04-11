@@ -71,11 +71,11 @@ namespace VideoStreamingPlatform.Service
                 ProfilePicture = request.ProfilePicture,
                 Country = request.Country,
                 SubscriberCount = 0,
-                TypeId = request.TypeId
+                TypeId = (int)request.TypeId
             };
             var response = _db.Users.Add(newUser);
             _db.SaveChanges();
-            return new CommonResponse() { Id = response.Entity.UserId };
+            return new CommonResponse() { Id = response.Entity.UserId, Message = "User added successfully!" };
         }
 
 
