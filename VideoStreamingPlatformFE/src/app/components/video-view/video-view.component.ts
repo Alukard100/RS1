@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { VideoService } from '../../services/video/video.service';
 import { ActivatedRoute } from '@angular/router';
 import { VideoResponse } from '../../interfaces/video-response';
-import { response } from 'express';
-import { error } from 'console';
-import { blob } from 'stream/consumers';
 
 @Component({
   selector: 'app-video-view',
@@ -19,7 +16,6 @@ export class VideoViewComponent implements OnInit{
     VideoId: 0,
     VideoName: '',
     Description: '',
-    FilePath: '',
     UploadDate: new Date,
     CategoryName: '',
     UserName: '',
@@ -59,13 +55,15 @@ export class VideoViewComponent implements OnInit{
   getVideo(VideoID: number) {
     this.videoService.fetchVideo(VideoID).subscribe({
       next: (response) => {
-        this.videoData.VideoName = response.videoName;
-        this.videoData.Description = response.description;
-        this.videoData.FilePath = response.filePath;
-        this.videoData.UploadDate = response.uploadDate;
-        this.videoData.CategoryName = response.categoryNmae;
-        this.videoData.UserName = response.userName;
-        this.videoData.ClickCounter = response.clickCounter;
+        const video = response[0];
+
+        this.videoData.VideoName = video.videoName;
+        this.videoData.Description = video.description;
+        this.videoData.UploadDate = video.uploadDate;
+        this.videoData.CategoryName = video.categoryName;
+        this.videoData.UserName = video.userName;
+        this.videoData.ClickCounter = video.clickCounter;
+
         console.log(this.videoData);
 
       },
