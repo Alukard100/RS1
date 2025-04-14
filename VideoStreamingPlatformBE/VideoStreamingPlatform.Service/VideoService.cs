@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VideoStreamingPlatform.Commons.DTOs.Requests.Video;
 using VideoStreamingPlatform.Commons.DTOs.Responses.Video;
@@ -61,7 +62,9 @@ namespace VideoStreamingPlatform.Service
                 return (null, null);
             }
 
-            var uniqueFileNmae = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var safeName = Regex.Replace(Path.GetFileName(file.FileName), @"[^a-zA-Z0-9_-]", "_");
+
+            var uniqueFileNmae = $"{Guid.NewGuid()}_{safeName}{extension}";
             var filePath = Path.Combine(_videoDirectory, uniqueFileNmae);
 
             using (var stream = new FileStream(filePath, FileMode.Create))

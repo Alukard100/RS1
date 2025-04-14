@@ -6,6 +6,7 @@ import { Category } from '../../interfaces/category';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { create } from 'node:domain';
+import { AuthService } from '../../services/Auth/auth.service';
 
 @Component({
   selector: 'app-video',
@@ -32,16 +33,19 @@ export class VideoComponent implements OnInit {
     videoName: '',
     description: ' ',
     isFree: true,
-    userId: 2, // Placeholder, to be replaced with dynamic userId
+    userId: 0,
     categoryId: 0
   };
 
   categories: Category[] = [];
   
-  constructor(private videoService: VideoService, private categoryService: CategoryService) {}
+  constructor(private videoService: VideoService, private categoryService: CategoryService, private authService: AuthService) {}
 
   ngOnInit() {
     this.getCategories();
+
+    this.videoData.userId = this.authService.getUserId();
+    console.log("User: ", this.videoData.userId);
   }
 
   onFileSelected(event: Event) {
