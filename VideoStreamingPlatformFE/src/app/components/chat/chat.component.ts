@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalRService } from '../../services/Chat/signal-r.service';
-import { AuthService } from '../../services/Auth/auth.service'; // To get the logged-in user
-import { Subscription } from 'rxjs';
+import { GetUserResponse} from '../../interfaces/get-user-response.model';
 
 @Component({
   selector: 'app-chat',
@@ -11,46 +10,63 @@ import { Subscription } from 'rxjs';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   users: any[] = [];
-  selectedUserId: number | null = null;
-  loggedInUserId!: number;
-  messageBody: string = '';
   messages: any[] = [];
+  selectedUserId: number | null = null;
+  selectedUserName:string='';
+  messageBody: string = '';
+  loggedInUserId: number = 0;
 
-  private messageSubscription: Subscription | null = null;
-
-  constructor(
-    private signalRService: SignalRService,
-    private authService: AuthService
-  ) {}
+  constructor(private signalRService: SignalRService) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUser();
-    this.loggedInUserId = user?.userId;
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      this.loggedInUserId = +userId;
+      this.signalRService.startConnection(this.loggedInUserId);
+    }
 
-    // Start SignalR connection
-    this.signalRService.startConnection(this.loggedInUserId);
+    this.loadUsers();
 
-    // Subscribe to incoming messages
-    this.messageSubscription = this.signalRService.messages$.subscribe((msgs) => {
-      this.messages = [...msgs];
+    this.signalRService.messages$.subscribe((msgs) => {
+      console.log('Received messages:', msgs);
+      if (this.selectedUserId !== null) {
+        this.messages = msgs.filter(
+          msg =>
+            (msg.msgSenderId === this.loggedInUserId && msg.msgRecieverId === this.selectedUserId) ||
+            (msg.msgSenderId === this.selectedUserId && msg.msgRecieverId === this.loggedInUserId)
+        );
+      }
     });
+  }
 
-    // Load user list
+  loadUsers(): void {
     this.signalRService.getUsers().subscribe((data) => {
-      this.users = data.filter(u => u.userId !== this.loggedInUserId);
+      this.users = data;
     });
   }
 
-  // Called when a user is selected
-  selectUser(userId: number): void {
-    this.selectedUserId = userId;
-    // Load messages between current user and selected user
-    this.signalRService.getMessageBody(this.loggedInUserId, userId).subscribe((data) => {
-      this.messages = data;
+  selectUser(user: GetUserResponse): void {
+    this.selectedUserId = user.userID ?? null;
+    this.selectedUserName = user.userName ?? '';
+    if (this.selectedUserId !== null) {
+      this.getMessages(this.loggedInUserId, this.selectedUserId);
+    }
+  }
+
+  getMessages(senderId: number, receiverId: number): void {
+    if (!receiverId) return;
+
+    this.signalRService.getMessageBody(senderId, receiverId).subscribe({
+      next: (data) => {
+        this.messages = data;
+      },
+      error: (err) => {
+        console.error('Failed to fetch messages:', err);
+      },
     });
   }
 
-  // Send a message
+
   sendMessage(): void {
     if (this.messageBody.trim() && this.selectedUserId !== null) {
       this.signalRService.sendMessage(this.loggedInUserId, this.selectedUserId, this.messageBody);
@@ -60,6 +76,5 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.signalRService.stopConnection();
-    this.messageSubscription?.unsubscribe();
   }
 }

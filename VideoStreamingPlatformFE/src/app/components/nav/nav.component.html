@@ -11,7 +11,7 @@
       <mat-icon>add_box</mat-icon>
     </button>
 
-    <button mat-icon-button (click)="toggleChat()">
+    <button *ngIf="isLoggedIn" style="color: white;" mat-icon-button [routerLink]="'/chat'">
       <mat-icon>chat</mat-icon>
     </button>
 
