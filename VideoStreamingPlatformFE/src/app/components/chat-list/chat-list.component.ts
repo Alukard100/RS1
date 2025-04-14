@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SignalRService } from '../../services/Chat/signal-r.service';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/Auth/auth.service';
 
 @Component({
   selector: 'app-chat-list',
@@ -11,22 +12,39 @@ import {Router} from '@angular/router';
 export class ChatListComponent implements OnInit {
   users: any[] = [];
   selectedUserId: number | null = null;
+  loggedInUserId: number = 0;
 
-  constructor(private signalRService: SignalRService, private router: Router) {}
+  constructor(
+    private signalRService: SignalRService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   selectUser(userId: number): void {
-    this.router.navigate(['/chat', userId]);  // Navigate to ChatComponent with selected userId
+    console.log('Selected user:', userId);
+    this.selectedUserId = userId;
+    this.router.navigate(['/chat', userId]);
   }
 
   ngOnInit(): void {
+    // Get the logged-in user's ID
+    this.loggedInUserId = this.authService.getUserId();
+    
     // Fetch users when the component loads
     this.getUsers();
   }
 
   // Fetch users
   getUsers(): void {
-    this.signalRService.getUsers().subscribe(users => {
-      this.users = users;
+    this.signalRService.getUsers().subscribe({
+      next: (users) => {
+        console.log('Fetched users:', users);
+        // Filter out the current user from the list
+        this.users = users.filter((user: any) => user.userId !== this.loggedInUserId);
+      },
+      error: (error) => {
+        console.error('Error fetching users:', error);
+      }
     });
   }
 }

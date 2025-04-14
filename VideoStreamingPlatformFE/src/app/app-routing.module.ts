@@ -21,7 +21,8 @@ const routes: Routes = [
   { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
   { path: 'chat/:userId', component: ChatComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'video/:id', component: VideoViewComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'login', component: AuthComponent }
 ];
 

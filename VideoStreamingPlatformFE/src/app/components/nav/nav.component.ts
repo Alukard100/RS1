@@ -16,6 +16,7 @@ export class NavComponent implements OnInit {
   isLoggedIn: boolean = false;
   userName: string = '';
   walletBalance:number|null=null;
+  isChatOpen=false;
 
   constructor(
     private authService: AuthService,
@@ -55,5 +56,9 @@ export class NavComponent implements OnInit {
 
   goToCardPayment() {
     this.router.navigate(['/card-payment'])
+  }
+
+  toggleChat() {
+    this.isChatOpen=!this.isChatOpen;
   }
 }

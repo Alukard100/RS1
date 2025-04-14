@@ -103,7 +103,7 @@ namespace VideoStreamingPlatform.Service
 
         private string GenerateRandomCode()
         {
-            return Guid.NewGuid().ToString().Substring(0, 20).ToUpper();
+            return Guid.NewGuid().ToString().ToUpper();
         }
     }
 }

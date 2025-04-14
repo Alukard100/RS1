@@ -24,8 +24,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Get current logged-in user ID
-    const user = this.authService.getCurrentUser(); // Implement this in AuthService if needed
+    const user = this.authService.getCurrentUser();
     this.loggedInUserId = user?.userId;
 
     // Start SignalR connection
@@ -33,12 +32,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // Subscribe to incoming messages
     this.messageSubscription = this.signalRService.messages$.subscribe((msgs) => {
-      this.messages = [...msgs]; // Append new messages
+      this.messages = [...msgs];
     });
 
     // Load user list
     this.signalRService.getUsers().subscribe((data) => {
-      this.users = data.filter(u => u.userId !== this.loggedInUserId); // Exclude self
+      this.users = data.filter(u => u.userId !== this.loggedInUserId);
     });
   }
 

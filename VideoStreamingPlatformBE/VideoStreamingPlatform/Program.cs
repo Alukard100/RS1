@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -47,16 +48,13 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 
-// Configure EF Core with SQL Server
 builder.Services.AddDbContext<VideoStreamingPlatformContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<VideoStreamingPlatformContext>()
     .AddDefaultTokenProviders();
 
-// Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -94,7 +92,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Register custom services
+// Register custom servicesb
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IBlogService, BlogService>();

@@ -12,7 +12,7 @@ export class SignalRService {
   private messagesSubject = new BehaviorSubject<any[]>([]);
   messages$ = this.messagesSubject.asObservable();
 
-  private apiUrl = 'https://localhost:7066';  // Replace with your API's URL
+  private apiUrl = 'https://localhost:7066';
 
   constructor(private http: HttpClient) {}
 
@@ -51,10 +51,10 @@ export class SignalRService {
 
   // MORAM DODATI FETCH USERA NA BACKENDU NISAM URADIO
   getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/users`);  // Adjust the endpoint as needed
+    return this.http.get<any[]>(`${this.apiUrl}/User/GetUsers`);  // Adjust the endpoint as needed
   }
 
   getMessageBody(senderId: number, receiverId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/messages?senderId=${senderId}&receiverId=${receiverId}`);
+    return this.http.get<any[]>(`${this.apiUrl}/MessageBody/GetMessageBody?MsgSenderId=${senderId}&MsgRecieverId=${receiverId}`);
   }
 }

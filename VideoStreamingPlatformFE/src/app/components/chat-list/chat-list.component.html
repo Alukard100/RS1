@@ -1,8 +1,10 @@
-<div class="chat-list">
+<div class="chat-list-container">
   <h2>Users</h2>
-  <ul>
-    <li *ngFor="let user of users" (click)="selectUser(user.id)">
-      <span>{{ user.name }}</span>
-    </li>
-  </ul>
+  <div class="user-list">
+    <div *ngFor="let user of users" 
+         class="user-item" 
+         (click)="selectUser(user.userId)">
+      <span class="username">{{ user.username }}</span>
+    </div>
+  </div>
 </div>
