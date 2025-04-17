@@ -37,16 +37,9 @@ export class SignalRService {
         // Listen for incoming messages
         this.hubConnection?.on('ReceiveMessage', (message) => {
           console.log('SignalR Received:', message);
-          const all = this.messagesSubject.getValue();
-          this.messagesSubject.next([...all, message]);
-
-
-          // Grab the current messages and append the new message
-          const currentMessages = this.messagesSubject.getValue();
-
-          this.newMessageSubject.next(message);
-          this.messagesSubject.next([...currentMessages, message]); // Append new message
+          this.newMessageSubject.next(message); // ✅ Broadcast message to component
         });
+
       })
       .catch(err => console.error('SignalR connection error:', err));
   }

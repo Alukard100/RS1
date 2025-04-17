@@ -1,24 +1,30 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { SignalRService } from '../../services/Chat/signal-r.service';
 import { GetUserResponse } from '../../interfaces/get-user-response.model';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
-  standalone: false,
+  standalone: false
 })
 export class ChatComponent implements OnInit, OnDestroy {
   users: any[] = [];
   messages: any[] = [];
+  messageMap: { [userId: number]: any[] } = {}; // 🆕 Stores messages by user
   selectedUserId: number | null = null;
   selectedUserName: string = '';
   messageBody: string = '';
   loggedInUserId: number = 0;
   private newMsgSub?: Subscription;
 
-  constructor(private signalRService: SignalRService) {}
+  constructor(
+    private signalRService: SignalRService,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     const userId = localStorage.getItem('userId');
@@ -29,54 +35,74 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.loadUsers();
 
-    // Subscribe to the message stream to update the UI
-    this.signalRService.messages$.subscribe((msgs) => {
-      if (this.selectedUserId !== null) {
-        // Filter messages by the selected user (either sender or receiver)
-        this.messages = msgs.filter(
-          msg =>
-            (msg.msgSenderId === this.loggedInUserId && msg.msgRecieverId === this.selectedUserId) ||
-            (msg.msgSenderId === this.selectedUserId && msg.msgRecieverId === this.loggedInUserId)
-        );
+    this.newMsgSub = this.signalRService.newMessage$.subscribe((msg: any) => {
+      console.log('DEBUG: msg:', msg);
+      console.log('selectedUserId:', this.selectedUserId);
+      console.log('loggedInUserId:', this.loggedInUserId);
+
+      const chatPartnerId = msg.msgSenderId === this.loggedInUserId
+        ? msg.msgRecieverId
+        : msg.msgSenderId;
+
+      // Ensure we always initialize the message map
+      if (!this.messageMap[chatPartnerId]) {
+        this.messageMap[chatPartnerId] = [];
+      }
+
+      // Push to correct conversation
+      this.messageMap[chatPartnerId].push(msg);
+
+      // If the user is chatting with this partner, update UI
+      if (this.selectedUserId === chatPartnerId) {
+        this.ngZone.run(() => {
+          this.messages = [...this.messageMap[chatPartnerId]];
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            const messagesDiv = document.querySelector('.messages');
+            messagesDiv?.scrollTo({ top: messagesDiv.scrollHeight, behavior: 'smooth' });
+          });
+        });
       }
     });
-    this.newMsgSub = this.signalRService.newMessage$
-      .subscribe((msg: any) => {
-        const isForThisChat = (
-          (msg.msgSenderId === this.loggedInUserId && msg.msgRecieverId === this.selectedUserId) ||
-          (msg.msgSenderId === this.selectedUserId   && msg.msgRecieverId === this.loggedInUserId)
-        );
-        if (isForThisChat) {
-          this.messages.push(msg);
-        }
-      });
+
+  }
+
+  trackByFn(index: number, item: any) {
+    return item.timeSent;
   }
 
   loadUsers(): void {
     this.signalRService.getUsers().subscribe((data) => {
-      // Filter out the logged-in user from the users list
       this.users = data.filter(user => user.userID !== this.loggedInUserId);
     });
   }
 
-  selectUser(user: GetUserResponse) {
-    // clear out old messages array and load fresh history
+  selectUser(user: GetUserResponse): void {
     this.selectedUserId = user.userID ?? null;
     this.selectedUserName = user.userName ?? '';
     this.messages = [];
+
     if (this.selectedUserId != null) {
+      // If we already have messages for this user, show them
+      if (this.messageMap[this.selectedUserId]) {
+        this.messages = [...this.messageMap[this.selectedUserId]];
+      }
+
       this.getMessages(this.loggedInUserId, this.selectedUserId);
     }
   }
 
-  getMessages(senderId: number, receiverId: number) {
+  getMessages(senderId: number, receiverId: number): void {
     this.signalRService.getMessageBody(senderId, receiverId)
       .subscribe({
         next: data => {
-          this.messages = data;  // initial load
+          const chatPartnerId = receiverId;
+          this.messageMap[chatPartnerId] = data;
+          this.messages = [...data];
         },
         error: err => console.error(err)
       });
+
   }
 
   sendMessage(): void {
@@ -88,21 +114,28 @@ export class ChatComponent implements OnInit, OnDestroy {
         timeSent: new Date().toISOString()
       };
 
-      // Immediately add the message to the local message list for the sender
-      this.messages.push(newMessage);
+      if (!this.messageMap[this.selectedUserId]) {
+        this.messageMap[this.selectedUserId] = [];
+      }
 
-      // Send the message via SignalR
+      this.messageMap[this.selectedUserId].push(newMessage);
+
+      // Show in chat box if the user is currently selected
+      if (this.selectedUserId !== null) {
+        this.messages = [...this.messageMap[this.selectedUserId]];
+      }
+
       this.signalRService.sendMessage(
         this.loggedInUserId,
         this.selectedUserId,
         this.messageBody
       );
 
-      this.messageBody = ''; // Clear the message input
+      this.messageBody = '';
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.signalRService.stopConnection();
     this.newMsgSub?.unsubscribe();
   }
