@@ -10,22 +10,23 @@ import {SupportComponent} from './components/support/support.component';
 import {ChatComponent} from './components/chat/chat.component';
 import {ChatListComponent} from './components/chat-list/chat-list.component';
 import { HomeComponent } from './components/home/home.component';
+import { AuthGuard } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 
-const routes: Routes = [
-  { path: 'CreateVideo', component: VideoComponent }, //sets /video to show Video Component
-  { path: 'video/:id', component: VideoViewComponent},
 
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: AuthComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'card-payment', component: CardPaymentComponent },
-  { path: 'support', component: SupportComponent },
-  { path: 'chat-list', component: ChatListComponent },
-  { path: 'chat', component: ChatComponent },
-  { path: 'chat/:userId', component: ChatComponent },
+const routes: Routes = [
+  { path: 'CreateVideo', component: VideoComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+    { path: 'card-payment', component: CardPaymentComponent, canActivate: [AuthGuard] },
+    { path: 'register', component: RegisterComponent },
+    { path: 'support', component: SupportComponent },
+  { path: 'chat-list', component: ChatListComponent, canActivate: [AuthGuard] },
+  { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
+  { path: 'chat/:userId', component: ChatComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent },
+  { path: 'video/:id', component: VideoViewComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'login', component: AuthComponent }
 ];
 
 @NgModule({

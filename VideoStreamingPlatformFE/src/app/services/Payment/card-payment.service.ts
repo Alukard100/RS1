@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { APIService } from '../API/api.service';
 import { Router } from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 export class CardPaymentService {
   private endpoint = 'CardPayment/CreateCardPayment'; // API endpoint
 
-  constructor(private apiService: APIService, private router: Router) {}
+  constructor(private apiService: APIService, private router: Router, private http: HttpClient) {}
 
   createCardPayment(paymentData: any): Observable<any> {
     return this.apiService.postToEndpoint(this.endpoint, paymentData);
@@ -18,8 +19,10 @@ export class CardPaymentService {
     return this.apiService.postToEndpoint('Wallet/EnterPromoCode', request);
   }
 
-  getWallet(walletData: any): Observable<any> {
-    return this.apiService.getFromEndpoint('Wallet/GetWallet');
+  getWallet(userId: number) {
+    return this.apiService.getFromEndpoint<{ balance: number }>(
+      `Wallet/GetWallet?UserId=${userId}`
+    );
   }
 
 }

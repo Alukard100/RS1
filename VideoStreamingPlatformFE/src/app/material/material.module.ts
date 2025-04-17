@@ -10,8 +10,6 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatSidenav, MatSidenavContainer} from "@angular/material/sidenav";
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 
 
@@ -28,9 +26,6 @@ const material = [
   MatCardModule,
   MatGridListModule,
   MatDialogModule,
-  MatSidenavContainer,
-  MatSidenav,
-  MatSidenavModule,
   MatListModule
 
 ]

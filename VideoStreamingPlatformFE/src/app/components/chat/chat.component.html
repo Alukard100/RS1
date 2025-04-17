@@ -2,19 +2,20 @@
   <div class="user-list">
     <h3>Users</h3>
     <ul>
-      <li *ngFor="let user of users" (click)="selectUser(user.userId)">
-        {{ user.username }}
+      <li *ngFor="let user of users" (click)="selectUser(user)">
+        {{ user.userName }}
       </li>
     </ul>
   </div>
 
   <div class="chat-box" *ngIf="selectedUserId !== null">
-    <h3>Chat with User #{{ selectedUserId }}</h3>
+    <h3>Chat with User: {{ selectedUserName }}</h3>
 
     <div class="messages">
-      <div *ngFor="let msg of messages" [class.outgoing]="msg.msgSenderId === loggedInUserId">
+      <div *ngFor="let msg of messages; trackBy: trackByFn" [class.outgoing]="msg.msgSenderId === loggedInUserId">
         <strong>{{ msg.msgSenderId === loggedInUserId ? 'You' : 'Them' }}:</strong> {{ msg.body }}
       </div>
+
     </div>
 
     <div class="input">

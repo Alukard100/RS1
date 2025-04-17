@@ -54,7 +54,7 @@
 
           if (response && response.token) {
             this.authService.setSession(response);
-            this.router.navigate(['/card-payment']);
+            this.router.navigate(['/home']);
           } else {
             this.errorMessage = 'Invalid verification code.';
             localStorage.clear();

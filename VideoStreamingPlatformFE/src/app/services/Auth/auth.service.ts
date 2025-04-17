@@ -1,11 +1,11 @@
-import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { APIService } from '../API/api.service';
-import {LoginResponse, VerifiedCodeResponse} from '../../interfaces/Auth/login-response.interface';
+import { LoginResponse, VerifiedCodeResponse } from '../../interfaces/Auth/login-response.interface';
 import { LoginRequest } from '../../interfaces/Auth/login-request.interface';
-import {VerifyCodeRequest} from '../../interfaces/Auth/verify-code-request.interface';
-import {isPlatformBrowser} from '@angular/common';
+import { VerifyCodeRequest } from '../../interfaces/Auth/verify-code-request.interface';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +13,29 @@ import {isPlatformBrowser} from '@angular/common';
 export class AuthService {
   private readonly loginEndpoint: string = 'UserValues/LoginUser';
   private readonly verifyCodeEndpoint: string = 'UserValues/VerifyCode';
-//provjerim ovo jos
+
   public loggedIn: BehaviorSubject<boolean>;
+  private isBrowser: boolean;
 
   constructor(
     private apiService: APIService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
     this.loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   }
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.apiService.postToEndpoint<LoginResponse>(this.loginEndpoint, request);
   }
+
   verifyCode(request: VerifyCodeRequest): Observable<VerifiedCodeResponse> {
     return this.apiService.postToEndpoint<VerifiedCodeResponse>(this.verifyCodeEndpoint, request);
   }
 
-  setSession(response: any) {
-    if (isPlatformBrowser(this.platformId)) {
+  setSession(response: any): void {
+    if (this.isBrowser) {
       localStorage.setItem('token', response.token);
       localStorage.setItem('userId', response.userId.toString());
       localStorage.setItem('userName', response.userName);
@@ -42,15 +45,16 @@ export class AuthService {
     }
   }
 
-  //for chatting
   getCurrentUser() {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (this.isBrowser) {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    }
+    return null;
   }
 
-
   logout(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       localStorage.removeItem('userName');
@@ -62,17 +66,21 @@ export class AuthService {
   }
 
   getUserId(): number {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       return Number(localStorage.getItem('userId')) || 0;
     }
     return 0;
   }
+
   getToken(): string | null {
-    return localStorage.getItem('token');
+    if (this.isBrowser) {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   private hasToken(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
       return !!localStorage.getItem('token');
     }
     return false;
@@ -83,7 +91,16 @@ export class AuthService {
   }
 
   getUserName(): string {
+    if (this.isBrowser) {
       return localStorage.getItem('userName') || '';
+    }
+    return '';
   }
 
+  getLoggedInStatusSync(): boolean {
+    if (this.isBrowser) {
+      return !!localStorage.getItem('token');
+    }
+    return false;
+  }
 }

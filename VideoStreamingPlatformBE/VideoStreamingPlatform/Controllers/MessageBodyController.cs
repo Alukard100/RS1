@@ -29,8 +29,14 @@ namespace VideoStreamingPlatform.Controllers
             {
                 var response = await _service.CreateMessageBody(request);
 
-                await _hubContext.Clients.User(request.MsgRecieverId.ToString())
-    .SendAsync("ReceiveMessage", new { senderId = request.MsgSenderId, body = request.Body, timeSent = DateTime.UtcNow });
+                await _hubContext.Clients.Group(request.MsgRecieverId.ToString())
+    .SendAsync("ReceiveMessage", new
+    {
+        senderId = request.MsgSenderId,
+        body = request.Body,
+        timeSent = DateTime.UtcNow
+    });
+
 
                 return Ok(response);
             }
