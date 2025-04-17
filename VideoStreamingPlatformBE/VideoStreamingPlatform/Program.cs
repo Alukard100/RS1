@@ -88,7 +88,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -143,11 +144,15 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapHub<ChatHub>("/chatHub");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("/chatHub");
+});
 
 
 app.Run();

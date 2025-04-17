@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import { APIService } from '../API/api.service';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,10 @@ import { Observable } from 'rxjs';
 export class SignalRService {
   private hubConnection: HubConnection | null = null;
   private messagesSubject = new BehaviorSubject<any[]>([]);
-  messages$ = this.messagesSubject.asObservable();
+  public messages$ = this.messagesSubject.asObservable();
+
+  private newMessageSubject = new Subject<any>();
+  public newMessage$ = this.newMessageSubject.asObservable();
 
   constructor(private apiService: APIService) {}
 
@@ -18,6 +21,7 @@ export class SignalRService {
   startConnection(userId: number): void {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.apiService.getApi()}/chatHub`, {
+        withCredentials: true,
         accessTokenFactory: () => localStorage.getItem('token') || ''
       })
       .build();
@@ -26,12 +30,22 @@ export class SignalRService {
       .start()
       .then(() => {
         console.log('SignalR connection established');
+        this.hubConnection?.invoke('JoinGroup', userId.toString())
+          .then(() => console.log('Joined group:', userId))
+          .catch(err => console.error('Join group failed:', err));
 
-        this.hubConnection?.invoke('JoinGroup', userId.toString());
-
+        // Listen for incoming messages
         this.hubConnection?.on('ReceiveMessage', (message) => {
+          console.log('SignalR Received:', message);
+          const all = this.messagesSubject.getValue();
+          this.messagesSubject.next([...all, message]);
+
+
+          // Grab the current messages and append the new message
           const currentMessages = this.messagesSubject.getValue();
-          this.messagesSubject.next([...currentMessages, message]);
+
+          this.newMessageSubject.next(message);
+          this.messagesSubject.next([...currentMessages, message]); // Append new message
         });
       })
       .catch(err => console.error('SignalR connection error:', err));
@@ -50,12 +64,8 @@ export class SignalRService {
     this.apiService.postToEndpoint('MessageBody/CreateMessageBody', messageRequest)
       .subscribe({
         next: (response) => {
-          // Now use SignalR to notify the client (it’s automatically handled in backend)
-          if (this.hubConnection) {
-            this.hubConnection
-              .invoke('SendMessage', senderId, receiverId, messageBody)
-              .catch(err => console.error('Error sending message:', err));
-          }
+          console.log('Message sent and saved');
+          // SignalR will handle the real-time notification
         },
         error: (err) => {
           console.error('Error sending message to API:', err);
