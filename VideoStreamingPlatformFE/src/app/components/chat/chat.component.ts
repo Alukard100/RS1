@@ -13,7 +13,7 @@ import { ChangeDetectorRef } from '@angular/core';
 export class ChatComponent implements OnInit, OnDestroy {
   users: any[] = [];
   messages: any[] = [];
-  messageMap: { [userId: number]: any[] } = {}; // 🆕 Stores messages by user
+  messageMap: { [userId: number]: any[] } = {};
   selectedUserId: number | null = null;
   selectedUserName: string = '';
   messageBody: string = '';
@@ -40,17 +40,25 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.log('selectedUserId:', this.selectedUserId);
       console.log('loggedInUserId:', this.loggedInUserId);
 
-      const chatPartnerId = msg.msgSenderId === this.loggedInUserId
-        ? msg.msgRecieverId
-        : msg.msgSenderId;
+      const chatPartnerId = msg.senderId === this.loggedInUserId
+        ? msg.receiverId
+        : msg.senderId;
 
       // Ensure we always initialize the message map
       if (!this.messageMap[chatPartnerId]) {
         this.messageMap[chatPartnerId] = [];
       }
 
+      // Create a properly formatted message object
+      const formattedMessage = {
+        msgSenderId: msg.senderId,
+        msgRecieverId: msg.receiverId,
+        body: msg.body,
+        timeSent: msg.timeSent
+      };
+
       // Push to correct conversation
-      this.messageMap[chatPartnerId].push(msg);
+      this.messageMap[chatPartnerId].push(formattedMessage);
 
       // If the user is chatting with this partner, update UI
       if (this.selectedUserId === chatPartnerId) {
@@ -64,7 +72,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         });
       }
     });
-
   }
 
   trackByFn(index: number, item: any) {
@@ -80,12 +87,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectUser(user: GetUserResponse): void {
     this.selectedUserId = user.userID ?? null;
     this.selectedUserName = user.userName ?? '';
-    this.messages = [];
-
+    
     if (this.selectedUserId != null) {
       // If we already have messages for this user, show them
       if (this.messageMap[this.selectedUserId]) {
         this.messages = [...this.messageMap[this.selectedUserId]];
+      } else {
+        this.messages = [];
       }
 
       this.getMessages(this.loggedInUserId, this.selectedUserId);
@@ -99,10 +107,10 @@ export class ChatComponent implements OnInit, OnDestroy {
           const chatPartnerId = receiverId;
           this.messageMap[chatPartnerId] = data;
           this.messages = [...data];
+          this.cdr.detectChanges();
         },
         error: err => console.error(err)
       });
-
   }
 
   sendMessage(): void {
@@ -119,11 +127,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
 
       this.messageMap[this.selectedUserId].push(newMessage);
-
-      // Show in chat box if the user is currently selected
-      if (this.selectedUserId !== null) {
-        this.messages = [...this.messageMap[this.selectedUserId]];
-      }
+      this.messages = [...this.messageMap[this.selectedUserId]];
 
       this.signalRService.sendMessage(
         this.loggedInUserId,
@@ -132,6 +136,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       );
 
       this.messageBody = '';
+      this.cdr.detectChanges();
     }
   }
 
