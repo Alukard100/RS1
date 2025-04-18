@@ -1,37 +1,52 @@
 <mat-toolbar color="primary" class="navbar">
-<div class="nav-links">
+  <!-- Logo on the left -->
+  <div class="logo">
+    <span class="logo-text">VideoStreamingPlatform</span>
+  </div>
 
+  <!-- Navigation links -->
+  <div class="nav-links">
     <a mat-button href="./home">Home</a>
     <a mat-button href="">Trending</a>
     <a mat-button href="">Subscription</a>
     <a mat-button href="">Library</a>
 
+    <!-- Upload Button -->
     <button mat-icon-button style="color: white;" class="upload-button" [routerLink]="['/CreateVideo']">
       <mat-icon>add_box</mat-icon>
     </button>
 
+    <!-- Chat button -->
     <button *ngIf="isLoggedIn" style="color: white;" mat-icon-button [routerLink]="'/chat'">
       <mat-icon>chat</mat-icon>
     </button>
-    <a mat-raised-button href="register" color="accent">Register</a>
 
+    <button *ngIf="isLoggedIn" mat-icon-button [routerLink]="['/support']" style="color: white;">
+      <mat-icon>support_agent</mat-icon>
+    </button>
+
+    <!-- Register Button, login button -->
+    <div class="authLinks">
+      <a mat-raised-button href="register" *ngIf="!isLoggedIn" color="accent">Register</a>
+      <a mat-raised-button href="login" *ngIf="!isLoggedIn" color="accent">Login</a>
+    </div>
+
+
+
+    <!-- Wallet and Logout -->
     <span *ngIf="isLoggedIn">
-  <span
-    class="wallet"
-    style="margin-right: 10px; cursor: pointer;"
-    (click)="goToCardPayment()"
-  >
-    💰 {{ walletBalance | currency }}
-  </span>
-  Welcome, {{ userName }}!
-  <button mat-raised-button color="warn" (click)="logout()">
-    Logout
-  </button>
-</span>
+      <span class="wallet" style="margin-right: 10px; cursor: pointer;" (click)="goToCardPayment()">
+        💰 {{ walletBalance | currency }}
+      </span>
+      Welcome, {{ userName }}!
+      <button mat-raised-button color="warn" (click)="logout()">
+        Logout
+      </button>
+    </span>
 
+    <!-- Sign In Template -->
     <ng-template #signInBlock>
-    	<a mat-raised-button href="" color="accent">Sign in</a>
- 	</ng-template>
-
+      <a mat-raised-button href="" color="accent">Sign in</a>
+    </ng-template>
   </div>
 </mat-toolbar>

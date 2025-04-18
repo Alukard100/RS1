@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
     { path: 'card-payment', component: CardPaymentComponent, canActivate: [AuthGuard] },
     { path: 'register', component: RegisterComponent },
-    { path: 'support', component: SupportComponent },
+    { path: 'support', component: SupportComponent, canActivate:[AuthGuard] },
   { path: 'chat-list', component: ChatListComponent, canActivate: [AuthGuard] },
   { path: 'chat', component: ChatComponent, canActivate: [AuthGuard] },
   { path: 'chat/:userId', component: ChatComponent, canActivate: [AuthGuard] },

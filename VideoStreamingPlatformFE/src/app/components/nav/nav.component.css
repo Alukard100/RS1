@@ -1,12 +1,36 @@
-/* Add Font Awesome icons */
-  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
-.navbar {
-  justify-content: space-between;
+.logo {
+  display: flex;
+  align-items: center;
 }
 
-span {
-  padding-right: 1rem;
+.logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.authLinks {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  margin-left: 20px;
+}
+
+
+.logo-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
 }
 
 a {
@@ -14,11 +38,6 @@ a {
   text-decoration: inherit;
 }
 
-
-
-.nav-links {
-
-  display: flex;
-  align-items: center;
-
+span {
+  padding-right: 1rem;
 }
