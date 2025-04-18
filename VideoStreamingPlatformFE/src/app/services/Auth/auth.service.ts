@@ -90,6 +90,12 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
+  isAdmin(): boolean {
+    const typeId = localStorage.getItem('typeId');
+    return typeId === '1';
+  }
+
+
   getUserName(): string {
     if (this.isBrowser) {
       return localStorage.getItem('userName') || '';

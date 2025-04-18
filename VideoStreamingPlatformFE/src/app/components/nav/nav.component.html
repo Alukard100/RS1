@@ -10,6 +10,8 @@
     <a mat-button href="">Trending</a>
     <a mat-button href="">Subscription</a>
     <a mat-button href="">Library</a>
+    <a *ngIf="isAdmin" mat-button routerLink="/admin-panel">Admin Panel</a>
+
 
     <!-- Upload Button -->
     <button mat-icon-button style="color: white;" class="upload-button" [routerLink]="['/CreateVideo']">

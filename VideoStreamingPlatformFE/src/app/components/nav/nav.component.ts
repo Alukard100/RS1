@@ -17,6 +17,7 @@ export class NavComponent implements OnInit {
   userName: string = '';
   walletBalance:number|null=null;
   isChatOpen=false;
+  isAdmin:boolean=false;
 
   constructor(
     private authService: AuthService,
@@ -31,7 +32,7 @@ export class NavComponent implements OnInit {
     if (this.isBrowser) {
       this.authService.getLoggedInStatus().subscribe(status => {
         this.isLoggedIn = status;
-
+        this.isAdmin=this.authService.isAdmin();
         if (status) {
           // ← set the name as soon as we know we’re logged in
           this.userName = this.authService.getUserName();

@@ -12,6 +12,8 @@ import {ChatListComponent} from './components/chat-list/chat-list.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
+import {AdminPanelComponent} from './components/admin-panel/admin-panel.component';
+import {AdminGuard} from './guards/admin.guard';
 
 
 const routes: Routes = [
@@ -26,7 +28,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'video/:id', component: VideoViewComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'login', component: AuthComponent }
+  { path: 'login', component: AuthComponent },
+  {path: 'admin-panel', component: AdminPanelComponent, canActivate: [AdminGuard] },
 ];
 
 @NgModule({
