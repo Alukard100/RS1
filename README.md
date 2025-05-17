@@ -11,6 +11,7 @@ Angular CLI: 19.1.5
 Use swagger to create a user after running BE
 Use swagger to give created user UserValues
 Test everything else visually on FE
+SenderEmail and SecreTkey missing, so login might cause a problem
 
 # Contribute
 TODO: Explain how other users and developers can contribute to make your code better. 
