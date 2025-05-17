@@ -26,7 +26,7 @@ namespace VideoStreamingPlatform.Database.Migrations
                 table: "Video",
                 type: "datetime",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                defaultValue: new DateTime(1753, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime",
                 oldNullable: true);

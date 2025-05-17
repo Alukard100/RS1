@@ -26,6 +26,8 @@ namespace VideoStreamingPlatform.Database.Models
             UserValues = new HashSet<UserValue>();
             Videos = new HashSet<Video>();
             Wallets = new HashSet<Wallet>();
+            UserViews = new HashSet<UserViews>();
+            UserLikes = new HashSet<UserLikes>();
         }
 
         public int UserId { get; set; }
@@ -58,5 +60,7 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual ICollection<UserValue> UserValues { get; set; }
         public virtual ICollection<Video> Videos { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
+        public virtual  ICollection<UserViews> UserViews { get; set; }
+        public virtual ICollection<UserLikes> UserLikes { get; set; }
     }
 }

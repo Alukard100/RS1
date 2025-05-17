@@ -27,9 +27,9 @@ namespace VideoStreamingPlatform.Service
             _httpClientFactory = httpClientFactory;
         }
 
-        public ThumbnailInfo CreateThumbnail(int VideoId)
+        public ThumbnailInfo CreateThumbnail(int VideoId, string LocalFilePath)
         {
-            if (VideoId <= 0)
+            if (VideoId <= 0 || string.IsNullOrEmpty(LocalFilePath) || !File.Exists(LocalFilePath))
             {
                 return null;
             }
@@ -37,83 +37,51 @@ namespace VideoStreamingPlatform.Service
             
             if (video == null) return null;
 
-            string videoUrl = video.FilePath;
-            if (!Uri.IsWellFormedUriString(videoUrl, UriKind.Absolute))
-            {
-                return null;
-            }
-
-            string tempVideoPath = DownloadVideoLocally(videoUrl);
-            if (string.IsNullOrEmpty(tempVideoPath)) { return null; }
-            
-            string tempThumbnailPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.jpg");
+            string tempThumbnailPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}.jpg");
+            string resizedThumbnailPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}_resized.jpg");
 
             try
             {
                 using (var engine = new Engine())
                 {
-                    var inputedVideo = new MediaFile { Filename = tempVideoPath };
+                    var inputVideo = new MediaFile { Filename = LocalFilePath };
                     var random = new Random();
-                    int randomSecond = random.Next(0, video.DurationInSecondes - 1);
-                    var option = new ConversionOptions { Seek = TimeSpan.FromSeconds(randomSecond) };
+                    int seekTime = Math.Max(0, random.Next(0, video.DurationInSecondes - 1));
 
-                    //temporary thumbnail path
+                    var options = new ConversionOptions { Seek = TimeSpan.FromSeconds(seekTime) };
                     var outputImage = new MediaFile { Filename = tempThumbnailPath };
 
-                    engine.GetThumbnail(inputedVideo, outputImage, option);
+                    engine.GetThumbnail(inputVideo, outputImage, options);
 
-                    byte[] tumhbBytes = File.ReadAllBytes(tempThumbnailPath);
+                    var ffmpegArgs = $"-i \"{tempThumbnailPath}\" -vf \"scale='if(gt(a,16/9),480,-2)':'if(gt(a,16/9),-2,270)'\" \"{resizedThumbnailPath}\" -y";
+                    engine.CustomCommand(ffmpegArgs);
+
+                    byte[] thumbBytes = File.ReadAllBytes(resizedThumbnailPath);
 
                     var newThumbnail = new ThumbnailInfo
                     {
                         VideoId = VideoId,
-                        ThumbnailPicture = tumhbBytes
+                        ThumbnailPicture = thumbBytes
                     };
+
                     _db.ThumbnailInfos.Add(newThumbnail);
                     _db.SaveChanges();
 
                     return newThumbnail;
-
                 }
             }
             catch (Exception ex)
             {
+
                 Console.WriteLine($"Error generating thumbnail: {ex.Message}");
                 return null;
             }
             finally
             {
-                //clean temporary files
-                File.Delete(tempVideoPath);
                 File.Delete(tempThumbnailPath);
-            }           
+                File.Delete(resizedThumbnailPath);
+            }
             
-        }
-
-        public string DownloadVideoLocally(string videoUrl)
-        {
-            try
-            {
-                var client = _httpClientFactory.CreateClient();
-                var response = client.GetAsync(videoUrl).GetAwaiter().GetResult();
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
-
-                string tempVideoPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.mp4");
-                using (var fs = new FileStream(tempVideoPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    response.Content.CopyToAsync(fs).GetAwaiter().GetResult();
-                }
-
-                return tempVideoPath;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error downloading video: " + ex.Message);
-                return null;
-            }
         }
 
         public bool DeleteThumbnail(ThumbnailInfo thumbnail)

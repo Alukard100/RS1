@@ -13,6 +13,9 @@ namespace VideoStreamingPlatform.Database.Models
             Reports = new HashSet<Report>();
             SessionTables = new HashSet<SessionTable>();
             Synchronizations = new HashSet<Synchronization>();
+            UserViews = new HashSet<UserViews>();
+            UserLikes = new HashSet<UserLikes>();
+
         }
 
         public int VideoId { get; set; }
@@ -37,5 +40,7 @@ namespace VideoStreamingPlatform.Database.Models
         public virtual ICollection<Synchronization> Synchronizations { get; set; }
         public virtual ThumbnailInfo ThumbnailInfos { get; set; }
         public virtual VideoStatistic VideoStatistics { get; set; }
+        public virtual ICollection<UserViews> UserViews { get; set; } 
+        public virtual ICollection<UserLikes> UserLikes { get; set; }
     }
 }

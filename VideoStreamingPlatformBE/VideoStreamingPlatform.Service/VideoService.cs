@@ -117,7 +117,7 @@ namespace VideoStreamingPlatform.Service
 
             _videoStatisticService.CreateStatistic(newVideo.VideoId);
             _ratingSystemVideo.CreateRSV(newVideo.VideoId);
-            _thumbnailInfoService.CreateThumbnail(newVideo.VideoId);
+            _thumbnailInfoService.CreateThumbnail(newVideo.VideoId, request.RealFilePath);
             
             return newVideo;
         }

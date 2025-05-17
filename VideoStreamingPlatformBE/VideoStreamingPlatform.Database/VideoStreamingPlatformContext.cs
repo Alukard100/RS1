@@ -41,6 +41,9 @@ namespace VideoStreamingPlatform.Database
         public virtual DbSet<Video> Videos { get; set; } = null!;
         public virtual DbSet<VideoStatistic> VideoStatistics { get; set; } = null!;
         public virtual DbSet<Wallet> Wallets { get; set; } = null!;
+        public virtual DbSet<UserViews> UserViews { get; set; } = null!;
+        public virtual DbSet<UserLikes> UserLikes { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -722,6 +725,37 @@ namespace VideoStreamingPlatform.Database
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<UserViews>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.VideoId });
+
+                entity.HasOne(e => e.User)
+                        .WithMany(u => u.UserViews)
+                        .HasForeignKey(e => e.UserId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Video)
+                        .WithMany(v => v.UserViews)
+                        .HasForeignKey(e => e.VideoId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            });
+
+            modelBuilder.Entity<UserLikes>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.VideoId });
+
+                entity.HasOne(e => e.User)
+                        .WithMany(u => u.UserLikes)
+                        .HasForeignKey(e => e.UserId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Video)
+                        .WithMany(v => v.UserLikes)
+                        .HasForeignKey(e => e.VideoId)
+                        .OnDelete(DeleteBehavior.Cascade);
             });
 
             OnModelCreatingPartial(modelBuilder);

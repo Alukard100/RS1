@@ -23,8 +23,7 @@ export class VideoComponent implements OnInit {
   uploadSub!: Subscription | null;
   @Output() public onUploadFinished = new EventEmitter();
   isDragging = false;
-
-  
+  videoPreviewUrl: string | null = null;
 
   videoData: Video = {
     
@@ -56,6 +55,7 @@ export class VideoComponent implements OnInit {
       if (this.validateVideoFile(file)) {
         this.videoFile = input.files[0];
         this.fileName = this.videoFile.name;
+        this.videoPreviewUrl = URL.createObjectURL(this.videoFile);
       } else {
         alert('Only video files (.mp4, .mov, .avi) are allowed.');
       }
@@ -84,6 +84,7 @@ export class VideoComponent implements OnInit {
       if (this.validateVideoFile(file)) {
         this.videoFile = file;
         this.fileName = file.name;
+        this.videoPreviewUrl = URL.createObjectURL(this.videoFile);
       } else {
         alert('Only video files (.mp4, .mov, .avi) are allowed.');
       }
@@ -193,6 +194,12 @@ export class VideoComponent implements OnInit {
       },
       error: (error) => console.log('Fetch failure: ', error)
     });
+  }
+
+  ngOnDestroy() {
+    if (this.videoPreviewUrl) {
+      URL.revokeObjectURL(this.videoPreviewUrl);
+    }
   }
   
 }

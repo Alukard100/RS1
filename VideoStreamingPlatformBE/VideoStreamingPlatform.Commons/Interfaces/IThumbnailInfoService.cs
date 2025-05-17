@@ -11,7 +11,7 @@ namespace VideoStreamingPlatform.Commons.Interfaces
 {
     public interface IThumbnailInfoService
     {
-        public ThumbnailInfo CreateThumbnail(int VideoId);
+        public ThumbnailInfo CreateThumbnail(int VideoId, string LocalFilePath);
         public ThumbnailInfo UpdateThumbnail(UpdateThumbnailInfoRequest request);
         public bool DeleteThumbnail(ThumbnailInfo Thumbnail);
         public ThumbnailInfo GetThumbnail(int ThumbnailId);

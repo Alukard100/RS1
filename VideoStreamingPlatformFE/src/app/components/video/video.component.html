@@ -28,7 +28,7 @@
         </button>
       </div>
     </div>
-  
+
     <!-- Description -->
     <mat-form-field appearance="fill" class="vDescription">
       <mat-label>Description of your video</mat-label>
@@ -61,6 +61,15 @@
       </div>
     </div>
   
+    <mat-card class="video-preview-card mat-elevation-z2" *ngIf="videoPreviewUrl">
+      <h3 class="preview-title" *ngIf="videoPreviewUrl">Preview of your video</h3>
+      <video 
+        [src]="videoPreviewUrl"
+        controls
+        controlsList="nodownload"
+        class="video-preview">
+      </video>
+    </mat-card>
   </div>
 </mat-card>
 
